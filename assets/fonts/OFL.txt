@@ -1,0 +1,17 @@
+Fonts bundled with Worldbuilder
+===============================
+
+All fonts in this folder are licensed under the SIL Open Font License,
+Version 1.1, which permits bundling and redistribution inside an
+application. Full license text: https://scripts.sil.org/OFL
+
+  Cinzel                 (c) Natanael Gama            — ofl/cinzel
+  EB Garamond            (c) Georg Duffner, Octavio Pardo — ofl/ebgaramond
+  Orbitron               (c) Matt McInerney            — ofl/orbitron
+  Share Tech Mono        (c) Carrois Apostrophe        — ofl/sharetechmono
+  Playfair Display       (c) Claus Eggers Sørensen     — ofl/playfairdisplay
+  Libre Baskerville      (c) Impallari Type            — ofl/librebaskerville
+  Comfortaa              (c) Johan Aakerlund           — ofl/comfortaa
+  Nunito                 (c) The Nunito Project Authors — ofl/nunito
+
+Sources: https://github.com/google/fonts

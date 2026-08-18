@@ -1,0 +1,5 @@
+package com.covaret.astrolabe
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity()
