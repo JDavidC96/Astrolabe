@@ -3,52 +3,89 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/tables.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/data_providers.dart';
 import '../../services/support_links.dart';
 
 /// One entry in the project's section navigation.
+///
+/// Labels are resolved through [labelFor] at build time rather than stored,
+/// so this list can stay `const` while the wording still follows the
+/// chosen language.
 class _Section {
-  const _Section(this.slug, this.label, this.icon, {this.dndLabel});
+  const _Section(this.slug, this.icon);
   final String slug;
-  final String label;
   final IconData icon;
 
-  /// Alternative wording for campaigns, where the same data means something
-  /// slightly different ("chapters" are "sessions").
-  final String? dndLabel;
-
-  String labelFor(bool isCampaign) =>
-      isCampaign && dndLabel != null ? dndLabel! : label;
+  /// Campaigns reuse the same data under different words: what a novelist
+  /// calls a chapter, a table calls a session.
+  String labelFor(L l, bool isCampaign) {
+    switch (slug) {
+      case 'characters':
+        return l.sectionCharacters;
+      case 'world':
+        return l.sectionWorld;
+      case 'factions':
+        return l.sectionFactions;
+      case 'timeline':
+        return l.sectionTimeline;
+      case 'chapters':
+        return isCampaign ? l.sectionSessions : l.sectionChapters;
+      case 'notes':
+        return l.sectionNotes;
+      case 'items':
+        return l.sectionItems;
+      case 'magic':
+        return l.sectionMagic;
+    }
+    return slug;
+  }
 }
 
 const _sections = <_Section>[
-  _Section('characters', 'Personajes', Icons.people_outline),
-  _Section('world', 'Mundo', Icons.public_outlined),
-  _Section('factions', 'Facciones', Icons.shield_outlined),
-  _Section('timeline', 'Línea de tiempo', Icons.timeline_outlined),
-  _Section('chapters', 'Capítulos', Icons.menu_book_outlined,
-      dndLabel: 'Sesiones'),
-  _Section('notes', 'Notas', Icons.sticky_note_2_outlined),
-  _Section('items', 'Objetos', Icons.auto_awesome_outlined),
-  _Section('magic', 'Magia', Icons.auto_fix_high_outlined),
+  _Section('characters', Icons.people_outline),
+  _Section('world', Icons.public_outlined),
+  _Section('factions', Icons.shield_outlined),
+  _Section('timeline', Icons.timeline_outlined),
+  _Section('chapters', Icons.menu_book_outlined),
+  _Section('notes', Icons.sticky_note_2_outlined),
+  _Section('items', Icons.auto_awesome_outlined),
+  _Section('magic', Icons.auto_fix_high_outlined),
 ];
 
 /// Extra destinations that are not section lists.
 class _Tool {
-  const _Tool(this.path, this.label, this.icon, {this.dndOnly = false});
+  const _Tool(this.path, this.icon, {this.dndOnly = false});
   final String path;
-  final String label;
   final IconData icon;
   final bool dndOnly;
+
+  String labelFor(L l) {
+    switch (path) {
+      case 'family':
+        return l.toolFamilyTree;
+      case 'secrets':
+        return l.toolSecrets;
+      case 'dice':
+        return l.toolDice;
+      case 'search':
+        return l.commonSearch;
+      case 'appearance':
+        return l.toolAppearance;
+      case 'backup':
+        return l.toolBackup;
+    }
+    return path;
+  }
 }
 
 const _tools = <_Tool>[
-  _Tool('family', 'Árbol genealógico', Icons.account_tree_outlined),
-  _Tool('secrets', 'Secretos', Icons.lock_outline),
-  _Tool('dice', 'Dados', Icons.casino_outlined, dndOnly: true),
-  _Tool('search', 'Buscar', Icons.search),
-  _Tool('appearance', 'Apariencia', Icons.palette_outlined),
-  _Tool('backup', 'Exportar / respaldar', Icons.backup_outlined),
+  _Tool('family', Icons.account_tree_outlined),
+  _Tool('secrets', Icons.lock_outline),
+  _Tool('dice', Icons.casino_outlined, dndOnly: true),
+  _Tool('search', Icons.search),
+  _Tool('appearance', Icons.palette_outlined),
+  _Tool('backup', Icons.backup_outlined),
 ];
 
 /// Number of sections shown in the bottom bar; the rest live in the drawer
@@ -77,6 +114,7 @@ class ProjectShellScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final projectAsync = ref.watch(projectStreamProvider(projectId));
     final isCampaign = projectAsync.valueOrNull?.kind == ProjectKind.dnd;
     final currentSlug = _currentSlug(context);
@@ -86,17 +124,17 @@ class ProjectShellScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(projectAsync.valueOrNull?.name ?? 'Universo'),
+        title: Text(projectAsync.valueOrNull?.name ?? l.drawerUniverse),
         actions: [
           if (isCampaign)
             IconButton(
               icon: const Icon(Icons.casino_outlined),
-              tooltip: 'Dados',
+              tooltip: l.toolDice,
               onPressed: () => context.push('/project/$projectId/dice'),
             ),
           IconButton(
             icon: const Icon(Icons.search),
-            tooltip: 'Buscar en todo el universo',
+            tooltip: l.searchWholeUniverse,
             onPressed: () => context.push('/project/$projectId/search'),
           ),
         ],
@@ -117,7 +155,7 @@ class ProjectShellScreen extends ConsumerWidget {
           for (final section in bottomSections)
             NavigationDestination(
               icon: Icon(section.icon),
-              label: section.labelFor(isCampaign),
+              label: section.labelFor(l, isCampaign),
             ),
         ],
       ),
@@ -140,6 +178,7 @@ class _SectionDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -153,12 +192,12 @@ class _SectionDrawer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  projectName ?? 'Universo',
+                  projectName ?? l.drawerUniverse,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  isCampaign ? 'Campaña de rol' : 'Libro / novela',
+                  isCampaign ? l.projectsKindCampaign : l.projectsKindNovel,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
@@ -167,7 +206,7 @@ class _SectionDrawer extends StatelessWidget {
           for (final section in _sections)
             ListTile(
               leading: Icon(section.icon),
-              title: Text(section.labelFor(isCampaign)),
+              title: Text(section.labelFor(l, isCampaign)),
               selected: section.slug == currentSlug,
               onTap: () {
                 Navigator.of(context).pop();
@@ -179,7 +218,7 @@ class _SectionDrawer extends StatelessWidget {
             if (!tool.dndOnly || isCampaign)
               ListTile(
                 leading: Icon(tool.icon),
-                title: Text(tool.label),
+                title: Text(tool.labelFor(l)),
                 onTap: () {
                   Navigator.of(context).pop();
                   context.push('/project/$projectId/${tool.path}');
@@ -188,16 +227,20 @@ class _SectionDrawer extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.coffee_outlined),
-            title: const Text('Invítame un café'),
-            subtitle: const Text('Si la app te sirve y quieres apoyarla'),
+            title: Text(l.supportTitle),
+            subtitle: Text(l.supportSubtitle),
             onTap: () {
-              Navigator.of(context).pop();
-              openSupportLink();
+              // Grab the navigator before closing the drawer: this tile's
+              // own context is unmounted by the pop, so using it afterwards
+              // would fail.
+              final navigator = Navigator.of(context);
+              navigator.pop();
+              showSupportSheet(navigator.context);
             },
           ),
           ListTile(
             leading: const Icon(Icons.arrow_back),
-            title: const Text('Mis universos'),
+            title: Text(l.drawerMyUniverses),
             onTap: () {
               Navigator.of(context).pop();
               context.go('/');

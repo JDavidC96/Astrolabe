@@ -44,7 +44,7 @@ dependencies:
   path: ^1.9.1
   scribble: ^0.10.0+1
   uuid: ^4.6.0
-  intl: ^0.20.3
+  intl: 0.20.2
   flutter_colorpicker: ^1.1.0
   archive: ^4.0.9
   share_plus: ^13.3.0
@@ -54,6 +54,8 @@ dependencies:
   crypto: ^3.0.7
   shared_preferences: ^2.5.5
   url_launcher: ^6.3.2
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +92,9 @@ flutter_launcher_icons:
 
 # The following section is specific to Flutter packages.
 flutter:
+
+  # Builds the localization classes from lib/l10n/*.arb (see l10n.yaml).
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

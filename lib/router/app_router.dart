@@ -27,6 +27,7 @@ import '../screens/appearance/appearance_screen.dart';
 import '../screens/family/family_tree_screen.dart';
 import '../screens/secrets/secrets_screen.dart';
 import '../screens/dice/dice_screen.dart';
+import '../screens/settings/language_screen.dart';
 import '../screens/settings/security_settings_screen.dart';
 import '../screens/drawing/drawing_screen.dart';
 
@@ -46,6 +47,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/settings/security',
       builder: (context, state) => const SecuritySettingsScreen(),
+    ),
+    GoRoute(
+      path: '/settings/language',
+      builder: (context, state) => const LanguageScreen(),
     ),
     GoRoute(
       path: '/drawing',

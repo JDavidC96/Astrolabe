@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/tables.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/core_providers.dart';
 import '../../providers/data_providers.dart';
 import '../../services/support_links.dart';
@@ -15,20 +16,26 @@ class ProjectsListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final projectsAsync = ref.watch(projectsStreamProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis universos'),
+        title: Text(l.projectsTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.coffee_outlined),
-            tooltip: 'Invítame un café',
-            onPressed: openSupportLink,
+            tooltip: l.supportTitle,
+            onPressed: () => showSupportSheet(context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: l.languageTitle,
+            onPressed: () => context.push('/settings/language'),
           ),
           IconButton(
             icon: const Icon(Icons.lock_outline),
-            tooltip: 'Seguridad',
+            tooltip: l.settingsSecurity,
             onPressed: () => context.push('/settings/security'),
           ),
         ],
@@ -75,8 +82,8 @@ class ProjectsListScreen extends ConsumerWidget {
                     children: [
                       Text(
                         project.kind == ProjectKind.dnd
-                            ? 'Campaña de rol'
-                            : 'Libro / novela',
+                            ? l.projectsKindCampaign
+                            : l.projectsKindNovel,
                         style: Theme.of(context).textTheme.labelSmall,
                       ),
                       if (project.description != null &&
@@ -96,9 +103,9 @@ class ProjectsListScreen extends ConsumerWidget {
                         _confirmDelete(context, ref, project.id, project.name);
                       }
                     },
-                    itemBuilder: (context) => const [
-                      PopupMenuItem(value: 'rename', child: Text('Editar')),
-                      PopupMenuItem(value: 'delete', child: Text('Eliminar')),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(value: 'rename', child: Text(l.commonEdit)),
+                      PopupMenuItem(value: 'delete', child: Text(l.commonDelete)),
                     ],
                   ),
                   onTap: () => context.push('/project/${project.id}'),
