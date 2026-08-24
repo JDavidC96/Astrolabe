@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,16 +41,17 @@ class _MapViewScreenState extends ConsumerState<MapViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final locationAsync = ref.watch(locationStreamProvider(widget.locationId));
     final pinsAsync = ref.watch(mapPinsStreamProvider(widget.locationId));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(locationAsync.valueOrNull?.name ?? 'Mapa'),
+        title: Text(locationAsync.valueOrNull?.name ?? l.mapTitle),
         actions: [
           IconButton(
             icon: Icon(_editing ? Icons.done : Icons.edit_location_alt_outlined),
-            tooltip: _editing ? 'Terminar' : 'Colocar marcas',
+            tooltip: _editing ? l.mapDone : l.mapPlaceMarkers,
             onPressed: () => setState(() => _editing = !_editing),
           ),
         ],
@@ -68,10 +71,10 @@ class _MapViewScreenState extends ConsumerState<MapViewScreen> {
                 return const Center(child: CircularProgressIndicator());
               }
               if (!file.existsSync()) {
-                return const Center(
+                return Center(
                   child: Padding(
-                    padding: EdgeInsets.all(24),
-                    child: Text('No se encontró el archivo del mapa.'),
+                    padding: const EdgeInsets.all(24),
+                    child: Text(l.mapNoFile),
                   ),
                 );
               }
@@ -81,18 +84,13 @@ class _MapViewScreenState extends ConsumerState<MapViewScreen> {
                   if (_editing)
                     Material(
                       color: Theme.of(context).colorScheme.secondaryContainer,
-                      child: const Padding(
-                        padding: EdgeInsets.all(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
                         child: Row(
                           children: [
-                            Icon(Icons.touch_app_outlined),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                'Toca el mapa para poner una marca. '
-                                'Arrastra una marca para moverla.',
-                              ),
-                            ),
+                            const Icon(Icons.touch_app_outlined),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(l.mapEditHint)),
                           ],
                         ),
                       ),
@@ -141,14 +139,13 @@ class _NoMapYet extends StatelessWidget {
             const Icon(Icons.map_outlined, size: 48),
             const SizedBox(height: 12),
             Text(
-              '"${location.name}" todavía no tiene mapa.',
+              L.of(context).mapNoMapYet(location.name),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Abre la ficha del lugar y sube una imagen o dibújala; '
-              'después podrás poner marcas encima.',
+            Text(
+              L.of(context).mapNoMapHint,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -156,7 +153,7 @@ class _NoMapYet extends StatelessWidget {
               onPressed: () =>
                   context.push('/project/$projectId/world/${location.id}'),
               icon: const Icon(Icons.edit_outlined),
-              label: const Text('Abrir ficha del lugar'),
+              label: Text(L.of(context).mapOpenPlace),
             ),
           ],
         ),
@@ -423,16 +420,17 @@ class _PinMarker extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Quitar marca'),
-        content: Text('¿Quitar "${pin.label ?? 'esta marca'}" del mapa?'),
+        title: Text(L.of(context).mapRemoveMarker),
+        content: Text(L.of(context)
+            .mapRemoveMarkerBody(pin.label ?? L.of(context).mapThisMarker)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Quitar'),
+            child: Text(L.of(context).commonRemove),
           ),
         ],
       ),
@@ -456,7 +454,7 @@ class _PickTargetDialog extends ConsumerWidget {
     final items = ref.watch(itemsStreamProvider(projectId));
 
     return AlertDialog(
-      title: const Text('¿Qué hay en este punto?'),
+      title: Text(L.of(context).mapWhatIsHere),
       content: SizedBox(
         width: 420,
         child: SingleChildScrollView(
@@ -466,7 +464,7 @@ class _PickTargetDialog extends ConsumerWidget {
             children: [
               _section(
                 context,
-                'Lugares',
+                L.of(context).mapSectionPlaces,
                 locations.valueOrNull
                         ?.map((l) => (TagEntity.location, l.id, l.name))
                         .toList() ??
@@ -474,7 +472,7 @@ class _PickTargetDialog extends ConsumerWidget {
               ),
               _section(
                 context,
-                'Personajes',
+                L.of(context).mapSectionCharacters,
                 characters.valueOrNull
                         ?.map((c) => (
                               TagEntity.character,
@@ -486,7 +484,7 @@ class _PickTargetDialog extends ConsumerWidget {
               ),
               _section(
                 context,
-                'Objetos',
+                L.of(context).mapSectionItems,
                 items.valueOrNull
                         ?.map((i) => (TagEntity.item, i.id, i.name))
                         .toList() ??
@@ -499,7 +497,7 @@ class _PickTargetDialog extends ConsumerWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(L.of(context).commonCancel),
         ),
       ],
     );

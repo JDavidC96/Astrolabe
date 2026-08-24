@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 /// A visual identity for a universe.
 ///
 /// A theme is three things working together, not just a colour swap:
@@ -9,8 +11,6 @@ import 'package:flutter/material.dart';
 class AppTheme {
   const AppTheme({
     required this.id,
-    required this.name,
-    required this.description,
     required this.displayFont,
     required this.bodyFont,
     required this.cornerRadius,
@@ -20,8 +20,6 @@ class AppTheme {
   });
 
   final String id;
-  final String name;
-  final String description;
 
   /// Font for titles and headings; carries most of the genre signal.
   final String? displayFont;
@@ -144,6 +142,48 @@ class AppTheme {
 
 /// The handful of colours that define a theme; the rest are derived by
 /// Material 3 from these.
+/// Display text for a theme lives in the ARB files so the palettes stay
+/// free of language. Falls back to the id for a theme with no entry.
+String themeName(L l, String id) {
+  switch (id) {
+    case 'classic':
+      return l.themeClassicName;
+    case 'medieval':
+      return l.themeMedievalName;
+    case 'steampunk':
+      return l.themeSteampunkName;
+    case 'cyberpunk':
+      return l.themeCyberpunkName;
+    case 'solarpunk':
+      return l.themeSolarpunkName;
+    case 'cosmic':
+      return l.themeCosmicName;
+    case 'gothic':
+      return l.themeGothicName;
+  }
+  return id;
+}
+
+String themeDescription(L l, String id) {
+  switch (id) {
+    case 'classic':
+      return l.themeClassicDesc;
+    case 'medieval':
+      return l.themeMedievalDesc;
+    case 'steampunk':
+      return l.themeSteampunkDesc;
+    case 'cyberpunk':
+      return l.themeCyberpunkDesc;
+    case 'solarpunk':
+      return l.themeSolarpunkDesc;
+    case 'cosmic':
+      return l.themeCosmicDesc;
+    case 'gothic':
+      return l.themeGothicDesc;
+  }
+  return '';
+}
+
 class ThemePalette {
   const ThemePalette({
     required this.primary,
@@ -172,8 +212,6 @@ const defaultThemeId = 'classic';
 const appThemes = <AppTheme>[
   AppTheme(
     id: 'classic',
-    name: 'Clásico',
-    description: 'Limpio y neutro. Deja que tu contenido hable.',
     displayFont: null,
     bodyFont: null,
     cornerRadius: 12,
@@ -203,8 +241,6 @@ const appThemes = <AppTheme>[
   // in Cinzel echo inscriptions; corners stay sharp like cut stone.
   AppTheme(
     id: 'medieval',
-    name: 'Medieval',
-    description: 'Pergamino, vino y oro. Para reinos, espadas y linajes.',
     displayFont: 'Cinzel',
     bodyFont: 'EBGaramond',
     cornerRadius: 4,
@@ -235,8 +271,6 @@ const appThemes = <AppTheme>[
   // reads as aged metal. Playfair's high contrast is Victorian print.
   AppTheme(
     id: 'steampunk',
-    name: 'Steampunk',
-    description: 'Latón, cobre y cardenillo. Engranajes y vapor.',
     displayFont: 'PlayfairDisplay',
     bodyFont: 'LibreBaskerville',
     cornerRadius: 8,
@@ -267,8 +301,6 @@ const appThemes = <AppTheme>[
   // pairing. Zero radius and a mono body face read as terminal UI.
   AppTheme(
     id: 'cyberpunk',
-    name: 'Cyberpunk',
-    description: 'Neón sobre negro. Circuitos, datos y lluvia ácida.',
     displayFont: 'Orbitron',
     bodyFont: 'ShareTechMono',
     cornerRadius: 0,
@@ -301,8 +333,6 @@ const appThemes = <AppTheme>[
   // nothing in this world is machined.
   AppTheme(
     id: 'solarpunk',
-    name: 'Solarpunk',
-    description: 'Verde, sol y aire limpio. Futuros que dan ganas de vivir.',
     displayFont: 'Comfortaa',
     bodyFont: 'Nunito',
     cornerRadius: 20,
@@ -331,8 +361,6 @@ const appThemes = <AppTheme>[
   // Deep space violet with starlight cyan; rounded like orbits.
   AppTheme(
     id: 'cosmic',
-    name: 'Cósmico',
-    description: 'Nebulosas y luz de estrellas. Naves, imperios y vacío.',
     displayFont: 'Orbitron',
     bodyFont: 'Nunito',
     cornerRadius: 16,
@@ -363,8 +391,6 @@ const appThemes = <AppTheme>[
   // palette that turns it funereal instead of regal.
   AppTheme(
     id: 'gothic',
-    name: 'Gótico',
-    description: 'Carmesí y ceniza. Vampiros, ruinas y secretos.',
     displayFont: 'Cinzel',
     bodyFont: 'EBGaramond',
     cornerRadius: 2,

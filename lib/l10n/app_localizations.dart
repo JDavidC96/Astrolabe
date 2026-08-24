@@ -1662,6 +1662,1308 @@ abstract class L {
   /// In es, this message translates to:
   /// **'Contenido'**
   String get noteContent;
+
+  /// No description provided for @secretsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Secretos'**
+  String get secretsTitle;
+
+  /// No description provided for @secretsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra un secreto y marca qué personajes lo saben, cómo se enteraron y desde cuándo.'**
+  String get secretsEmpty;
+
+  /// No description provided for @secretNobodyKnows.
+  ///
+  /// In es, this message translates to:
+  /// **'Nadie lo sabe todavía'**
+  String get secretNobodyKnows;
+
+  /// No description provided for @secretKnownBy.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo saben: {names}'**
+  String secretKnownBy(String names);
+
+  /// No description provided for @secretOwnedBy.
+  ///
+  /// In es, this message translates to:
+  /// **'Secreto de: {name}'**
+  String secretOwnedBy(String name);
+
+  /// No description provided for @secretNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo secreto'**
+  String get secretNew;
+
+  /// No description provided for @secretEdit.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar secreto'**
+  String get secretEdit;
+
+  /// No description provided for @secretLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Secreto'**
+  String get secretLabel;
+
+  /// No description provided for @secretHint.
+  ///
+  /// In es, this message translates to:
+  /// **'ej. Aria es la heredera legítima'**
+  String get secretHint;
+
+  /// No description provided for @secretDetails.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles (opcional)'**
+  String get secretDetails;
+
+  /// No description provided for @secretOwnerQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿De quién es el secreto?'**
+  String get secretOwnerQuestion;
+
+  /// No description provided for @secretOwnerNobody.
+  ///
+  /// In es, this message translates to:
+  /// **'De nadie en particular'**
+  String get secretOwnerNobody;
+
+  /// No description provided for @secretWhoKnows.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quién lo sabe?'**
+  String get secretWhoKnows;
+
+  /// No description provided for @secretHowFound.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo se enteró {name}? (opcional)'**
+  String secretHowFound(String name);
+
+  /// No description provided for @secretNoCharacters.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay personajes todavía.'**
+  String get secretNoCharacters;
+
+  /// No description provided for @diceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Dados'**
+  String get diceTitle;
+
+  /// No description provided for @diceClearHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Limpiar historial'**
+  String get diceClearHistory;
+
+  /// No description provided for @diceRollLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tirada'**
+  String get diceRollLabel;
+
+  /// No description provided for @diceRollHint.
+  ///
+  /// In es, this message translates to:
+  /// **'d20, 2d6+3, 4d8-1'**
+  String get diceRollHint;
+
+  /// No description provided for @diceRollButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Tirar'**
+  String get diceRollButton;
+
+  /// No description provided for @diceDisadvantage.
+  ///
+  /// In es, this message translates to:
+  /// **'Desventaja'**
+  String get diceDisadvantage;
+
+  /// No description provided for @diceNormal.
+  ///
+  /// In es, this message translates to:
+  /// **'Normal'**
+  String get diceNormal;
+
+  /// No description provided for @diceAdvantage.
+  ///
+  /// In es, this message translates to:
+  /// **'Ventaja'**
+  String get diceAdvantage;
+
+  /// No description provided for @diceNoRolls.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin tiradas todavía.'**
+  String get diceNoRolls;
+
+  /// No description provided for @diceAdvantageWord.
+  ///
+  /// In es, this message translates to:
+  /// **'ventaja'**
+  String get diceAdvantageWord;
+
+  /// No description provided for @diceDisadvantageWord.
+  ///
+  /// In es, this message translates to:
+  /// **'desventaja'**
+  String get diceDisadvantageWord;
+
+  /// No description provided for @searchTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar en el universo'**
+  String get searchTitle;
+
+  /// No description provided for @searchHintLong.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar personajes, lugares, objetos, capítulos...'**
+  String get searchHintLong;
+
+  /// No description provided for @searchPrompt.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe para buscar en todo el universo a la vez.'**
+  String get searchPrompt;
+
+  /// No description provided for @searchNoResults.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin resultados.'**
+  String get searchNoResults;
+
+  /// No description provided for @searchAllCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo ({count})'**
+  String searchAllCount(int count);
+
+  /// No description provided for @searchKindCharacter.
+  ///
+  /// In es, this message translates to:
+  /// **'Personaje'**
+  String get searchKindCharacter;
+
+  /// No description provided for @searchKindLocation.
+  ///
+  /// In es, this message translates to:
+  /// **'Lugar'**
+  String get searchKindLocation;
+
+  /// No description provided for @searchKindFaction.
+  ///
+  /// In es, this message translates to:
+  /// **'Facción'**
+  String get searchKindFaction;
+
+  /// No description provided for @searchKindEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'Evento'**
+  String get searchKindEvent;
+
+  /// No description provided for @searchKindItem.
+  ///
+  /// In es, this message translates to:
+  /// **'Objeto'**
+  String get searchKindItem;
+
+  /// No description provided for @searchKindMagic.
+  ///
+  /// In es, this message translates to:
+  /// **'Magia'**
+  String get searchKindMagic;
+
+  /// No description provided for @searchKindChapter.
+  ///
+  /// In es, this message translates to:
+  /// **'Capítulo'**
+  String get searchKindChapter;
+
+  /// No description provided for @searchKindNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota'**
+  String get searchKindNote;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar / respaldar'**
+  String get backupTitle;
+
+  /// No description provided for @backupLocalTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo se guarda solo en este dispositivo'**
+  String get backupLocalTitle;
+
+  /// No description provided for @backupLocalBody.
+  ///
+  /// In es, this message translates to:
+  /// **'La app no sube nada a ninguna nube por su cuenta. Si pierdes, formateas o cambias de teléfono sin un respaldo, pierdes el universo entero.'**
+  String get backupLocalBody;
+
+  /// No description provided for @backupTip.
+  ///
+  /// In es, this message translates to:
+  /// **'Truco: al tocar \"Exportar y compartir\" se abre el selector de compartir de tu teléfono — ahí puedes elegir Google Drive (u otra nube que tengas instalada) para subir el respaldo con dos toques, sin salir de la app.'**
+  String get backupTip;
+
+  /// No description provided for @backupIncludes.
+  ///
+  /// In es, this message translates to:
+  /// **'El respaldo incluye personajes, mundo, facciones, línea de tiempo, capítulos, notas, objetos, magia, etiquetas y todas las imágenes y dibujos.'**
+  String get backupIncludes;
+
+  /// No description provided for @backupExportShare.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar y compartir'**
+  String get backupExportShare;
+
+  /// No description provided for @backupExportSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo guardar en el dispositivo'**
+  String get backupExportSave;
+
+  /// No description provided for @backupLast.
+  ///
+  /// In es, this message translates to:
+  /// **'Último respaldo:\n{path}'**
+  String backupLast(String path);
+
+  /// No description provided for @backupSavedAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Respaldo guardado en:\n{path}'**
+  String backupSavedAt(String path);
+
+  /// No description provided for @backupShareText.
+  ///
+  /// In es, this message translates to:
+  /// **'Respaldo de mi universo'**
+  String get backupShareText;
+
+  /// No description provided for @backupExportFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo exportar: {error}'**
+  String backupExportFailed(String error);
+
+  /// No description provided for @backupImportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar'**
+  String get backupImportTitle;
+
+  /// No description provided for @backupImportBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaura un respaldo como un universo nuevo. No sobrescribe nada de lo que ya tienes.'**
+  String get backupImportBody;
+
+  /// No description provided for @backupImportButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar respaldo (.wbz)'**
+  String get backupImportButton;
+
+  /// No description provided for @backupImportPick.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un respaldo (.wbz)'**
+  String get backupImportPick;
+
+  /// No description provided for @backupImported.
+  ///
+  /// In es, this message translates to:
+  /// **'Universo importado. Búscalo en \"Mis universos\".'**
+  String get backupImported;
+
+  /// No description provided for @backupImportFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo importar: {error}'**
+  String backupImportFailed(String error);
+
+  /// No description provided for @backupNotOurs.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo no parece un respaldo de Astrolabe.'**
+  String get backupNotOurs;
+
+  /// No description provided for @backupTooNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Este respaldo fue creado por una versión más nueva de la app.'**
+  String get backupTooNew;
+
+  /// No description provided for @familyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Árbol genealógico'**
+  String get familyTitle;
+
+  /// No description provided for @familyExport.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar'**
+  String get familyExport;
+
+  /// No description provided for @familyShareImage.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir imagen'**
+  String get familyShareImage;
+
+  /// No description provided for @familySaveImage.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar imagen'**
+  String get familySaveImage;
+
+  /// No description provided for @familyShareText.
+  ///
+  /// In es, this message translates to:
+  /// **'Árbol genealógico'**
+  String get familyShareText;
+
+  /// No description provided for @familyNoCharacters.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay personajes.'**
+  String get familyNoCharacters;
+
+  /// No description provided for @familyNoLinks.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay vínculos familiares.'**
+  String get familyNoLinks;
+
+  /// No description provided for @familyHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre un personaje y agrega padres, hijos o pareja en la sección \"Familia\".'**
+  String get familyHint;
+
+  /// No description provided for @familyUnlinked.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin familia registrada'**
+  String get familyUnlinked;
+
+  /// No description provided for @familyNotReady.
+  ///
+  /// In es, this message translates to:
+  /// **'El árbol no está listo.'**
+  String get familyNotReady;
+
+  /// No description provided for @familyNoImage.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo generar la imagen.'**
+  String get familyNoImage;
+
+  /// No description provided for @familyExportFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo exportar: {error}'**
+  String familyExportFailed(String error);
+
+  /// No description provided for @familySavedAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardado en:\n{path}'**
+  String familySavedAt(String path);
+
+  /// No description provided for @familySection.
+  ///
+  /// In es, this message translates to:
+  /// **'Familia'**
+  String get familySection;
+
+  /// No description provided for @familyViewTree.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver árbol'**
+  String get familyViewTree;
+
+  /// No description provided for @familyParents.
+  ///
+  /// In es, this message translates to:
+  /// **'Padres / madres'**
+  String get familyParents;
+
+  /// No description provided for @familyChildren.
+  ///
+  /// In es, this message translates to:
+  /// **'Hijos / hijas'**
+  String get familyChildren;
+
+  /// No description provided for @familyPartner.
+  ///
+  /// In es, this message translates to:
+  /// **'Pareja'**
+  String get familyPartner;
+
+  /// No description provided for @familyNoneRecorded.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguno registrado.'**
+  String get familyNoneRecorded;
+
+  /// No description provided for @familyPickParent.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir padre/madre'**
+  String get familyPickParent;
+
+  /// No description provided for @familyPickChild.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir hijo/hija'**
+  String get familyPickChild;
+
+  /// No description provided for @familyPickPartner.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir pareja'**
+  String get familyPickPartner;
+
+  /// No description provided for @familyNoOthers.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay otros personajes todavía.'**
+  String get familyNoOthers;
+
+  /// No description provided for @familyPartnerKind.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué tipo de vínculo?'**
+  String get familyPartnerKind;
+
+  /// No description provided for @familyDerived.
+  ///
+  /// In es, this message translates to:
+  /// **'Parentescos deducidos'**
+  String get familyDerived;
+
+  /// No description provided for @familyDerivedHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Al registrar padres e hijos, aquí aparecerán solos los hermanos, abuelos, tíos y primos.'**
+  String get familyDerivedHint;
+
+  /// No description provided for @kinFullSiblings.
+  ///
+  /// In es, this message translates to:
+  /// **'Hermanos (mismos padres)'**
+  String get kinFullSiblings;
+
+  /// No description provided for @kinHalfSiblings.
+  ///
+  /// In es, this message translates to:
+  /// **'Medios hermanos'**
+  String get kinHalfSiblings;
+
+  /// No description provided for @kinGrandparents.
+  ///
+  /// In es, this message translates to:
+  /// **'Abuelos'**
+  String get kinGrandparents;
+
+  /// No description provided for @kinGrandchildren.
+  ///
+  /// In es, this message translates to:
+  /// **'Nietos'**
+  String get kinGrandchildren;
+
+  /// No description provided for @kinUncles.
+  ///
+  /// In es, this message translates to:
+  /// **'Tíos'**
+  String get kinUncles;
+
+  /// No description provided for @kinNiblings.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobrinos'**
+  String get kinNiblings;
+
+  /// No description provided for @kinCousins.
+  ///
+  /// In es, this message translates to:
+  /// **'Primos'**
+  String get kinCousins;
+
+  /// No description provided for @partnerMarriage.
+  ///
+  /// In es, this message translates to:
+  /// **'Matrimonio'**
+  String get partnerMarriage;
+
+  /// No description provided for @partnerCouple.
+  ///
+  /// In es, this message translates to:
+  /// **'Pareja'**
+  String get partnerCouple;
+
+  /// No description provided for @partnerEngaged.
+  ///
+  /// In es, this message translates to:
+  /// **'Prometidos'**
+  String get partnerEngaged;
+
+  /// No description provided for @partnerLovers.
+  ///
+  /// In es, this message translates to:
+  /// **'Amantes'**
+  String get partnerLovers;
+
+  /// No description provided for @partnerOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro'**
+  String get partnerOther;
+
+  /// No description provided for @mapTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa'**
+  String get mapTitle;
+
+  /// No description provided for @mapPlaceMarkers.
+  ///
+  /// In es, this message translates to:
+  /// **'Colocar marcas'**
+  String get mapPlaceMarkers;
+
+  /// No description provided for @mapDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Terminar'**
+  String get mapDone;
+
+  /// No description provided for @mapEditHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca el mapa para poner una marca. Arrastra una marca para moverla.'**
+  String get mapEditHint;
+
+  /// No description provided for @mapNoFile.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el archivo del mapa.'**
+  String get mapNoFile;
+
+  /// No description provided for @mapNoMapYet.
+  ///
+  /// In es, this message translates to:
+  /// **'\"{name}\" todavía no tiene mapa.'**
+  String mapNoMapYet(String name);
+
+  /// No description provided for @mapNoMapHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre la ficha del lugar y sube una imagen o dibújala; después podrás poner marcas encima.'**
+  String get mapNoMapHint;
+
+  /// No description provided for @mapOpenPlace.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir ficha del lugar'**
+  String get mapOpenPlace;
+
+  /// No description provided for @mapWhatIsHere.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué hay en este punto?'**
+  String get mapWhatIsHere;
+
+  /// No description provided for @mapRemoveMarker.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar marca'**
+  String get mapRemoveMarker;
+
+  /// No description provided for @mapRemoveMarkerBody.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quitar \"{label}\" del mapa?'**
+  String mapRemoveMarkerBody(String label);
+
+  /// No description provided for @mapThisMarker.
+  ///
+  /// In es, this message translates to:
+  /// **'esta marca'**
+  String get mapThisMarker;
+
+  /// No description provided for @mapSectionPlaces.
+  ///
+  /// In es, this message translates to:
+  /// **'Lugares'**
+  String get mapSectionPlaces;
+
+  /// No description provided for @mapSectionCharacters.
+  ///
+  /// In es, this message translates to:
+  /// **'Personajes'**
+  String get mapSectionCharacters;
+
+  /// No description provided for @mapSectionItems.
+  ///
+  /// In es, this message translates to:
+  /// **'Objetos'**
+  String get mapSectionItems;
+
+  /// No description provided for @relTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Relaciones'**
+  String get relTitle;
+
+  /// No description provided for @relEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin relaciones registradas todavía.'**
+  String get relEmpty;
+
+  /// No description provided for @relNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva relación'**
+  String get relNew;
+
+  /// No description provided for @relEdit.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar relación'**
+  String get relEdit;
+
+  /// No description provided for @relType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de relación'**
+  String get relType;
+
+  /// No description provided for @relTypeOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Especifica el tipo'**
+  String get relTypeOther;
+
+  /// No description provided for @relPeople.
+  ///
+  /// In es, this message translates to:
+  /// **'Personajes en esta relación'**
+  String get relPeople;
+
+  /// No description provided for @relPeopleHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes marcar varios: sirve para tríos de hermanos, alianzas o grupos.'**
+  String get relPeopleHint;
+
+  /// No description provided for @relNoOthers.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay otros personajes en este proyecto.'**
+  String get relNoOthers;
+
+  /// No description provided for @relDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción (opcional)'**
+  String get relDescription;
+
+  /// No description provided for @relNoOtherPeople.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin otros personajes'**
+  String get relNoOtherPeople;
+
+  /// No description provided for @relKindFamily.
+  ///
+  /// In es, this message translates to:
+  /// **'Familiar'**
+  String get relKindFamily;
+
+  /// No description provided for @relKindSiblings.
+  ///
+  /// In es, this message translates to:
+  /// **'Hermanos'**
+  String get relKindSiblings;
+
+  /// No description provided for @relKindFriendship.
+  ///
+  /// In es, this message translates to:
+  /// **'Amistad'**
+  String get relKindFriendship;
+
+  /// No description provided for @relKindRivalry.
+  ///
+  /// In es, this message translates to:
+  /// **'Rivalidad'**
+  String get relKindRivalry;
+
+  /// No description provided for @relKindEnmity.
+  ///
+  /// In es, this message translates to:
+  /// **'Enemistad'**
+  String get relKindEnmity;
+
+  /// No description provided for @relKindRomance.
+  ///
+  /// In es, this message translates to:
+  /// **'Romance'**
+  String get relKindRomance;
+
+  /// No description provided for @relKindMentor.
+  ///
+  /// In es, this message translates to:
+  /// **'Mentor'**
+  String get relKindMentor;
+
+  /// No description provided for @relKindApprentice.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprendiz'**
+  String get relKindApprentice;
+
+  /// No description provided for @relKindAllies.
+  ///
+  /// In es, this message translates to:
+  /// **'Aliados'**
+  String get relKindAllies;
+
+  /// No description provided for @relKindPact.
+  ///
+  /// In es, this message translates to:
+  /// **'Pacto'**
+  String get relKindPact;
+
+  /// No description provided for @relKindOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro'**
+  String get relKindOther;
+
+  /// No description provided for @tagsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Etiquetas'**
+  String get tagsTitle;
+
+  /// No description provided for @tagsNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin etiquetas.'**
+  String get tagsNone;
+
+  /// No description provided for @tagsNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva etiqueta'**
+  String get tagsNew;
+
+  /// No description provided for @tagsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'ej. protagonista, capital, reliquia'**
+  String get tagsHint;
+
+  /// No description provided for @customFieldsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Campos propios'**
+  String get customFieldsTitle;
+
+  /// No description provided for @customFieldsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrega los datos que tu mundo o tu sistema necesiten.'**
+  String get customFieldsEmpty;
+
+  /// No description provided for @customFieldNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo campo'**
+  String get customFieldNew;
+
+  /// No description provided for @customFieldName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del campo'**
+  String get customFieldName;
+
+  /// No description provided for @customFieldNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'ej. Fuerza, Idioma natal, Nivel de amenaza'**
+  String get customFieldNameHint;
+
+  /// No description provided for @customFieldValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Valor (opcional)'**
+  String get customFieldValue;
+
+  /// No description provided for @customFieldRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar campo'**
+  String get customFieldRemove;
+
+  /// No description provided for @imageUpload.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir imagen'**
+  String get imageUpload;
+
+  /// No description provided for @imageDraw.
+  ///
+  /// In es, this message translates to:
+  /// **'Dibujar'**
+  String get imageDraw;
+
+  /// No description provided for @drawingTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Dibujar'**
+  String get drawingTitle;
+
+  /// No description provided for @drawingBackground.
+  ///
+  /// In es, this message translates to:
+  /// **'Imagen de fondo'**
+  String get drawingBackground;
+
+  /// No description provided for @drawingRemoveBackground.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar fondo'**
+  String get drawingRemoveBackground;
+
+  /// No description provided for @drawingClear.
+  ///
+  /// In es, this message translates to:
+  /// **'Borrar todo'**
+  String get drawingClear;
+
+  /// No description provided for @drawingBackgroundLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Fondo'**
+  String get drawingBackgroundLabel;
+
+  /// No description provided for @drawingCustomColor.
+  ///
+  /// In es, this message translates to:
+  /// **'Color personalizado'**
+  String get drawingCustomColor;
+
+  /// No description provided for @drawingUseColor.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar color'**
+  String get drawingUseColor;
+
+  /// No description provided for @sheetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ficha de personaje'**
+  String get sheetTitle;
+
+  /// No description provided for @sheetProficiency.
+  ///
+  /// In es, this message translates to:
+  /// **'Competencia +{bonus}'**
+  String sheetProficiency(int bonus);
+
+  /// No description provided for @sheetClass.
+  ///
+  /// In es, this message translates to:
+  /// **'Clase'**
+  String get sheetClass;
+
+  /// No description provided for @sheetLevel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nivel'**
+  String get sheetLevel;
+
+  /// No description provided for @sheetArmorClass.
+  ///
+  /// In es, this message translates to:
+  /// **'CA'**
+  String get sheetArmorClass;
+
+  /// No description provided for @sheetHp.
+  ///
+  /// In es, this message translates to:
+  /// **'PG'**
+  String get sheetHp;
+
+  /// No description provided for @sheetMaxHp.
+  ///
+  /// In es, this message translates to:
+  /// **'PG máx'**
+  String get sheetMaxHp;
+
+  /// No description provided for @sheetSpeed.
+  ///
+  /// In es, this message translates to:
+  /// **'Vel.'**
+  String get sheetSpeed;
+
+  /// No description provided for @sheetAbilities.
+  ///
+  /// In es, this message translates to:
+  /// **'Características'**
+  String get sheetAbilities;
+
+  /// No description provided for @sheetAbilitiesHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca la casilla si tiene competencia en esa salvación.'**
+  String get sheetAbilitiesHint;
+
+  /// No description provided for @sheetModifier.
+  ///
+  /// In es, this message translates to:
+  /// **'Mod'**
+  String get sheetModifier;
+
+  /// No description provided for @sheetSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Salv.'**
+  String get sheetSave;
+
+  /// No description provided for @sheetAlignment.
+  ///
+  /// In es, this message translates to:
+  /// **'Alineamiento'**
+  String get sheetAlignment;
+
+  /// No description provided for @sheetBackground.
+  ///
+  /// In es, this message translates to:
+  /// **'Trasfondo'**
+  String get sheetBackground;
+
+  /// No description provided for @sheetFeatures.
+  ///
+  /// In es, this message translates to:
+  /// **'Rasgos y aptitudes'**
+  String get sheetFeatures;
+
+  /// No description provided for @sheetEquipment.
+  ///
+  /// In es, this message translates to:
+  /// **'Equipo'**
+  String get sheetEquipment;
+
+  /// No description provided for @abilityStrength.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuerza'**
+  String get abilityStrength;
+
+  /// No description provided for @abilityDexterity.
+  ///
+  /// In es, this message translates to:
+  /// **'Destreza'**
+  String get abilityDexterity;
+
+  /// No description provided for @abilityConstitution.
+  ///
+  /// In es, this message translates to:
+  /// **'Constitución'**
+  String get abilityConstitution;
+
+  /// No description provided for @abilityIntelligence.
+  ///
+  /// In es, this message translates to:
+  /// **'Inteligencia'**
+  String get abilityIntelligence;
+
+  /// No description provided for @abilityWisdom.
+  ///
+  /// In es, this message translates to:
+  /// **'Sabiduría'**
+  String get abilityWisdom;
+
+  /// No description provided for @abilityCharisma.
+  ///
+  /// In es, this message translates to:
+  /// **'Carisma'**
+  String get abilityCharisma;
+
+  /// No description provided for @securityTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguridad'**
+  String get securityTitle;
+
+  /// No description provided for @lockAskOnOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedir PIN al abrir'**
+  String get lockAskOnOpen;
+
+  /// No description provided for @lockProtected.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus universos están protegidos'**
+  String get lockProtected;
+
+  /// No description provided for @lockUnprotected.
+  ///
+  /// In es, this message translates to:
+  /// **'Cualquiera que tome el dispositivo puede leer tus universos.'**
+  String get lockUnprotected;
+
+  /// No description provided for @lockBackgroundNote.
+  ///
+  /// In es, this message translates to:
+  /// **'La app se bloquea al salir a segundo plano.'**
+  String get lockBackgroundNote;
+
+  /// No description provided for @lockUseBiometrics.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar huella o rostro'**
+  String get lockUseBiometrics;
+
+  /// No description provided for @lockBiometricsNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Atajo al PIN, que sigue funcionando siempre.'**
+  String get lockBiometricsNote;
+
+  /// No description provided for @lockNoBiometrics.
+  ///
+  /// In es, this message translates to:
+  /// **'Este dispositivo no tiene biometría configurada.'**
+  String get lockNoBiometrics;
+
+  /// No description provided for @lockChangePin.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar PIN'**
+  String get lockChangePin;
+
+  /// No description provided for @lockNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Bloquear ahora'**
+  String get lockNow;
+
+  /// No description provided for @lockChoosePin.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un PIN'**
+  String get lockChoosePin;
+
+  /// No description provided for @lockConfirmCurrent.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma tu PIN actual'**
+  String get lockConfirmCurrent;
+
+  /// No description provided for @lockNewPin.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo PIN'**
+  String get lockNewPin;
+
+  /// No description provided for @lockCurrentPin.
+  ///
+  /// In es, this message translates to:
+  /// **'PIN actual'**
+  String get lockCurrentPin;
+
+  /// No description provided for @lockWrongPin.
+  ///
+  /// In es, this message translates to:
+  /// **'PIN incorrecto.'**
+  String get lockWrongPin;
+
+  /// No description provided for @lockMinDigits.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa al menos 4 dígitos.'**
+  String get lockMinDigits;
+
+  /// No description provided for @lockUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquear'**
+  String get lockUnlock;
+
+  /// No description provided for @lockUnlockBiometric.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquear con huella o rostro'**
+  String get lockUnlockBiometric;
+
+  /// No description provided for @lockOk.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar'**
+  String get lockOk;
+
+  /// No description provided for @lockExplainer.
+  ///
+  /// In es, this message translates to:
+  /// **'El PIN protege el acceso a la app en este dispositivo. No cifra el archivo de datos: alguien con acceso al sistema de archivos del teléfono aún podría leerlo. Si olvidas el PIN tendrás que reinstalar la app, así que guarda un respaldo.'**
+  String get lockExplainer;
+
+  /// No description provided for @diceErrEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una tirada, por ejemplo 2d6+3.'**
+  String get diceErrEmpty;
+
+  /// No description provided for @diceErrUnparsable.
+  ///
+  /// In es, this message translates to:
+  /// **'No entendí \"{expression}\".'**
+  String diceErrUnparsable(String expression);
+
+  /// No description provided for @diceErrTooManyDice.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa entre 1 y {max} dados.'**
+  String diceErrTooManyDice(int max);
+
+  /// No description provided for @diceErrSideRange.
+  ///
+  /// In es, this message translates to:
+  /// **'Los dados deben tener entre 2 y {max} caras.'**
+  String diceErrSideRange(int max);
+
+  /// No description provided for @diceErrUnknownTerm.
+  ///
+  /// In es, this message translates to:
+  /// **'No entendí \"{term}\" en la tirada.'**
+  String diceErrUnknownTerm(String term);
+
+  /// No description provided for @backupErrNotABackup.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo no parece un respaldo de Astrolabe.'**
+  String get backupErrNotABackup;
+
+  /// No description provided for @backupErrNewerFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'Este respaldo fue creado por una versión más nueva de la app.'**
+  String get backupErrNewerFormat;
+
+  /// No description provided for @lockBiometricReason.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquea tus universos'**
+  String get lockBiometricReason;
+
+  /// No description provided for @themeClassicName.
+  ///
+  /// In es, this message translates to:
+  /// **'Clásico'**
+  String get themeClassicName;
+
+  /// No description provided for @themeClassicDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Limpio y neutro. Deja que tu contenido hable.'**
+  String get themeClassicDesc;
+
+  /// No description provided for @themeMedievalName.
+  ///
+  /// In es, this message translates to:
+  /// **'Medieval'**
+  String get themeMedievalName;
+
+  /// No description provided for @themeMedievalDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Pergamino, vino y oro. Para reinos, espadas y linajes.'**
+  String get themeMedievalDesc;
+
+  /// No description provided for @themeSteampunkName.
+  ///
+  /// In es, this message translates to:
+  /// **'Steampunk'**
+  String get themeSteampunkName;
+
+  /// No description provided for @themeSteampunkDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Latón, cobre y cardenillo. Engranajes y vapor.'**
+  String get themeSteampunkDesc;
+
+  /// No description provided for @themeCyberpunkName.
+  ///
+  /// In es, this message translates to:
+  /// **'Cyberpunk'**
+  String get themeCyberpunkName;
+
+  /// No description provided for @themeCyberpunkDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Neón sobre negro. Circuitos, datos y lluvia ácida.'**
+  String get themeCyberpunkDesc;
+
+  /// No description provided for @themeSolarpunkName.
+  ///
+  /// In es, this message translates to:
+  /// **'Solarpunk'**
+  String get themeSolarpunkName;
+
+  /// No description provided for @themeSolarpunkDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Verde, sol y aire limpio. Futuros que dan ganas de vivir.'**
+  String get themeSolarpunkDesc;
+
+  /// No description provided for @themeCosmicName.
+  ///
+  /// In es, this message translates to:
+  /// **'Cósmico'**
+  String get themeCosmicName;
+
+  /// No description provided for @themeCosmicDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Nebulosas y luz de estrellas. Naves, imperios y vacío.'**
+  String get themeCosmicDesc;
+
+  /// No description provided for @themeGothicName.
+  ///
+  /// In es, this message translates to:
+  /// **'Gótico'**
+  String get themeGothicName;
+
+  /// No description provided for @themeGothicDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Carmesí y ceniza. Vampiros, ruinas y secretos.'**
+  String get themeGothicDesc;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

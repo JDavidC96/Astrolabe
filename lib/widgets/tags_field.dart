@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/core_providers.dart';
@@ -54,7 +56,7 @@ class _TagsFieldState extends ConsumerState<TagsField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Etiquetas', style: Theme.of(context).textTheme.titleMedium),
+        Text(L.of(context).tagsTitle, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         attachedAsync.when(
           data: (attached) => Wrap(
@@ -70,7 +72,7 @@ class _TagsFieldState extends ConsumerState<TagsField> {
                         entityId: widget.entityId,
                       ),
                 ),
-              if (attached.isEmpty) const Text('Sin etiquetas.'),
+              if (attached.isEmpty) Text(L.of(context).tagsNone),
             ],
           ),
           loading: () => const LinearProgressIndicator(),
@@ -82,9 +84,9 @@ class _TagsFieldState extends ConsumerState<TagsField> {
             Expanded(
               child: TextField(
                 controller: _controller,
-                decoration: const InputDecoration(
-                  labelText: 'Nueva etiqueta',
-                  hintText: 'ej. protagonista, capital, reliquia',
+                decoration: InputDecoration(
+                  labelText: L.of(context).tagsNew,
+                  hintText: L.of(context).tagsHint,
                   isDense: true,
                 ),
                 onSubmitted: _addTag,

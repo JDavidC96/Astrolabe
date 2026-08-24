@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,7 +39,9 @@ class _LockScreenState extends ConsumerState<LockScreen> {
 
   Future<void> _tryBiometrics() async {
     setState(() => _busy = true);
-    await ref.read(lockControllerProvider.notifier).unlockWithBiometrics();
+    await ref.read(lockControllerProvider.notifier).unlockWithBiometrics(
+          reason: L.of(context).lockBiometricReason,
+        );
     if (mounted) setState(() => _busy = false);
   }
 
@@ -49,13 +53,14 @@ class _LockScreenState extends ConsumerState<LockScreen> {
     if (!mounted) return;
     setState(() {
       _busy = false;
-      _error = ok ? null : 'PIN incorrecto.';
+      _error = ok ? null : L.of(context).lockWrongPin;
       if (!ok) _controller.clear();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final lock = ref.watch(lockControllerProvider);
 
     return Scaffold(
@@ -74,7 +79,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Tus universos están protegidos',
+                  l.lockProtected,
                   style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
@@ -97,9 +102,9 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: _busy ? null : _submit,
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      child: Text('Desbloquear'),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(l.lockUnlock),
                     ),
                   ),
                 ),
@@ -108,7 +113,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                   OutlinedButton.icon(
                     onPressed: _busy ? null : _tryBiometrics,
                     icon: const Icon(Icons.fingerprint),
-                    label: const Text('Usar huella o rostro'),
+                    label: Text(l.lockUseBiometrics),
                   ),
                 ],
                 if (_busy) ...[

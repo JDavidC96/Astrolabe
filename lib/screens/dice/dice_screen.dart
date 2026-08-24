@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/core_providers.dart';
@@ -44,13 +46,29 @@ class _DiceScreenState extends ConsumerState<DiceScreen> {
             total: result.total,
             detail: _advantage == 0
                 ? result.detail
-                : '${result.detail} (${_advantage > 0 ? 'ventaja' : 'desventaja'})',
+                : '${result.detail} (${_advantage > 0 ? L.of(context).diceAdvantageWord : L.of(context).diceDisadvantageWord})',
           );
     } on DiceFormatException catch (e) {
       setState(() {
-        _error = e.message;
+        _error = _errorText(L.of(context), e);
         _last = null;
       });
+    }
+  }
+
+  /// Turns a roller error into a sentence in the reader's language.
+  String _errorText(L l, DiceFormatException e) {
+    switch (e.error) {
+      case DiceError.empty:
+        return l.diceErrEmpty;
+      case DiceError.unparsable:
+        return l.diceErrUnparsable(e.text ?? '');
+      case DiceError.tooManyDice:
+        return l.diceErrTooManyDice(e.limit ?? 0);
+      case DiceError.sideRange:
+        return l.diceErrSideRange(e.limit ?? 0);
+      case DiceError.unknownTerm:
+        return l.diceErrUnknownTerm(e.text ?? '');
     }
   }
 
@@ -58,14 +76,15 @@ class _DiceScreenState extends ConsumerState<DiceScreen> {
   Widget build(BuildContext context) {
     final historyAsync = ref.watch(diceRollsStreamProvider(widget.projectId));
     final theme = Theme.of(context);
+    final l = L.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dados'),
+        title: Text(l.diceTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_sweep_outlined),
-            tooltip: 'Limpiar historial',
+            tooltip: l.diceClearHistory,
             onPressed: () =>
                 ref.read(diceDaoProvider).clearHistory(widget.projectId),
           ),
@@ -82,10 +101,10 @@ class _DiceScreenState extends ConsumerState<DiceScreen> {
                     Expanded(
                       child: TextField(
                         controller: _controller,
-                        decoration: const InputDecoration(
-                          labelText: 'Tirada',
-                          hintText: 'd20, 2d6+3, 4d8-1',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l.diceRollLabel,
+                          hintText: l.diceRollHint,
+                          border: const OutlineInputBorder(),
                         ),
                         onSubmitted: (_) => _roll(),
                       ),
@@ -93,19 +112,19 @@ class _DiceScreenState extends ConsumerState<DiceScreen> {
                     const SizedBox(width: 8),
                     FilledButton(
                       onPressed: () => _roll(),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Text('Tirar'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Text(l.diceRollButton),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
                 SegmentedButton<int>(
-                  segments: const [
-                    ButtonSegment(value: -1, label: Text('Desventaja')),
-                    ButtonSegment(value: 0, label: Text('Normal')),
-                    ButtonSegment(value: 1, label: Text('Ventaja')),
+                  segments: [
+                    ButtonSegment(value: -1, label: Text(l.diceDisadvantage)),
+                    ButtonSegment(value: 0, label: Text(l.diceNormal)),
+                    ButtonSegment(value: 1, label: Text(l.diceAdvantage)),
                   ],
                   selected: {_advantage},
                   onSelectionChanged: (s) => setState(() => _advantage = s.first),
@@ -152,7 +171,7 @@ class _DiceScreenState extends ConsumerState<DiceScreen> {
             child: historyAsync.when(
               data: (rolls) {
                 if (rolls.isEmpty) {
-                  return const Center(child: Text('Sin tiradas todavía.'));
+                  return Center(child: Text(l.diceNoRolls));
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

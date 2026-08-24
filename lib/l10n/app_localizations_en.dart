@@ -840,4 +840,715 @@ class LEn extends L {
 
   @override
   String get noteContent => 'Content';
+
+  @override
+  String get secretsTitle => 'Secrets';
+
+  @override
+  String get secretsEmpty =>
+      'Record a secret and mark who knows it, how they found out, and since when.';
+
+  @override
+  String get secretNobodyKnows => 'Nobody knows yet';
+
+  @override
+  String secretKnownBy(String names) {
+    return 'Known by: $names';
+  }
+
+  @override
+  String secretOwnedBy(String name) {
+    return 'Secret of: $name';
+  }
+
+  @override
+  String get secretNew => 'New secret';
+
+  @override
+  String get secretEdit => 'Edit secret';
+
+  @override
+  String get secretLabel => 'Secret';
+
+  @override
+  String get secretHint => 'e.g. Aria is the rightful heir';
+
+  @override
+  String get secretDetails => 'Details (optional)';
+
+  @override
+  String get secretOwnerQuestion => 'Whose secret is it?';
+
+  @override
+  String get secretOwnerNobody => 'Nobody in particular';
+
+  @override
+  String get secretWhoKnows => 'Who knows?';
+
+  @override
+  String secretHowFound(String name) {
+    return 'How did $name find out? (optional)';
+  }
+
+  @override
+  String get secretNoCharacters => 'No characters yet.';
+
+  @override
+  String get diceTitle => 'Dice';
+
+  @override
+  String get diceClearHistory => 'Clear history';
+
+  @override
+  String get diceRollLabel => 'Roll';
+
+  @override
+  String get diceRollHint => 'd20, 2d6+3, 4d8-1';
+
+  @override
+  String get diceRollButton => 'Roll';
+
+  @override
+  String get diceDisadvantage => 'Disadvantage';
+
+  @override
+  String get diceNormal => 'Normal';
+
+  @override
+  String get diceAdvantage => 'Advantage';
+
+  @override
+  String get diceNoRolls => 'No rolls yet.';
+
+  @override
+  String get diceAdvantageWord => 'advantage';
+
+  @override
+  String get diceDisadvantageWord => 'disadvantage';
+
+  @override
+  String get searchTitle => 'Search the universe';
+
+  @override
+  String get searchHintLong => 'Search characters, places, items, chapters...';
+
+  @override
+  String get searchPrompt => 'Type to search the whole universe at once.';
+
+  @override
+  String get searchNoResults => 'No results.';
+
+  @override
+  String searchAllCount(int count) {
+    return 'All ($count)';
+  }
+
+  @override
+  String get searchKindCharacter => 'Character';
+
+  @override
+  String get searchKindLocation => 'Place';
+
+  @override
+  String get searchKindFaction => 'Faction';
+
+  @override
+  String get searchKindEvent => 'Event';
+
+  @override
+  String get searchKindItem => 'Item';
+
+  @override
+  String get searchKindMagic => 'Magic';
+
+  @override
+  String get searchKindChapter => 'Chapter';
+
+  @override
+  String get searchKindNote => 'Note';
+
+  @override
+  String get backupTitle => 'Export / back up';
+
+  @override
+  String get backupLocalTitle => 'Everything is stored on this device only';
+
+  @override
+  String get backupLocalBody =>
+      'The app never uploads anything on its own. If you lose, wipe or change phone without a backup, the whole universe is gone.';
+
+  @override
+  String get backupTip =>
+      'Tip: \"Export and share\" opens your phone\'s share sheet, where you can pick Google Drive (or any cloud app you have) to upload the backup in two taps without leaving the app.';
+
+  @override
+  String get backupIncludes =>
+      'The backup includes characters, world, factions, timeline, chapters, notes, items, magic, tags and every image and drawing.';
+
+  @override
+  String get backupExportShare => 'Export and share';
+
+  @override
+  String get backupExportSave => 'Just save on the device';
+
+  @override
+  String backupLast(String path) {
+    return 'Last backup:\n$path';
+  }
+
+  @override
+  String backupSavedAt(String path) {
+    return 'Backup saved to:\n$path';
+  }
+
+  @override
+  String get backupShareText => 'Backup of my universe';
+
+  @override
+  String backupExportFailed(String error) {
+    return 'Couldn\'t export: $error';
+  }
+
+  @override
+  String get backupImportTitle => 'Import';
+
+  @override
+  String get backupImportBody =>
+      'Restores a backup as a new universe. Nothing you already have is overwritten.';
+
+  @override
+  String get backupImportButton => 'Import backup (.wbz)';
+
+  @override
+  String get backupImportPick => 'Choose a backup (.wbz)';
+
+  @override
+  String get backupImported =>
+      'Universe imported. Find it under \"My universes\".';
+
+  @override
+  String backupImportFailed(String error) {
+    return 'Couldn\'t import: $error';
+  }
+
+  @override
+  String get backupNotOurs =>
+      'That file doesn\'t look like an Astrolabe backup.';
+
+  @override
+  String get backupTooNew =>
+      'This backup was made by a newer version of the app.';
+
+  @override
+  String get familyTitle => 'Family tree';
+
+  @override
+  String get familyExport => 'Export';
+
+  @override
+  String get familyShareImage => 'Share image';
+
+  @override
+  String get familySaveImage => 'Save image';
+
+  @override
+  String get familyShareText => 'Family tree';
+
+  @override
+  String get familyNoCharacters => 'No characters yet.';
+
+  @override
+  String get familyNoLinks => 'No family links yet.';
+
+  @override
+  String get familyHint =>
+      'Open a character and add parents, children or a partner under \"Family\".';
+
+  @override
+  String get familyUnlinked => 'No family recorded';
+
+  @override
+  String get familyNotReady => 'The tree is not ready yet.';
+
+  @override
+  String get familyNoImage => 'Couldn\'t generate the image.';
+
+  @override
+  String familyExportFailed(String error) {
+    return 'Couldn\'t export: $error';
+  }
+
+  @override
+  String familySavedAt(String path) {
+    return 'Saved to:\n$path';
+  }
+
+  @override
+  String get familySection => 'Family';
+
+  @override
+  String get familyViewTree => 'View tree';
+
+  @override
+  String get familyParents => 'Parents';
+
+  @override
+  String get familyChildren => 'Children';
+
+  @override
+  String get familyPartner => 'Partner';
+
+  @override
+  String get familyNoneRecorded => 'None recorded.';
+
+  @override
+  String get familyPickParent => 'Choose a parent';
+
+  @override
+  String get familyPickChild => 'Choose a child';
+
+  @override
+  String get familyPickPartner => 'Choose a partner';
+
+  @override
+  String get familyNoOthers => 'No other characters yet.';
+
+  @override
+  String get familyPartnerKind => 'What kind of bond?';
+
+  @override
+  String get familyDerived => 'Derived relationships';
+
+  @override
+  String get familyDerivedHint =>
+      'Once you record parents and children, siblings, grandparents, uncles and cousins show up here on their own.';
+
+  @override
+  String get kinFullSiblings => 'Siblings (same parents)';
+
+  @override
+  String get kinHalfSiblings => 'Half-siblings';
+
+  @override
+  String get kinGrandparents => 'Grandparents';
+
+  @override
+  String get kinGrandchildren => 'Grandchildren';
+
+  @override
+  String get kinUncles => 'Uncles and aunts';
+
+  @override
+  String get kinNiblings => 'Nieces and nephews';
+
+  @override
+  String get kinCousins => 'Cousins';
+
+  @override
+  String get partnerMarriage => 'Marriage';
+
+  @override
+  String get partnerCouple => 'Partners';
+
+  @override
+  String get partnerEngaged => 'Engaged';
+
+  @override
+  String get partnerLovers => 'Lovers';
+
+  @override
+  String get partnerOther => 'Other';
+
+  @override
+  String get mapTitle => 'Map';
+
+  @override
+  String get mapPlaceMarkers => 'Place markers';
+
+  @override
+  String get mapDone => 'Done';
+
+  @override
+  String get mapEditHint =>
+      'Tap the map to drop a marker. Drag a marker to move it.';
+
+  @override
+  String get mapNoFile => 'The map file couldn\'t be found.';
+
+  @override
+  String mapNoMapYet(String name) {
+    return '\"$name\" has no map yet.';
+  }
+
+  @override
+  String get mapNoMapHint =>
+      'Open the place and upload or draw an image; then you can put markers on it.';
+
+  @override
+  String get mapOpenPlace => 'Open the place';
+
+  @override
+  String get mapWhatIsHere => 'What\'s at this spot?';
+
+  @override
+  String get mapRemoveMarker => 'Remove marker';
+
+  @override
+  String mapRemoveMarkerBody(String label) {
+    return 'Remove \"$label\" from the map?';
+  }
+
+  @override
+  String get mapThisMarker => 'this marker';
+
+  @override
+  String get mapSectionPlaces => 'Places';
+
+  @override
+  String get mapSectionCharacters => 'Characters';
+
+  @override
+  String get mapSectionItems => 'Items';
+
+  @override
+  String get relTitle => 'Relationships';
+
+  @override
+  String get relEmpty => 'No relationships recorded yet.';
+
+  @override
+  String get relNew => 'New relationship';
+
+  @override
+  String get relEdit => 'Edit relationship';
+
+  @override
+  String get relType => 'Kind of relationship';
+
+  @override
+  String get relTypeOther => 'Specify the kind';
+
+  @override
+  String get relPeople => 'Characters in this relationship';
+
+  @override
+  String get relPeopleHint =>
+      'You can tick several: useful for sibling trios, alliances or groups.';
+
+  @override
+  String get relNoOthers => 'No other characters in this project.';
+
+  @override
+  String get relDescription => 'Description (optional)';
+
+  @override
+  String get relNoOtherPeople => 'No other characters';
+
+  @override
+  String get relKindFamily => 'Family';
+
+  @override
+  String get relKindSiblings => 'Siblings';
+
+  @override
+  String get relKindFriendship => 'Friendship';
+
+  @override
+  String get relKindRivalry => 'Rivalry';
+
+  @override
+  String get relKindEnmity => 'Enmity';
+
+  @override
+  String get relKindRomance => 'Romance';
+
+  @override
+  String get relKindMentor => 'Mentor';
+
+  @override
+  String get relKindApprentice => 'Apprentice';
+
+  @override
+  String get relKindAllies => 'Allies';
+
+  @override
+  String get relKindPact => 'Pact';
+
+  @override
+  String get relKindOther => 'Other';
+
+  @override
+  String get tagsTitle => 'Tags';
+
+  @override
+  String get tagsNone => 'No tags.';
+
+  @override
+  String get tagsNew => 'New tag';
+
+  @override
+  String get tagsHint => 'e.g. protagonist, capital, relic';
+
+  @override
+  String get customFieldsTitle => 'Custom fields';
+
+  @override
+  String get customFieldsEmpty => 'Add whatever your world or system needs.';
+
+  @override
+  String get customFieldNew => 'New field';
+
+  @override
+  String get customFieldName => 'Field name';
+
+  @override
+  String get customFieldNameHint =>
+      'e.g. Strength, Native language, Threat level';
+
+  @override
+  String get customFieldValue => 'Value (optional)';
+
+  @override
+  String get customFieldRemove => 'Remove field';
+
+  @override
+  String get imageUpload => 'Upload image';
+
+  @override
+  String get imageDraw => 'Draw';
+
+  @override
+  String get drawingTitle => 'Draw';
+
+  @override
+  String get drawingBackground => 'Background image';
+
+  @override
+  String get drawingRemoveBackground => 'Remove background';
+
+  @override
+  String get drawingClear => 'Clear all';
+
+  @override
+  String get drawingBackgroundLabel => 'Background';
+
+  @override
+  String get drawingCustomColor => 'Custom colour';
+
+  @override
+  String get drawingUseColor => 'Use colour';
+
+  @override
+  String get sheetTitle => 'Character sheet';
+
+  @override
+  String sheetProficiency(int bonus) {
+    return 'Proficiency +$bonus';
+  }
+
+  @override
+  String get sheetClass => 'Class';
+
+  @override
+  String get sheetLevel => 'Level';
+
+  @override
+  String get sheetArmorClass => 'AC';
+
+  @override
+  String get sheetHp => 'HP';
+
+  @override
+  String get sheetMaxHp => 'Max HP';
+
+  @override
+  String get sheetSpeed => 'Speed';
+
+  @override
+  String get sheetAbilities => 'Ability scores';
+
+  @override
+  String get sheetAbilitiesHint =>
+      'Tick the box if they are proficient in that saving throw.';
+
+  @override
+  String get sheetModifier => 'Mod';
+
+  @override
+  String get sheetSave => 'Save';
+
+  @override
+  String get sheetAlignment => 'Alignment';
+
+  @override
+  String get sheetBackground => 'Background';
+
+  @override
+  String get sheetFeatures => 'Features and traits';
+
+  @override
+  String get sheetEquipment => 'Equipment';
+
+  @override
+  String get abilityStrength => 'Strength';
+
+  @override
+  String get abilityDexterity => 'Dexterity';
+
+  @override
+  String get abilityConstitution => 'Constitution';
+
+  @override
+  String get abilityIntelligence => 'Intelligence';
+
+  @override
+  String get abilityWisdom => 'Wisdom';
+
+  @override
+  String get abilityCharisma => 'Charisma';
+
+  @override
+  String get securityTitle => 'Security';
+
+  @override
+  String get lockAskOnOpen => 'Ask for a PIN on open';
+
+  @override
+  String get lockProtected => 'Your universes are protected';
+
+  @override
+  String get lockUnprotected =>
+      'Anyone who picks up this device can read your universes.';
+
+  @override
+  String get lockBackgroundNote =>
+      'The app locks whenever it goes to the background.';
+
+  @override
+  String get lockUseBiometrics => 'Use fingerprint or face';
+
+  @override
+  String get lockBiometricsNote =>
+      'A shortcut to the PIN, which always keeps working.';
+
+  @override
+  String get lockNoBiometrics => 'This device has no biometrics set up.';
+
+  @override
+  String get lockChangePin => 'Change PIN';
+
+  @override
+  String get lockNow => 'Lock now';
+
+  @override
+  String get lockChoosePin => 'Choose a PIN';
+
+  @override
+  String get lockConfirmCurrent => 'Confirm your current PIN';
+
+  @override
+  String get lockNewPin => 'New PIN';
+
+  @override
+  String get lockCurrentPin => 'Current PIN';
+
+  @override
+  String get lockWrongPin => 'Wrong PIN.';
+
+  @override
+  String get lockMinDigits => 'Use at least 4 digits.';
+
+  @override
+  String get lockUnlock => 'Unlock';
+
+  @override
+  String get lockUnlockBiometric => 'Unlock with fingerprint or face';
+
+  @override
+  String get lockOk => 'OK';
+
+  @override
+  String get lockExplainer =>
+      'The PIN guards access to the app on this device. It does not encrypt the data file: someone with access to the phone\'s file system could still read it. If you forget the PIN you will have to reinstall the app, so keep a backup.';
+
+  @override
+  String get diceErrEmpty => 'Type a roll, for example 2d6+3.';
+
+  @override
+  String diceErrUnparsable(String expression) {
+    return 'I could not read \"$expression\".';
+  }
+
+  @override
+  String diceErrTooManyDice(int max) {
+    return 'Use between 1 and $max dice.';
+  }
+
+  @override
+  String diceErrSideRange(int max) {
+    return 'Dice must have between 2 and $max sides.';
+  }
+
+  @override
+  String diceErrUnknownTerm(String term) {
+    return 'I could not read \"$term\" in the roll.';
+  }
+
+  @override
+  String get backupErrNotABackup =>
+      'That file does not look like an Astrolabe backup.';
+
+  @override
+  String get backupErrNewerFormat =>
+      'This backup was created by a newer version of the app.';
+
+  @override
+  String get lockBiometricReason => 'Unlock your universes';
+
+  @override
+  String get themeClassicName => 'Classic';
+
+  @override
+  String get themeClassicDesc => 'Clean and neutral. Lets your content speak.';
+
+  @override
+  String get themeMedievalName => 'Medieval';
+
+  @override
+  String get themeMedievalDesc =>
+      'Parchment, wine and gold. For kingdoms, swords and bloodlines.';
+
+  @override
+  String get themeSteampunkName => 'Steampunk';
+
+  @override
+  String get themeSteampunkDesc =>
+      'Brass, copper and verdigris. Gears and steam.';
+
+  @override
+  String get themeCyberpunkName => 'Cyberpunk';
+
+  @override
+  String get themeCyberpunkDesc =>
+      'Neon over black. Circuits, data and acid rain.';
+
+  @override
+  String get themeSolarpunkName => 'Solarpunk';
+
+  @override
+  String get themeSolarpunkDesc =>
+      'Green, sun and clean air. Futures worth living in.';
+
+  @override
+  String get themeCosmicName => 'Cosmic';
+
+  @override
+  String get themeCosmicDesc =>
+      'Nebulae and starlight. Ships, empires and the void.';
+
+  @override
+  String get themeGothicName => 'Gothic';
+
+  @override
+  String get themeGothicDesc => 'Crimson and ash. Vampires, ruins and secrets.';
 }

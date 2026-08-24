@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,6 +9,7 @@ import '../providers/core_providers.dart';
 import '../providers/data_providers.dart';
 import 'searchable_pickers.dart';
 
+/// Partnership kinds, stored by their Spanish key and shown translated.
 const _partnerTypes = <String>[
   'Matrimonio',
   'Pareja',
@@ -14,6 +17,22 @@ const _partnerTypes = <String>[
   'Amantes',
   'Otro',
 ];
+
+String _partnerLabel(L l, String key) {
+  switch (key) {
+    case 'Matrimonio':
+      return l.partnerMarriage;
+    case 'Pareja':
+      return l.partnerCouple;
+    case 'Prometidos':
+      return l.partnerEngaged;
+    case 'Amantes':
+      return l.partnerLovers;
+    case 'Otro':
+      return l.partnerOther;
+  }
+  return key;
+}
 
 /// Direct family for one character, plus every relationship that follows
 /// from it.
@@ -33,6 +52,7 @@ class FamilySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final parentsAsync = ref.watch(parentsStreamProvider(characterId));
     final childrenAsync = ref.watch(childrenStreamProvider(characterId));
     final partnersAsync = ref.watch(partnersStreamProvider(characterId));
@@ -43,18 +63,18 @@ class FamilySection extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Familia', style: Theme.of(context).textTheme.titleMedium),
+            Text(l.familySection, style: Theme.of(context).textTheme.titleMedium),
             TextButton.icon(
               onPressed: () =>
                   context.push('/project/$projectId/family'),
               icon: const Icon(Icons.account_tree_outlined, size: 18),
-              label: const Text('Ver árbol'),
+              label: Text(l.familyViewTree),
             ),
           ],
         ),
         const SizedBox(height: 8),
         _EditableList(
-          label: 'Padres / madres',
+          label: l.familyParents,
           async: parentsAsync,
           onAdd: () => _pickRelative(context, ref, _Relation.parent),
           onRemove: (other) => ref.read(familyDaoProvider).removeLink(
@@ -64,7 +84,7 @@ class FamilySection extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         _EditableList(
-          label: 'Hijos / hijas',
+          label: l.familyChildren,
           async: childrenAsync,
           onAdd: () => _pickRelative(context, ref, _Relation.child),
           onRemove: (other) => ref.read(familyDaoProvider).removeLink(
@@ -74,7 +94,7 @@ class FamilySection extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         _EditableList(
-          label: 'Pareja',
+          label: l.familyPartner,
           async: partnersAsync,
           onAdd: () => _pickRelative(context, ref, _Relation.partner),
           onRemove: (other) => ref
@@ -99,7 +119,7 @@ class FamilySection extends ConsumerWidget {
 
     if (options.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No hay otros personajes todavía.')),
+        SnackBar(content: Text(L.of(context).familyNoOthers)),
       );
       return;
     }
@@ -107,8 +127,8 @@ class FamilySection extends ConsumerWidget {
     final chosenId = await showDialog<String>(
       context: context,
       builder: (context) => SearchablePickDialog(
-        title: relation.dialogTitle,
-        searchHint: 'Buscar personaje...',
+        title: relation.titleFor(L.of(context)),
+        searchHint: L.of(context).charSearchHint,
         options: [
           for (final option in options)
             PickOption(
@@ -126,12 +146,12 @@ class FamilySection extends ConsumerWidget {
       final type = await showDialog<String>(
         context: context,
         builder: (context) => SimpleDialog(
-          title: const Text('¿Qué tipo de vínculo?'),
+          title: Text(L.of(context).familyPartnerKind),
           children: [
             for (final t in _partnerTypes)
               SimpleDialogOption(
                 onPressed: () => Navigator.of(context).pop(t),
-                child: Text(t),
+                child: Text(_partnerLabel(L.of(context), t)),
               ),
           ],
         ),
@@ -151,9 +171,7 @@ class FamilySection extends ConsumerWidget {
     if (await dao.wouldCreateCycle(parentId, childId)) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ese vínculo crearía un bucle en el árbol.'),
-        ),
+        SnackBar(content: Text(L.of(context).locCycleWarning)),
       );
       return;
     }
@@ -162,12 +180,20 @@ class FamilySection extends ConsumerWidget {
 }
 
 enum _Relation {
-  parent('Elegir padre/madre'),
-  child('Elegir hijo/hija'),
-  partner('Elegir pareja');
+  parent,
+  child,
+  partner;
 
-  const _Relation(this.dialogTitle);
-  final String dialogTitle;
+  String titleFor(L l) {
+    switch (this) {
+      case _Relation.parent:
+        return l.familyPickParent;
+      case _Relation.child:
+        return l.familyPickChild;
+      case _Relation.partner:
+        return l.familyPickPartner;
+    }
+  }
 }
 
 class _EditableList extends StatelessWidget {
@@ -195,13 +221,13 @@ class _EditableList extends StatelessWidget {
             TextButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.add, size: 18),
-              label: const Text('Agregar'),
+              label: Text(L.of(context).commonAdd),
             ),
           ],
         ),
         async.when(
           data: (people) => people.isEmpty
-              ? const Text('Ninguno registrado.')
+              ? Text(L.of(context).familyNoneRecorded)
               : Wrap(
                   spacing: 8,
                   runSpacing: 4,
@@ -232,6 +258,7 @@ class _DerivedKin extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final kinshipAsync = ref.watch(kinshipProvider(projectId));
     final charactersAsync = ref.watch(charactersStreamProvider(projectId));
 
@@ -247,19 +274,18 @@ class _DerivedKin extends ConsumerWidget {
         }
 
         final groups = <String, Set<String>>{
-          'Hermanos (mismos padres)': kinship.fullSiblings(characterId),
-          'Medios hermanos': kinship.halfSiblings(characterId),
-          'Abuelos': kinship.grandparents(characterId),
-          'Nietos': kinship.grandchildren(characterId),
-          'Tíos': kinship.unclesAndAunts(characterId),
-          'Sobrinos': kinship.niblings(characterId),
-          'Primos': kinship.cousins(characterId),
+          l.kinFullSiblings: kinship.fullSiblings(characterId),
+          l.kinHalfSiblings: kinship.halfSiblings(characterId),
+          l.kinGrandparents: kinship.grandparents(characterId),
+          l.kinGrandchildren: kinship.grandchildren(characterId),
+          l.kinUncles: kinship.unclesAndAunts(characterId),
+          l.kinNiblings: kinship.niblings(characterId),
+          l.kinCousins: kinship.cousins(characterId),
         }..removeWhere((_, ids) => ids.isEmpty);
 
         if (groups.isEmpty) {
           return Text(
-            'Al registrar padres e hijos, aquí aparecerán solos los hermanos, '
-            'abuelos, tíos y primos.',
+            l.familyDerivedHint,
             style: Theme.of(context).textTheme.bodySmall,
           );
         }
@@ -267,7 +293,7 @@ class _DerivedKin extends ConsumerWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Parentescos deducidos',
+            Text(l.familyDerived,
                 style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 4),
             for (final entry in groups.entries)

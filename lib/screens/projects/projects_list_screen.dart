@@ -47,8 +47,7 @@ class ProjectsListScreen extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Todavía no has creado ningún libro/universo.\n'
-                  'Toca + para empezar.',
+                  l.projectsEmpty,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
@@ -145,15 +144,12 @@ class ProjectsListScreen extends ConsumerWidget {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar universo'),
-        content: Text(
-          '¿Seguro que quieres eliminar "$name"? Se borrarán todos sus personajes, '
-          'lugares, facciones y eventos. Esta acción no se puede deshacer.',
-        ),
+        title: Text(L.of(context).projectDeleteTitle),
+        content: Text(L.of(context).projectDeleteBody(name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
@@ -162,7 +158,7 @@ class ProjectsListScreen extends ConsumerWidget {
               await ref.read(imageStorageServiceProvider).deleteProjectImages(projectId);
               if (context.mounted) Navigator.of(context).pop();
             },
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -248,8 +244,10 @@ class _ProjectDialogState extends ConsumerState<_ProjectDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
+
     return AlertDialog(
-      title: Text(_projectId == null ? 'Nuevo universo' : 'Editar universo'),
+      title: Text(_projectId == null ? l.projectNew : l.projectEdit),
       content: SizedBox(
         width: 420,
         child: SingleChildScrollView(
@@ -260,26 +258,26 @@ class _ProjectDialogState extends ConsumerState<_ProjectDialog> {
               TextField(
                 controller: _name,
                 autofocus: true,
-                decoration: const InputDecoration(labelText: 'Nombre'),
+                decoration: InputDecoration(labelText: l.projectName),
               ),
               const SizedBox(height: 16),
-              Text('¿Para qué es?',
+              Text(l.projectPurpose,
                   style: Theme.of(context).textTheme.labelLarge),
               const SizedBox(height: 8),
               // The kind drives which sections appear, so it is only chosen
               // at creation — switching later would strand existing data.
               if (_projectId == null)
                 SegmentedButton<String>(
-                  segments: const [
+                  segments: [
                     ButtonSegment(
                       value: ProjectKind.novel,
-                      icon: Icon(Icons.auto_stories_outlined),
-                      label: Text('Libro'),
+                      icon: const Icon(Icons.auto_stories_outlined),
+                      label: Text(l.projectKindBook),
                     ),
                     ButtonSegment(
                       value: ProjectKind.dnd,
-                      icon: Icon(Icons.casino_outlined),
-                      label: Text('Campaña'),
+                      icon: const Icon(Icons.casino_outlined),
+                      label: Text(l.projectKindCampaignShort),
                     ),
                   ],
                   selected: {_kind},
@@ -293,19 +291,19 @@ class _ProjectDialogState extends ConsumerState<_ProjectDialog> {
                         : Icons.auto_stories_outlined),
                     const SizedBox(width: 8),
                     Text(_kind == ProjectKind.dnd
-                        ? 'Campaña de rol'
-                        : 'Libro / novela'),
+                        ? l.projectsKindCampaign
+                        : l.projectsKindNovel),
                   ],
                 ),
               const SizedBox(height: 4),
               Text(
                 _kind == ProjectKind.dnd
-                    ? 'Agrega fichas de personaje, sesiones y dados.'
-                    : 'Agrega capítulos y notas de escritura.',
+                    ? l.projectHintCampaign
+                    : l.projectHintNovel,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 16),
-              Text('Estética', style: Theme.of(context).textTheme.labelLarge),
+              Text(l.projectAesthetic, style: Theme.of(context).textTheme.labelLarge),
               const SizedBox(height: 8),
               SizedBox(
                 height: 84,
@@ -336,7 +334,7 @@ class _ProjectDialogState extends ConsumerState<_ProjectDialog> {
               const SizedBox(height: 12),
               TextField(
                 controller: _description,
-                decoration: const InputDecoration(labelText: 'Descripción (opcional)'),
+                decoration: InputDecoration(labelText: l.projectDescription),
                 maxLines: 3,
               ),
               const SizedBox(height: 16),
@@ -347,7 +345,7 @@ class _ProjectDialogState extends ConsumerState<_ProjectDialog> {
                   child: ImageOrDrawingPicker(
                     projectId: _projectId!,
                     imagePath: _coverPath,
-                    label: 'Portada',
+                    label: l.projectCover,
                     onChanged: (path) {
                       setState(() => _coverPath = path);
                       ref.read(projectDaoProvider).updateProjectCover(
@@ -358,9 +356,9 @@ class _ProjectDialogState extends ConsumerState<_ProjectDialog> {
                   ),
                 )
               else
-                const Text(
-                  'Guarda el universo para poder elegir o dibujar su portada.',
-                  style: TextStyle(fontStyle: FontStyle.italic),
+                Text(
+                  l.projectSaveFirstForCover,
+                  style: const TextStyle(fontStyle: FontStyle.italic),
                 ),
             ],
           ),
@@ -369,9 +367,9 @@ class _ProjectDialogState extends ConsumerState<_ProjectDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(l.commonCancel),
         ),
-        FilledButton(onPressed: _save, child: const Text('Guardar')),
+        FilledButton(onPressed: _save, child: Text(l.commonSave)),
       ],
     );
   }
@@ -420,7 +418,7 @@ class _ThemeChip extends StatelessWidget {
               ],
             ),
             Text(
-              theme.name,
+              themeName(L.of(context), theme.id),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(

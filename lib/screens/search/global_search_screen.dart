@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,17 +9,42 @@ import '../../data/daos/tag_dao.dart';
 import '../../providers/data_providers.dart';
 import '../../widgets/stored_image.dart';
 
-/// Human-facing label and icon for each searchable entity kind.
-const _entityLabels = <String, (String, IconData)>{
-  TagEntity.character: ('Personaje', Icons.person_outline),
-  TagEntity.location: ('Lugar', Icons.place_outlined),
-  TagEntity.faction: ('Facción', Icons.shield_outlined),
-  TagEntity.event: ('Evento', Icons.timeline_outlined),
-  TagEntity.item: ('Objeto', Icons.auto_awesome_outlined),
-  TagEntity.magic: ('Magia', Icons.auto_fix_high_outlined),
-  TagEntity.chapter: ('Capítulo', Icons.menu_book_outlined),
-  TagEntity.note: ('Nota', Icons.sticky_note_2_outlined),
+/// Icon per searchable entity kind. The human-facing label lives in
+/// [_labelFor] so it can follow the chosen language.
+const _entityIcons = <String, IconData>{
+  TagEntity.character: Icons.person_outline,
+  TagEntity.location: Icons.place_outlined,
+  TagEntity.faction: Icons.shield_outlined,
+  TagEntity.event: Icons.timeline_outlined,
+  TagEntity.item: Icons.auto_awesome_outlined,
+  TagEntity.magic: Icons.auto_fix_high_outlined,
+  TagEntity.chapter: Icons.menu_book_outlined,
+  TagEntity.note: Icons.sticky_note_2_outlined,
 };
+
+IconData _iconFor(String kind) => _entityIcons[kind] ?? Icons.help_outline;
+
+String _labelFor(L l, String kind) {
+  switch (kind) {
+    case TagEntity.character:
+      return l.searchKindCharacter;
+    case TagEntity.location:
+      return l.searchKindLocation;
+    case TagEntity.faction:
+      return l.searchKindFaction;
+    case TagEntity.event:
+      return l.searchKindEvent;
+    case TagEntity.item:
+      return l.searchKindItem;
+    case TagEntity.magic:
+      return l.searchKindMagic;
+    case TagEntity.chapter:
+      return l.searchKindChapter;
+    case TagEntity.note:
+      return l.searchKindNote;
+  }
+  return kind;
+}
 
 /// Route each result kind back to its own detail screen.
 const _entityRoutes = <String, String>{
@@ -63,11 +90,12 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final resultsAsync =
         ref.watch(searchResultsProvider((widget.projectId, _query)));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Buscar en el universo')),
+      appBar: AppBar(title: Text(l.searchTitle)),
       body: Column(
         children: [
           Padding(
@@ -76,7 +104,7 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
               controller: _controller,
               autofocus: true,
               decoration: InputDecoration(
-                hintText: 'Buscar personajes, lugares, objetos, capítulos...',
+                hintText: l.searchHintLong,
                 prefixIcon: const Icon(Icons.search),
                 border: const OutlineInputBorder(),
                 suffixIcon: _query.isEmpty
@@ -98,7 +126,7 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(24),
                       child: Text(
-                        'Escribe para buscar en todo el universo a la vez.',
+                        l.searchPrompt,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
@@ -107,10 +135,10 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
                 : resultsAsync.when(
                     data: (results) {
                       if (results.isEmpty) {
-                        return const Center(
+                        return Center(
                           child: Padding(
-                            padding: EdgeInsets.all(24),
-                            child: Text('Sin resultados.'),
+                            padding: const EdgeInsets.all(24),
+                            child: Text(l.searchNoResults),
                           ),
                         );
                       }
@@ -137,7 +165,7 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 8),
                                   child: ChoiceChip(
-                                    label: Text('Todo (${results.length})'),
+                                    label: Text(l.searchAllCount(results.length)),
                                     selected: _typeFilter == null,
                                     onSelected: (_) =>
                                         setState(() => _typeFilter = null),
@@ -148,7 +176,7 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
                                     padding: const EdgeInsets.only(right: 8),
                                     child: ChoiceChip(
                                       label: Text(
-                                        '${_entityLabels[kind]?.$1 ?? kind} '
+                                        '${_labelFor(l, kind)} '
                                         '(${results.where((r) => r.entityType == kind).length})',
                                       ),
                                       selected: _typeFilter == kind,
@@ -167,7 +195,6 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
                               itemCount: filtered.length,
                               itemBuilder: (context, index) {
                                 final result = filtered[index];
-                                final label = _entityLabels[result.entityType];
                                 return Card(
                                   margin: const EdgeInsets.only(bottom: 8),
                                   child: ListTile(
@@ -183,7 +210,7 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
                                           )
                                         : CircleAvatar(
                                             child: Icon(
-                                              label?.$2 ?? Icons.help_outline,
+                                              _iconFor(result.entityType),
                                             ),
                                           ),
                                     title: Text(result.title),
@@ -196,7 +223,7 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
                                           )
                                         : null,
                                     trailing: Chip(
-                                      label: Text(label?.$1 ?? result.entityType),
+                                      label: Text(_labelFor(l, result.entityType)),
                                       visualDensity: VisualDensity.compact,
                                     ),
                                     onTap: () => _open(result),

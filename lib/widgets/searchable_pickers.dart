@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 /// One selectable row, kept deliberately plain so any entity can be offered
 /// through the same picker.
 class PickOption {
@@ -32,15 +34,15 @@ class SearchableCheckboxList extends StatefulWidget {
     required this.options,
     required this.selected,
     required this.onChanged,
-    this.emptyMessage = 'No hay nada que elegir todavía.',
-    this.searchHint = 'Buscar...',
+    this.emptyMessage,
+    this.searchHint,
   });
 
   final List<PickOption> options;
   final Set<String> selected;
   final void Function(String id, bool isSelected) onChanged;
-  final String emptyMessage;
-  final String searchHint;
+  final String? emptyMessage;
+  final String? searchHint;
 
   @override
   State<SearchableCheckboxList> createState() => _SearchableCheckboxListState();
@@ -61,7 +63,7 @@ class _SearchableCheckboxListState extends State<SearchableCheckboxList> {
     if (widget.options.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text(widget.emptyMessage),
+        child: Text(widget.emptyMessage ?? L.of(context).commonNoMatches),
       );
     }
 
@@ -81,7 +83,7 @@ class _SearchableCheckboxListState extends State<SearchableCheckboxList> {
             child: TextField(
               controller: _controller,
               decoration: InputDecoration(
-                hintText: widget.searchHint,
+                hintText: widget.searchHint ?? L.of(context).commonSearchHint,
                 prefixIcon: const Icon(Icons.search),
                 isDense: true,
                 suffixIcon: _query.isEmpty
@@ -102,16 +104,16 @@ class _SearchableCheckboxListState extends State<SearchableCheckboxList> {
             padding: const EdgeInsets.only(bottom: 4),
             child: Text(
               hiddenSelected == 0
-                  ? '${widget.selected.length} seleccionado(s)'
-                  : '${widget.selected.length} seleccionado(s) · '
-                      '$hiddenSelected fuera del filtro',
+                  ? L.of(context).commonSelectedCount(widget.selected.length)
+                  : L.of(context).commonSelectedCountFiltered(
+                      widget.selected.length, hiddenSelected),
               style: Theme.of(context).textTheme.labelSmall,
             ),
           ),
         if (visible.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Text('Nada coincide con la búsqueda.'),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(L.of(context).commonNoMatches),
           )
         else
           for (final option in visible)
@@ -136,12 +138,12 @@ class SearchablePickDialog extends StatefulWidget {
     super.key,
     required this.title,
     required this.options,
-    this.searchHint = 'Buscar...',
+    this.searchHint,
   });
 
   final String title;
   final List<PickOption> options;
-  final String searchHint;
+  final String? searchHint;
 
   @override
   State<SearchablePickDialog> createState() => _SearchablePickDialogState();
@@ -175,7 +177,7 @@ class _SearchablePickDialogState extends State<SearchablePickDialog> {
                 controller: _controller,
                 autofocus: true,
                 decoration: InputDecoration(
-                  hintText: widget.searchHint,
+                  hintText: widget.searchHint ?? L.of(context).commonSearchHint,
                   prefixIcon: const Icon(Icons.search),
                   isDense: true,
                 ),
@@ -184,7 +186,7 @@ class _SearchablePickDialogState extends State<SearchablePickDialog> {
             const SizedBox(height: 8),
             Expanded(
               child: visible.isEmpty
-                  ? const Center(child: Text('Nada coincide con la búsqueda.'))
+                  ? Center(child: Text(L.of(context).commonNoMatches))
                   : ListView.builder(
                       itemCount: visible.length,
                       itemBuilder: (context, index) {
@@ -206,7 +208,7 @@ class _SearchablePickDialogState extends State<SearchablePickDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(L.of(context).commonCancel),
         ),
       ],
     );

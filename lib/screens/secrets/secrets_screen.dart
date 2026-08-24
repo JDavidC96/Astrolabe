@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/database.dart';
@@ -17,10 +19,11 @@ class SecretsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final secretsAsync = ref.watch(secretsStreamProvider(projectId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Secretos')),
+      appBar: AppBar(title: Text(l.secretsTitle)),
       body: secretsAsync.when(
         data: (secrets) {
           if (secrets.isEmpty) {
@@ -33,8 +36,7 @@ class SecretsScreen extends ConsumerWidget {
                     const Icon(Icons.lock_outline, size: 48),
                     const SizedBox(height: 12),
                     Text(
-                      'Registra un secreto y marca qué personajes lo saben, '
-                      'cómo se enteraron y desde cuándo.',
+                      l.secretsEmpty,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
@@ -55,8 +57,8 @@ class SecretsScreen extends ConsumerWidget {
                   title: Text(entry.secret.title),
                   subtitle: Text(
                     entry.knowers.isEmpty
-                        ? 'Nadie lo sabe todavía'
-                        : 'Lo saben: ${entry.knowers.map(_name).join(', ')}',
+                        ? l.secretNobodyKnows
+                        : l.secretKnownBy(entry.knowers.map(_name).join(', ')),
                   ),
                   children: [
                     Padding(
@@ -65,7 +67,7 @@ class SecretsScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (entry.owner != null)
-                            Text('Secreto de: ${_name(entry.owner!)}'),
+                            Text(l.secretOwnedBy(_name(entry.owner!))),
                           if (entry.secret.description?.isNotEmpty == true) ...[
                             const SizedBox(height: 8),
                             Text(entry.secret.description!),
@@ -78,14 +80,14 @@ class SecretsScreen extends ConsumerWidget {
                                 onPressed: () =>
                                     _showEditor(context, ref, entry),
                                 icon: const Icon(Icons.edit_outlined, size: 18),
-                                label: const Text('Editar'),
+                                label: Text(l.commonEdit),
                               ),
                               TextButton.icon(
                                 onPressed: () => ref
                                     .read(secretDaoProvider)
                                     .deleteSecret(entry.secret.id),
                                 icon: const Icon(Icons.delete_outline, size: 18),
-                                label: const Text('Eliminar'),
+                                label: Text(l.commonDelete),
                               ),
                             ],
                           ),
@@ -217,10 +219,11 @@ class _SecretDialogState extends ConsumerState<_SecretDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final charactersAsync = ref.watch(charactersStreamProvider(widget.projectId));
 
     return AlertDialog(
-      title: Text(widget.existing == null ? 'Nuevo secreto' : 'Editar secreto'),
+      title: Text(widget.existing == null ? l.secretNew : l.secretEdit),
       content: SizedBox(
         width: 480,
         child: SingleChildScrollView(
@@ -231,17 +234,17 @@ class _SecretDialogState extends ConsumerState<_SecretDialog> {
               TextField(
                 controller: _title,
                 autofocus: true,
-                decoration: const InputDecoration(
-                  labelText: 'Secreto',
-                  hintText: 'ej. Aria es la heredera legítima',
+                decoration: InputDecoration(
+                  labelText: l.secretLabel,
+                  hintText: l.secretHint,
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _description,
-                decoration: const InputDecoration(
-                  labelText: 'Detalles (opcional)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l.secretDetails,
+                  border: const OutlineInputBorder(),
                 ),
                 maxLines: 3,
               ),
@@ -253,26 +256,22 @@ class _SecretDialogState extends ConsumerState<_SecretDialog> {
                     DropdownButtonFormField<String?>(
                       initialValue: _ownerId,
                       decoration:
-                          const InputDecoration(labelText: '¿De quién es el secreto?'),
+                          InputDecoration(labelText: l.secretOwnerQuestion),
                       items: [
-                        const DropdownMenuItem(
-                            value: null, child: Text('De nadie en particular')),
+                        DropdownMenuItem(
+                            value: null, child: Text(l.secretOwnerNobody)),
                         for (final c in characters)
                           DropdownMenuItem(value: c.id, child: Text(_name(c))),
                       ],
                       onChanged: (v) => setState(() => _ownerId = v),
                     ),
                     const SizedBox(height: 16),
-                    Text('¿Quién lo sabe?',
+                    Text(l.secretWhoKnows,
                         style: Theme.of(context).textTheme.labelLarge),
-                    if (characters.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        child: Text('No hay personajes todavía.'),
-                      ),
+
                     SearchableCheckboxList(
-                      searchHint: 'Buscar personaje...',
-                      emptyMessage: 'No hay personajes todavía.',
+                      searchHint: l.charSearchHint,
+                      emptyMessage: l.secretNoCharacters,
                       options: [
                         for (final c in characters)
                           PickOption(id: c.id, label: _name(c), sublabel: c.race),
@@ -298,7 +297,7 @@ class _SecretDialogState extends ConsumerState<_SecretDialog> {
                             controller: _howControllers.putIfAbsent(
                                 c.id, () => TextEditingController()),
                             decoration: InputDecoration(
-                              labelText: '¿Cómo se enteró ${_name(c)}? (opcional)',
+                              labelText: l.secretHowFound(_name(c)),
                               isDense: true,
                             ),
                           ),
@@ -315,9 +314,9 @@ class _SecretDialogState extends ConsumerState<_SecretDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(l.commonCancel),
         ),
-        FilledButton(onPressed: _save, child: const Text('Guardar')),
+        FilledButton(onPressed: _save, child: Text(l.commonSave)),
       ],
     );
   }

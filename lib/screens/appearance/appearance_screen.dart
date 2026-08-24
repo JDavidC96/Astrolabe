@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/core_providers.dart';
@@ -13,33 +15,34 @@ class AppearanceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final projectAsync = ref.watch(projectStreamProvider(projectId));
     final currentThemeId = projectAsync.valueOrNull?.themeId ?? defaultThemeId;
     final mode = ref.watch(themeModeProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Apariencia')),
+      appBar: AppBar(title: Text(l.appearanceTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Brillo', style: Theme.of(context).textTheme.titleMedium),
+          Text(l.appearanceBrightness, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           SegmentedButton<ThemeMode>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: ThemeMode.light,
-                icon: Icon(Icons.light_mode_outlined),
-                label: Text('Claro'),
+                icon: const Icon(Icons.light_mode_outlined),
+                label: Text(l.appearanceLight),
               ),
               ButtonSegment(
                 value: ThemeMode.system,
-                icon: Icon(Icons.brightness_auto_outlined),
-                label: Text('Auto'),
+                icon: const Icon(Icons.brightness_auto_outlined),
+                label: Text(l.appearanceAuto),
               ),
               ButtonSegment(
                 value: ThemeMode.dark,
-                icon: Icon(Icons.dark_mode_outlined),
-                label: Text('Oscuro'),
+                icon: const Icon(Icons.dark_mode_outlined),
+                label: Text(l.appearanceDark),
               ),
             ],
             selected: {mode},
@@ -48,16 +51,15 @@ class AppearanceScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Este ajuste vale para toda la app.',
+            l.appearanceBrightnessNote,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const Divider(height: 32),
-          Text('Tema de este universo',
+          Text(l.appearanceThemeTitle,
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
-            'Cada universo guarda su propio tema, así que tu saga medieval y '
-            'tu campaña cyberpunk no tienen que verse igual.',
+            l.appearanceThemeNote,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 16),
@@ -121,7 +123,7 @@ class _ThemeCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          theme.name,
+                          themeName(L.of(context), theme.id),
                           style: preview.textTheme.titleLarge
                               ?.copyWith(color: scheme.onSurface),
                         ),
@@ -132,7 +134,7 @@ class _ThemeCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    theme.description,
+                    themeDescription(L.of(context), theme.id),
                     style: preview.textTheme.bodySmall
                         ?.copyWith(color: scheme.onSurfaceVariant),
                   ),
@@ -155,13 +157,13 @@ class _ThemeCard extends StatelessWidget {
                     children: [
                       FilledButton(
                         onPressed: onTap,
-                        child: const Text('Botón'),
+                        child: Text(L.of(context).appearanceButtonSample),
                       ),
                       OutlinedButton(
                         onPressed: onTap,
-                        child: const Text('Otro'),
+                        child: Text(L.of(context).appearanceButtonOther),
                       ),
-                      Chip(label: Text(theme.displayFont ?? 'Sistema')),
+                      Chip(label: Text(theme.displayFont ?? L.of(context).appearanceSystemFont)),
                     ],
                   ),
                 ],

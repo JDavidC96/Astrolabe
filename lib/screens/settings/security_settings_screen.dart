@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../providers/lock_providers.dart';
 
 class SecuritySettingsScreen extends ConsumerWidget {
@@ -9,30 +10,29 @@ class SecuritySettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final lock = ref.watch(lockControllerProvider);
     final controller = ref.read(lockControllerProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Seguridad')),
+      appBar: AppBar(title: Text(l.securityTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           SwitchListTile(
-            title: const Text('Pedir PIN al abrir'),
+            title: Text(l.lockAskOnOpen),
             subtitle: Text(
-              lock.enabled
-                  ? 'La app se bloquea al salir a segundo plano.'
-                  : 'Cualquiera que tome el dispositivo puede leer tus universos.',
+              lock.enabled ? l.lockBackgroundNote : l.lockUnprotected,
             ),
             value: lock.enabled,
             onChanged: (enabled) async {
               if (enabled) {
-                final pin = await _askForPin(context, title: 'Elige un PIN');
+                final pin = await _askForPin(context, title: l.lockChoosePin);
                 if (pin != null) await controller.setPin(pin);
               } else {
                 // Require the current PIN before turning protection off.
                 final pin =
-                    await _askForPin(context, title: 'Confirma tu PIN actual');
+                    await _askForPin(context, title: l.lockConfirmCurrent);
                 if (pin == null) return;
                 final ok = await ref
                     .read(appLockServiceProvider)
@@ -42,7 +42,7 @@ class SecuritySettingsScreen extends ConsumerWidget {
                   await controller.disableLock();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('PIN incorrecto.')),
+                    SnackBar(content: Text(l.lockWrongPin)),
                   );
                 }
               }
@@ -51,31 +51,31 @@ class SecuritySettingsScreen extends ConsumerWidget {
           if (lock.enabled) ...[
             ListTile(
               leading: const Icon(Icons.password),
-              title: const Text('Cambiar PIN'),
+              title: Text(l.lockChangePin),
               onTap: () async {
                 final current =
-                    await _askForPin(context, title: 'PIN actual');
+                    await _askForPin(context, title: l.lockCurrentPin);
                 if (current == null) return;
                 final ok =
                     await ref.read(appLockServiceProvider).verifyPin(current);
                 if (!context.mounted) return;
                 if (!ok) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('PIN incorrecto.')),
+                    SnackBar(content: Text(l.lockWrongPin)),
                   );
                   return;
                 }
-                final next = await _askForPin(context, title: 'Nuevo PIN');
+                final next = await _askForPin(context, title: l.lockNewPin);
                 if (next != null) await controller.setPin(next);
               },
             ),
             SwitchListTile(
               secondary: const Icon(Icons.fingerprint),
-              title: const Text('Desbloquear con huella o rostro'),
+              title: Text(l.lockUnlockBiometric),
               subtitle: Text(
                 lock.biometricAvailable
-                    ? 'Atajo al PIN, que sigue funcionando siempre.'
-                    : 'Este dispositivo no tiene biometría configurada.',
+                    ? l.lockBiometricsNote
+                    : l.lockNoBiometrics,
               ),
               value: lock.biometricEnabled && lock.biometricAvailable,
               onChanged: lock.biometricAvailable
@@ -84,21 +84,16 @@ class SecuritySettingsScreen extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(Icons.lock_outline),
-              title: const Text('Bloquear ahora'),
+              title: Text(l.lockNow),
               onTap: controller.lockNow,
             ),
           ],
           const Divider(height: 32),
           Card(
             color: Theme.of(context).colorScheme.secondaryContainer,
-            child: const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'El PIN protege el acceso a la app en este dispositivo. No '
-                'cifra el archivo de datos: alguien con acceso al sistema de '
-                'archivos del teléfono aún podría leerlo. Si olvidas el PIN '
-                'tendrás que reinstalar la app, así que guarda un respaldo.',
-              ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(l.lockExplainer),
             ),
           ),
         ],
@@ -137,7 +132,7 @@ class _PinDialogState extends State<_PinDialog> {
   void _submit() {
     final pin = _controller.text.trim();
     if (pin.length < 4) {
-      setState(() => _error = 'Usa al menos 4 dígitos.');
+      setState(() => _error = L.of(context).lockMinDigits);
       return;
     }
     Navigator.of(context).pop(pin);
@@ -145,6 +140,8 @@ class _PinDialogState extends State<_PinDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
+
     return AlertDialog(
       title: Text(widget.title),
       content: TextField(
@@ -159,9 +156,9 @@ class _PinDialogState extends State<_PinDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(l.commonCancel),
         ),
-        FilledButton(onPressed: _submit, child: const Text('Aceptar')),
+        FilledButton(onPressed: _submit, child: Text(l.lockOk)),
       ],
     );
   }

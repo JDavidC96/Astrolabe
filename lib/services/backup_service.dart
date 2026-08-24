@@ -15,6 +15,29 @@ import '../data/database.dart';
 /// This matters more than usual here: the app stores everything on-device
 /// with no cloud copy, so without a backup a lost or wiped phone means a
 /// lost book.
+/// Why an archive could not be restored. Kept as a code so the message
+/// can be shown in the reader's language.
+enum BackupError { notABackup, newerFormat }
+
+/// Still a [FormatException] so existing `catch` sites keep working.
+class BackupFormatException implements FormatException {
+  const BackupFormatException(this.error);
+
+  final BackupError error;
+
+  @override
+  String get message => 'BackupError.$error';
+
+  @override
+  int? get offset => null;
+
+  @override
+  dynamic get source => null;
+
+  @override
+  String toString() => message;
+}
+
 class BackupService {
   BackupService(this._db);
 
@@ -70,8 +93,8 @@ class BackupService {
 
     final jsonEntry = archive.files.firstWhere(
       (f) => f.name == 'universe.json',
-      orElse: () => throw const FormatException(
-        'El archivo no parece un respaldo de Astrolabe.',
+      orElse: () => throw const BackupFormatException(
+        BackupError.notABackup,
       ),
     );
     final data = jsonDecode(utf8.decode(jsonEntry.content as List<int>))
@@ -79,9 +102,7 @@ class BackupService {
 
     final version = data['formatVersion'] as int? ?? 0;
     if (version > formatVersion) {
-      throw const FormatException(
-        'Este respaldo fue creado por una versión más nueva de la app.',
-      );
+      throw const BackupFormatException(BackupError.newerFormat);
     }
 
     final newProjectId = _uuid.v4();

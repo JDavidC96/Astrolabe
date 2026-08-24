@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,6 +9,26 @@ import '../data/database.dart';
 import '../data/daos/sheet_dao.dart';
 import '../providers/core_providers.dart';
 import '../providers/data_providers.dart';
+
+/// The six ability names, resolved per language. The keys themselves stay
+/// English because they are column names, not display text.
+String _abilityLabel(L l, String key) {
+  switch (key) {
+    case 'strength':
+      return l.abilityStrength;
+    case 'dexterity':
+      return l.abilityDexterity;
+    case 'constitution':
+      return l.abilityConstitution;
+    case 'intelligence':
+      return l.abilityIntelligence;
+    case 'wisdom':
+      return l.abilityWisdom;
+    case 'charisma':
+      return l.abilityCharisma;
+  }
+  return key;
+}
 
 /// D&D 5e statistics for one character. Modifiers, saving throws and the
 /// proficiency bonus are derived, never stored, so they can't drift out of
@@ -119,6 +141,7 @@ class _DndSheetSectionState extends ConsumerState<DndSheetSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final sheetAsync = ref.watch(characterSheetStreamProvider(widget.characterId));
 
     return sheetAsync.when(
@@ -137,10 +160,10 @@ class _DndSheetSectionState extends ConsumerState<DndSheetSection> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Ficha de personaje',
+                    Text(l.sheetTitle,
                         style: Theme.of(context).textTheme.titleMedium),
                     Chip(
-                      label: Text('Competencia +$proficiency'),
+                      label: Text(l.sheetProficiency(proficiency)),
                       visualDensity: VisualDensity.compact,
                     ),
                   ],
@@ -150,45 +173,43 @@ class _DndSheetSectionState extends ConsumerState<DndSheetSection> {
                   children: [
                     Expanded(
                       flex: 2,
-                      child: _field('className', 'Clase'),
+                      child: _field('className', l.sheetClass),
                     ),
                     const SizedBox(width: 8),
-                    Expanded(child: _numberField('level', 'Nivel')),
+                    Expanded(child: _numberField('level', l.sheetLevel)),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Expanded(child: _numberField('armorClass', 'CA')),
+                    Expanded(child: _numberField('armorClass', l.sheetArmorClass)),
                     const SizedBox(width: 8),
-                    Expanded(child: _numberField('currentHitPoints', 'PG')),
+                    Expanded(child: _numberField('currentHitPoints', l.sheetHp)),
                     const SizedBox(width: 8),
-                    Expanded(child: _numberField('maxHitPoints', 'PG máx')),
+                    Expanded(child: _numberField('maxHitPoints', l.sheetMaxHp)),
                     const SizedBox(width: 8),
-                    Expanded(child: _numberField('speed', 'Vel.')),
+                    Expanded(child: _numberField('speed', l.sheetSpeed)),
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text('Características',
+                Text(l.sheetAbilities,
                     style: Theme.of(context).textTheme.labelLarge),
-                Text(
-                  'Marca la casilla si tiene competencia en esa salvación.',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                Text(l.sheetAbilitiesHint,
+                    style: Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height: 8),
                 for (final key in abilityKeys) _abilityRow(key, proficiency),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: _field('alignment', 'Alineamiento')),
+                    Expanded(child: _field('alignment', l.sheetAlignment)),
                     const SizedBox(width: 8),
-                    Expanded(child: _field('background', 'Trasfondo')),
+                    Expanded(child: _field('background', l.sheetBackground)),
                   ],
                 ),
                 const SizedBox(height: 8),
-                _field('features', 'Rasgos y aptitudes', maxLines: 4),
+                _field('features', l.sheetFeatures, maxLines: 4),
                 const SizedBox(height: 8),
-                _field('equipment', 'Equipo', maxLines: 4),
+                _field('equipment', l.sheetEquipment, maxLines: 4),
               ],
             ),
           ),
@@ -248,7 +269,7 @@ class _DndSheetSectionState extends ConsumerState<DndSheetSection> {
             child: TextField(
               controller: _controllers[key],
               decoration: InputDecoration(
-                labelText: abilityLabels[key],
+                labelText: _abilityLabel(L.of(context), key),
                 isDense: true,
               ),
               keyboardType: TextInputType.number,
@@ -263,7 +284,8 @@ class _DndSheetSectionState extends ConsumerState<DndSheetSection> {
             width: 48,
             child: Column(
               children: [
-                Text('Mod', style: Theme.of(context).textTheme.labelSmall),
+                Text(L.of(context).sheetModifier,
+                    style: Theme.of(context).textTheme.labelSmall),
                 Text(signed(modifier),
                     style: Theme.of(context).textTheme.titleMedium),
               ],
@@ -273,7 +295,8 @@ class _DndSheetSectionState extends ConsumerState<DndSheetSection> {
             width: 56,
             child: Column(
               children: [
-                Text('Salv.', style: Theme.of(context).textTheme.labelSmall),
+                Text(L.of(context).sheetSave,
+                    style: Theme.of(context).textTheme.labelSmall),
                 Text(signed(save),
                     style: Theme.of(context).textTheme.titleMedium),
               ],

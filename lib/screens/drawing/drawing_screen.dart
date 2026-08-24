@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -75,7 +77,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Color personalizado'),
+        title: Text(L.of(context).drawingCustomColor),
         content: SingleChildScrollView(
           child: ColorPicker(
             pickerColor: picked,
@@ -89,11 +91,11 @@ class _DrawingScreenState extends State<DrawingScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Usar color'),
+            child: Text(L.of(context).drawingUseColor),
           ),
         ],
       ),
@@ -167,19 +169,20 @@ class _DrawingScreenState extends State<DrawingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dibujar'),
+        title: Text(l.drawingTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.image_outlined),
-            tooltip: 'Imagen de fondo',
+            tooltip: l.drawingBackground,
             onPressed: _pickBackground,
           ),
           if (_background != null)
             IconButton(
               icon: const Icon(Icons.hide_image_outlined),
-              tooltip: 'Quitar fondo',
+              tooltip: l.drawingRemoveBackground,
               onPressed: _removeBackground,
             ),
           ValueListenableBuilder<ScribbleState>(
@@ -198,7 +201,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            tooltip: 'Borrar todo',
+            tooltip: l.drawingClear,
             onPressed: _notifier.clear,
           ),
           IconButton(
@@ -209,7 +212,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.check),
-            tooltip: 'Guardar',
+            tooltip: l.commonSave,
             onPressed: _saving ? null : _save,
           ),
         ],
@@ -244,7 +247,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                       children: [
                         const Icon(Icons.opacity, size: 20),
                         const SizedBox(width: 4),
-                        const Text('Fondo'),
+                        Text(l.drawingBackgroundLabel),
                         Expanded(
                           child: Slider(
                             min: 0.1,

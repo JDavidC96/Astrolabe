@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/database.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/core_providers.dart';
 import '../../providers/data_providers.dart';
 import '../../data/daos/tag_dao.dart';
@@ -127,7 +128,7 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lugar guardado')),
+        SnackBar(content: Text(L.of(context).locSaved)),
       );
     }
   }
@@ -137,16 +138,17 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar lugar'),
-        content: const Text(
-          '¿Eliminar este lugar? También se eliminarán sus sublugares.',
-        ),
+        title: Text(L.of(context).locDeleteTitle),
+        content: Text(L.of(context).locDeleteBodyPlain),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(L.of(context).commonCancel),
+          ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -163,15 +165,16 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l = L.of(context);
     final locationsAsync = ref.watch(locationsStreamProvider(widget.projectId));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_locationId == null ? 'Nuevo lugar' : 'Editar lugar'),
+        title: Text(_locationId == null ? l.locNew : l.locEdit),
         actions: [
           if (_locationId != null)
             IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
-          IconButton(icon: const Icon(Icons.check), tooltip: 'Guardar', onPressed: _save),
+          IconButton(icon: const Icon(Icons.check), tooltip: l.commonSave, onPressed: _save),
         ],
       ),
       body: Form(
@@ -184,7 +187,7 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                 child: ImageOrDrawingPicker(
                   projectId: widget.projectId,
                   imagePath: _mapPath,
-                  label: 'Mapa / imagen',
+                  label: l.locMapLabel,
                   size: 200,
                   onChanged: (path) {
                     setState(() => _mapPath = path);
@@ -205,7 +208,7 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                       '/project/${widget.projectId}/map/$_locationId',
                     ),
                     icon: const Icon(Icons.travel_explore_outlined),
-                    label: const Text('Abrir mapa interactivo'),
+                    label: Text(l.locOpenInteractiveMap),
                   ),
                 ),
               ],
@@ -217,24 +220,21 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                 margin: const EdgeInsets.only(bottom: 16),
                 child: ListTile(
                   leading: const Icon(Icons.map_outlined),
-                  title: const Text('Mapa de este lugar'),
-                  subtitle: const Text(
-                    'Guarda el lugar (✓ arriba) y aquí podrás subir un mapa '
-                    'o dibujarlo.',
-                  ),
+                  title: Text(l.locMapPending),
+                  subtitle: Text(l.locMapPendingHint),
                 ),
               ),
             TextFormField(
               controller: _name,
-              decoration: const InputDecoration(labelText: 'Nombre *'),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+              decoration: InputDecoration(labelText: l.locName),
+              validator: (v) => (v == null || v.trim().isEmpty) ? l.commonRequired : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _type,
-              decoration: const InputDecoration(
-                labelText: 'Tipo (opcional)',
-                hintText: 'Continente, reino, ciudad, bosque...',
+              decoration: InputDecoration(
+                labelText: l.locType,
+                hintText: l.locTypeHint,
               ),
             ),
             const SizedBox(height: 12),
@@ -244,9 +244,9 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                 final options = all.where((l) => !invalid.contains(l.id)).toList();
                 return DropdownButtonFormField<String?>(
                   initialValue: _parentLocationId,
-                  decoration: const InputDecoration(labelText: 'Lugar padre (opcional)'),
+                  decoration: InputDecoration(labelText: l.locParent),
                   items: [
-                    const DropdownMenuItem(value: null, child: Text('Ninguno (raíz)')),
+                    DropdownMenuItem(value: null, child: Text(l.locParentRoot)),
                     for (final l in options) DropdownMenuItem(value: l.id, child: Text(l.name)),
                   ],
                   onChanged: (v) => setState(() => _parentLocationId = v),
@@ -258,27 +258,27 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _climate,
-              decoration: const InputDecoration(labelText: 'Clima (opcional)'),
+              decoration: InputDecoration(labelText: l.locClimate),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _population,
-              decoration: const InputDecoration(labelText: 'Población (opcional)'),
+              decoration: InputDecoration(labelText: l.locPopulation),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _government,
-              decoration: const InputDecoration(labelText: 'Gobierno (opcional)'),
+              decoration: InputDecoration(labelText: l.locGovernment),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _status,
-              decoration: const InputDecoration(labelText: 'Estado (opcional)'),
+              decoration: InputDecoration(labelText: l.locStatus),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _description,
-              decoration: const InputDecoration(labelText: 'Descripción (opcional)', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: l.locDescription, border: const OutlineInputBorder()),
               maxLines: 6,
             ),
             if (_locationId != null) ...[

@@ -95,8 +95,8 @@ class LockController extends StateNotifier<LockState> with WidgetsBindingObserve
     return ok;
   }
 
-  Future<bool> unlockWithBiometrics() async {
-    final ok = await _service.authenticateWithBiometrics();
+  Future<bool> unlockWithBiometrics({required String reason}) async {
+    final ok = await _service.authenticateWithBiometrics(reason: reason);
     if (ok) state = state.copyWith(unlocked: true);
     return ok;
   }

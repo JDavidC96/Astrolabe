@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/core_providers.dart';
@@ -30,23 +32,23 @@ class CustomFieldsSection extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Campos propios',
+            Text(L.of(context).customFieldsTitle,
                 style: Theme.of(context).textTheme.titleMedium),
             TextButton.icon(
               onPressed: () => _showAddDialog(context, ref),
               icon: const Icon(Icons.add),
-              label: const Text('Agregar'),
+              label: Text(L.of(context).commonAdd),
             ),
           ],
         ),
         fieldsAsync.when(
           data: (fields) {
             if (fields.isEmpty) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Text(
-                  'Agrega los datos que tu mundo o tu sistema necesiten.',
-                  style: TextStyle(fontStyle: FontStyle.italic),
+                  L.of(context).customFieldsEmpty,
+                  style: const TextStyle(fontStyle: FontStyle.italic),
                 ),
               );
             }
@@ -72,29 +74,29 @@ class CustomFieldsSection extends ConsumerWidget {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Nuevo campo'),
+        title: Text(L.of(context).customFieldNew),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: labelController,
               autofocus: true,
-              decoration: const InputDecoration(
-                labelText: 'Nombre del campo',
-                hintText: 'ej. Fuerza, Idioma natal, Nivel de amenaza',
+              decoration: InputDecoration(
+                labelText: L.of(context).customFieldName,
+                hintText: L.of(context).customFieldNameHint,
               ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: valueController,
-              decoration: const InputDecoration(labelText: 'Valor (opcional)'),
+              decoration: InputDecoration(labelText: L.of(context).customFieldValue),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             onPressed: () async {
@@ -111,7 +113,7 @@ class CustomFieldsSection extends ConsumerWidget {
                   );
               if (context.mounted) Navigator.of(context).pop();
             },
-            child: const Text('Agregar'),
+            child: Text(L.of(context).commonAdd),
           ),
         ],
       ),
@@ -168,7 +170,7 @@ class _CustomFieldRowState extends ConsumerState<_CustomFieldRow> {
           ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            tooltip: 'Quitar campo',
+            tooltip: L.of(context).customFieldRemove,
             onPressed: () =>
                 ref.read(customFieldDaoProvider).deleteField(widget.fieldId),
           ),

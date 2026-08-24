@@ -81,10 +81,12 @@ class AppLockService {
     }
   }
 
-  Future<bool> authenticateWithBiometrics() async {
+  /// [reason] is shown by the system prompt, so it arrives already
+  /// translated from the screen that asked.
+  Future<bool> authenticateWithBiometrics({required String reason}) async {
     try {
       return await _localAuth.authenticate(
-        localizedReason: 'Desbloquea tus universos',
+        localizedReason: reason,
         biometricOnly: true,
         persistAcrossBackgrounding: true,
       );

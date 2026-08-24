@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/database.dart';
@@ -6,6 +8,8 @@ import '../data/daos/relationship_dao.dart';
 import '../providers/core_providers.dart';
 import '../providers/data_providers.dart';
 
+/// Relationship kinds, stored by their Spanish key so existing data keeps
+/// working, but shown through [relationshipLabel] in the reader's language.
 const relationshipTypes = <String>[
   'Familiar',
   'Hermanos',
@@ -20,6 +24,35 @@ const relationshipTypes = <String>[
   'Otro',
 ];
 
+String relationshipLabel(L l, String key) {
+  switch (key) {
+    case 'Familiar':
+      return l.relKindFamily;
+    case 'Hermanos':
+      return l.relKindSiblings;
+    case 'Amistad':
+      return l.relKindFriendship;
+    case 'Rivalidad':
+      return l.relKindRivalry;
+    case 'Enemistad':
+      return l.relKindEnmity;
+    case 'Romance':
+      return l.relKindRomance;
+    case 'Mentor':
+      return l.relKindMentor;
+    case 'Aprendiz':
+      return l.relKindApprentice;
+    case 'Aliados':
+      return l.relKindAllies;
+    case 'Pacto':
+      return l.relKindPact;
+    case 'Otro':
+      return l.relKindOther;
+  }
+  // A custom kind the user typed themselves; show it verbatim.
+  return key;
+}
+
 class RelationshipsSection extends ConsumerWidget {
   const RelationshipsSection({
     super.key,
@@ -32,6 +65,7 @@ class RelationshipsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final relationshipsAsync =
         ref.watch(relationshipsForCharacterStreamProvider(characterId));
 
@@ -41,20 +75,20 @@ class RelationshipsSection extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Relaciones', style: Theme.of(context).textTheme.titleMedium),
+            Text(l.relTitle, style: Theme.of(context).textTheme.titleMedium),
             TextButton.icon(
               onPressed: () => _showEditor(context, ref, null),
               icon: const Icon(Icons.add),
-              label: const Text('Agregar'),
+              label: Text(l.commonAdd),
             ),
           ],
         ),
         relationshipsAsync.when(
           data: (relationships) {
             if (relationships.isEmpty) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Text('Sin relaciones registradas todavía.'),
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(l.relEmpty),
               );
             }
             return Column(
@@ -63,12 +97,13 @@ class RelationshipsSection extends ConsumerWidget {
                   Card(
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     child: ListTile(
-                      title: Text(r.relationship.relationshipType),
+                      title: Text(relationshipLabel(
+                          l, r.relationship.relationshipType)),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(r.others.isEmpty
-                              ? 'Sin otros personajes'
+                              ? l.relNoOtherPeople
                               : r.others.map(_displayName).join(', ')),
                           if (r.relationship.description?.isNotEmpty == true)
                             Text(r.relationship.description!),
@@ -193,10 +228,11 @@ class _RelationshipDialogState extends ConsumerState<_RelationshipDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final charactersAsync = ref.watch(charactersStreamProvider(widget.projectId));
 
     return AlertDialog(
-      title: Text(widget.existing == null ? 'Nueva relación' : 'Editar relación'),
+      title: Text(widget.existing == null ? l.relNew : l.relEdit),
       content: SizedBox(
         width: 420,
         child: SingleChildScrollView(
@@ -206,10 +242,11 @@ class _RelationshipDialogState extends ConsumerState<_RelationshipDialog> {
             children: [
               DropdownButtonFormField<String>(
                 initialValue: _relationshipType,
-                decoration: const InputDecoration(labelText: 'Tipo de relación'),
+                decoration: InputDecoration(labelText: l.relType),
                 items: [
                   for (final t in relationshipTypes)
-                    DropdownMenuItem(value: t, child: Text(t)),
+                    DropdownMenuItem(
+                        value: t, child: Text(relationshipLabel(l, t))),
                 ],
                 onChanged: (v) => setState(() => _relationshipType = v!),
               ),
@@ -217,28 +254,23 @@ class _RelationshipDialogState extends ConsumerState<_RelationshipDialog> {
                 const SizedBox(height: 12),
                 TextField(
                   controller: _customTypeController,
-                  decoration: const InputDecoration(labelText: 'Especifica el tipo'),
+                  decoration: InputDecoration(labelText: l.relTypeOther),
                 ),
               ],
               const SizedBox(height: 16),
-              Text(
-                'Personajes en esta relación',
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-              Text(
-                'Puedes marcar varios: sirve para tríos de hermanos, '
-                'alianzas o grupos.',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              Text(l.relPeople,
+                  style: Theme.of(context).textTheme.labelLarge),
+              Text(l.relPeopleHint,
+                  style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: 4),
               charactersAsync.when(
                 data: (characters) {
                   final options =
                       characters.where((c) => c.id != widget.characterId).toList();
                   if (options.isEmpty) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Text('No hay otros personajes en este proyecto.'),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(l.relNoOthers),
                     );
                   }
                   return Column(
@@ -269,8 +301,7 @@ class _RelationshipDialogState extends ConsumerState<_RelationshipDialog> {
               const SizedBox(height: 12),
               TextField(
                 controller: _descriptionController,
-                decoration:
-                    const InputDecoration(labelText: 'Descripción (opcional)'),
+                decoration: InputDecoration(labelText: l.relDescription),
                 maxLines: 2,
               ),
             ],
@@ -280,11 +311,11 @@ class _RelationshipDialogState extends ConsumerState<_RelationshipDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(l.commonCancel),
         ),
         FilledButton(
           onPressed: _selectedIds.isEmpty ? null : _save,
-          child: const Text('Guardar'),
+          child: Text(l.commonSave),
         ),
       ],
     );

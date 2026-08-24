@@ -349,5 +349,341 @@
         "type": "int"
       }
     }
-  }
+  },
+  "secretsTitle": "Secretos",
+  "secretsEmpty": "Registra un secreto y marca qué personajes lo saben, cómo se enteraron y desde cuándo.",
+  "secretNobodyKnows": "Nadie lo sabe todavía",
+  "secretKnownBy": "Lo saben: {names}",
+  "secretOwnedBy": "Secreto de: {name}",
+  "secretNew": "Nuevo secreto",
+  "secretEdit": "Editar secreto",
+  "secretLabel": "Secreto",
+  "secretHint": "ej. Aria es la heredera legítima",
+  "secretDetails": "Detalles (opcional)",
+  "secretOwnerQuestion": "¿De quién es el secreto?",
+  "secretOwnerNobody": "De nadie en particular",
+  "secretWhoKnows": "¿Quién lo sabe?",
+  "secretHowFound": "¿Cómo se enteró {name}? (opcional)",
+  "secretNoCharacters": "No hay personajes todavía.",
+  "diceTitle": "Dados",
+  "diceClearHistory": "Limpiar historial",
+  "diceRollLabel": "Tirada",
+  "diceRollHint": "d20, 2d6+3, 4d8-1",
+  "diceRollButton": "Tirar",
+  "diceDisadvantage": "Desventaja",
+  "diceNormal": "Normal",
+  "diceAdvantage": "Ventaja",
+  "diceNoRolls": "Sin tiradas todavía.",
+  "diceAdvantageWord": "ventaja",
+  "diceDisadvantageWord": "desventaja",
+  "searchTitle": "Buscar en el universo",
+  "searchHintLong": "Buscar personajes, lugares, objetos, capítulos...",
+  "searchPrompt": "Escribe para buscar en todo el universo a la vez.",
+  "searchNoResults": "Sin resultados.",
+  "searchAllCount": "Todo ({count})",
+  "searchKindCharacter": "Personaje",
+  "searchKindLocation": "Lugar",
+  "searchKindFaction": "Facción",
+  "searchKindEvent": "Evento",
+  "searchKindItem": "Objeto",
+  "searchKindMagic": "Magia",
+  "searchKindChapter": "Capítulo",
+  "searchKindNote": "Nota",
+  "backupTitle": "Exportar / respaldar",
+  "backupLocalTitle": "Todo se guarda solo en este dispositivo",
+  "backupLocalBody": "La app no sube nada a ninguna nube por su cuenta. Si pierdes, formateas o cambias de teléfono sin un respaldo, pierdes el universo entero.",
+  "backupTip": "Truco: al tocar \"Exportar y compartir\" se abre el selector de compartir de tu teléfono — ahí puedes elegir Google Drive (u otra nube que tengas instalada) para subir el respaldo con dos toques, sin salir de la app.",
+  "backupIncludes": "El respaldo incluye personajes, mundo, facciones, línea de tiempo, capítulos, notas, objetos, magia, etiquetas y todas las imágenes y dibujos.",
+  "backupExportShare": "Exportar y compartir",
+  "backupExportSave": "Solo guardar en el dispositivo",
+  "backupLast": "Último respaldo:\n{path}",
+  "backupSavedAt": "Respaldo guardado en:\n{path}",
+  "backupShareText": "Respaldo de mi universo",
+  "backupExportFailed": "No se pudo exportar: {error}",
+  "backupImportTitle": "Importar",
+  "backupImportBody": "Restaura un respaldo como un universo nuevo. No sobrescribe nada de lo que ya tienes.",
+  "backupImportButton": "Importar respaldo (.wbz)",
+  "backupImportPick": "Elige un respaldo (.wbz)",
+  "backupImported": "Universo importado. Búscalo en \"Mis universos\".",
+  "backupImportFailed": "No se pudo importar: {error}",
+  "backupNotOurs": "El archivo no parece un respaldo de Astrolabe.",
+  "backupTooNew": "Este respaldo fue creado por una versión más nueva de la app.",
+  "familyTitle": "Árbol genealógico",
+  "familyExport": "Exportar",
+  "familyShareImage": "Compartir imagen",
+  "familySaveImage": "Guardar imagen",
+  "familyShareText": "Árbol genealógico",
+  "familyNoCharacters": "Todavía no hay personajes.",
+  "familyNoLinks": "Todavía no hay vínculos familiares.",
+  "familyHint": "Abre un personaje y agrega padres, hijos o pareja en la sección \"Familia\".",
+  "familyUnlinked": "Sin familia registrada",
+  "familyNotReady": "El árbol no está listo.",
+  "familyNoImage": "No se pudo generar la imagen.",
+  "familyExportFailed": "No se pudo exportar: {error}",
+  "familySavedAt": "Guardado en:\n{path}",
+  "familySection": "Familia",
+  "familyViewTree": "Ver árbol",
+  "familyParents": "Padres / madres",
+  "familyChildren": "Hijos / hijas",
+  "familyPartner": "Pareja",
+  "familyNoneRecorded": "Ninguno registrado.",
+  "familyPickParent": "Elegir padre/madre",
+  "familyPickChild": "Elegir hijo/hija",
+  "familyPickPartner": "Elegir pareja",
+  "familyNoOthers": "No hay otros personajes todavía.",
+  "familyPartnerKind": "¿Qué tipo de vínculo?",
+  "familyDerived": "Parentescos deducidos",
+  "familyDerivedHint": "Al registrar padres e hijos, aquí aparecerán solos los hermanos, abuelos, tíos y primos.",
+  "kinFullSiblings": "Hermanos (mismos padres)",
+  "kinHalfSiblings": "Medios hermanos",
+  "kinGrandparents": "Abuelos",
+  "kinGrandchildren": "Nietos",
+  "kinUncles": "Tíos",
+  "kinNiblings": "Sobrinos",
+  "kinCousins": "Primos",
+  "partnerMarriage": "Matrimonio",
+  "partnerCouple": "Pareja",
+  "partnerEngaged": "Prometidos",
+  "partnerLovers": "Amantes",
+  "partnerOther": "Otro",
+  "mapTitle": "Mapa",
+  "mapPlaceMarkers": "Colocar marcas",
+  "mapDone": "Terminar",
+  "mapEditHint": "Toca el mapa para poner una marca. Arrastra una marca para moverla.",
+  "mapNoFile": "No se encontró el archivo del mapa.",
+  "mapNoMapYet": "\"{name}\" todavía no tiene mapa.",
+  "mapNoMapHint": "Abre la ficha del lugar y sube una imagen o dibújala; después podrás poner marcas encima.",
+  "mapOpenPlace": "Abrir ficha del lugar",
+  "mapWhatIsHere": "¿Qué hay en este punto?",
+  "mapRemoveMarker": "Quitar marca",
+  "mapRemoveMarkerBody": "¿Quitar \"{label}\" del mapa?",
+  "mapThisMarker": "esta marca",
+  "mapSectionPlaces": "Lugares",
+  "mapSectionCharacters": "Personajes",
+  "mapSectionItems": "Objetos",
+  "relTitle": "Relaciones",
+  "relEmpty": "Sin relaciones registradas todavía.",
+  "relNew": "Nueva relación",
+  "relEdit": "Editar relación",
+  "relType": "Tipo de relación",
+  "relTypeOther": "Especifica el tipo",
+  "relPeople": "Personajes en esta relación",
+  "relPeopleHint": "Puedes marcar varios: sirve para tríos de hermanos, alianzas o grupos.",
+  "relNoOthers": "No hay otros personajes en este proyecto.",
+  "relDescription": "Descripción (opcional)",
+  "relNoOtherPeople": "Sin otros personajes",
+  "relKindFamily": "Familiar",
+  "relKindSiblings": "Hermanos",
+  "relKindFriendship": "Amistad",
+  "relKindRivalry": "Rivalidad",
+  "relKindEnmity": "Enemistad",
+  "relKindRomance": "Romance",
+  "relKindMentor": "Mentor",
+  "relKindApprentice": "Aprendiz",
+  "relKindAllies": "Aliados",
+  "relKindPact": "Pacto",
+  "relKindOther": "Otro",
+  "tagsTitle": "Etiquetas",
+  "tagsNone": "Sin etiquetas.",
+  "tagsNew": "Nueva etiqueta",
+  "tagsHint": "ej. protagonista, capital, reliquia",
+  "customFieldsTitle": "Campos propios",
+  "customFieldsEmpty": "Agrega los datos que tu mundo o tu sistema necesiten.",
+  "customFieldNew": "Nuevo campo",
+  "customFieldName": "Nombre del campo",
+  "customFieldNameHint": "ej. Fuerza, Idioma natal, Nivel de amenaza",
+  "customFieldValue": "Valor (opcional)",
+  "customFieldRemove": "Quitar campo",
+  "imageUpload": "Subir imagen",
+  "imageDraw": "Dibujar",
+  "drawingTitle": "Dibujar",
+  "drawingBackground": "Imagen de fondo",
+  "drawingRemoveBackground": "Quitar fondo",
+  "drawingClear": "Borrar todo",
+  "drawingBackgroundLabel": "Fondo",
+  "drawingCustomColor": "Color personalizado",
+  "drawingUseColor": "Usar color",
+  "sheetTitle": "Ficha de personaje",
+  "sheetProficiency": "Competencia +{bonus}",
+  "sheetClass": "Clase",
+  "sheetLevel": "Nivel",
+  "sheetArmorClass": "CA",
+  "sheetHp": "PG",
+  "sheetMaxHp": "PG máx",
+  "sheetSpeed": "Vel.",
+  "sheetAbilities": "Características",
+  "sheetAbilitiesHint": "Marca la casilla si tiene competencia en esa salvación.",
+  "sheetModifier": "Mod",
+  "sheetSave": "Salv.",
+  "sheetAlignment": "Alineamiento",
+  "sheetBackground": "Trasfondo",
+  "sheetFeatures": "Rasgos y aptitudes",
+  "sheetEquipment": "Equipo",
+  "abilityStrength": "Fuerza",
+  "abilityDexterity": "Destreza",
+  "abilityConstitution": "Constitución",
+  "abilityIntelligence": "Inteligencia",
+  "abilityWisdom": "Sabiduría",
+  "abilityCharisma": "Carisma",
+  "securityTitle": "Seguridad",
+  "@secretKnownBy": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "@secretOwnedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@secretHowFound": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@searchAllCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@backupLast": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@backupSavedAt": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@backupExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@backupImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@familyExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@familySavedAt": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@mapNoMapYet": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@mapRemoveMarkerBody": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "@sheetProficiency": {
+    "placeholders": {
+      "bonus": {
+        "type": "int"
+      }
+    }
+  },
+  "lockAskOnOpen": "Pedir PIN al abrir",
+  "lockProtected": "Tus universos están protegidos",
+  "lockUnprotected": "Cualquiera que tome el dispositivo puede leer tus universos.",
+  "lockBackgroundNote": "La app se bloquea al salir a segundo plano.",
+  "lockUseBiometrics": "Usar huella o rostro",
+  "lockBiometricsNote": "Atajo al PIN, que sigue funcionando siempre.",
+  "lockNoBiometrics": "Este dispositivo no tiene biometría configurada.",
+  "lockChangePin": "Cambiar PIN",
+  "lockNow": "Bloquear ahora",
+  "lockChoosePin": "Elige un PIN",
+  "lockConfirmCurrent": "Confirma tu PIN actual",
+  "lockNewPin": "Nuevo PIN",
+  "lockCurrentPin": "PIN actual",
+  "lockWrongPin": "PIN incorrecto.",
+  "lockMinDigits": "Usa al menos 4 dígitos.",
+  "lockUnlock": "Desbloquear",
+  "lockUnlockBiometric": "Desbloquear con huella o rostro",
+  "lockOk": "Aceptar",
+  "lockExplainer": "El PIN protege el acceso a la app en este dispositivo. No cifra el archivo de datos: alguien con acceso al sistema de archivos del teléfono aún podría leerlo. Si olvidas el PIN tendrás que reinstalar la app, así que guarda un respaldo.",
+  "diceErrEmpty": "Escribe una tirada, por ejemplo 2d6+3.",
+  "diceErrUnparsable": "No entendí \"{expression}\".",
+  "diceErrTooManyDice": "Usa entre 1 y {max} dados.",
+  "diceErrSideRange": "Los dados deben tener entre 2 y {max} caras.",
+  "diceErrUnknownTerm": "No entendí \"{term}\" en la tirada.",
+  "backupErrNotABackup": "El archivo no parece un respaldo de Astrolabe.",
+  "backupErrNewerFormat": "Este respaldo fue creado por una versión más nueva de la app.",
+  "lockBiometricReason": "Desbloquea tus universos",
+  "@diceErrUnparsable": {
+    "placeholders": {
+      "expression": {
+        "type": "String"
+      }
+    }
+  },
+  "@diceErrTooManyDice": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@diceErrSideRange": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@diceErrUnknownTerm": {
+    "placeholders": {
+      "term": {
+        "type": "String"
+      }
+    }
+  },
+  "themeClassicName": "Clásico",
+  "themeClassicDesc": "Limpio y neutro. Deja que tu contenido hable.",
+  "themeMedievalName": "Medieval",
+  "themeMedievalDesc": "Pergamino, vino y oro. Para reinos, espadas y linajes.",
+  "themeSteampunkName": "Steampunk",
+  "themeSteampunkDesc": "Latón, cobre y cardenillo. Engranajes y vapor.",
+  "themeCyberpunkName": "Cyberpunk",
+  "themeCyberpunkDesc": "Neón sobre negro. Circuitos, datos y lluvia ácida.",
+  "themeSolarpunkName": "Solarpunk",
+  "themeSolarpunkDesc": "Verde, sol y aire limpio. Futuros que dan ganas de vivir.",
+  "themeCosmicName": "Cósmico",
+  "themeCosmicDesc": "Nebulosas y luz de estrellas. Naves, imperios y vacío.",
+  "themeGothicName": "Gótico",
+  "themeGothicDesc": "Carmesí y ceniza. Vampiros, ruinas y secretos."
 }

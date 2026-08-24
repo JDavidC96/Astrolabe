@@ -48,6 +48,16 @@ void main() {
       'commonError', // "Error" is the same word in both
       'appearanceAuto', // so is "Auto"
       'charRoleNpc', // NPC is the standard abbreviation in both
+      'diceNormal', // "Normal" is the same word in both
+      'diceRollHint', // dice notation, not prose
+      'sheetModifier', // "Mod" is the D&D abbreviation in both
+      'relKindRomance', // same word in both
+      'relKindMentor',
+      // Genre names that are not translated in either language.
+      'themeMedievalName',
+      'themeSteampunkName',
+      'themeCyberpunkName',
+      'themeSolarpunkName',
     };
 
     final suspicious = <String>[];

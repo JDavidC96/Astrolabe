@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:worldbuilder/l10n/app_localizations.dart';
 import 'package:worldbuilder/widgets/searchable_pickers.dart';
 
 /// Builds a list long enough to trigger the search box.
@@ -45,6 +46,9 @@ void main() {
   group('searchable checkbox list', () {
     testWidgets('short lists get no search box', (tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
+        locale: const Locale('es'),
         home: Scaffold(
           body: SearchableCheckboxList(
             options: const [
@@ -63,6 +67,9 @@ void main() {
 
     testWidgets('long lists get a search box that filters', (tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
+        locale: const Locale('es'),
         home: Scaffold(
           body: SearchableCheckboxList(
             options: manyOptions(),
@@ -89,6 +96,9 @@ void main() {
       final selected = <String>{'jon'};
 
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
+        locale: const Locale('es'),
         home: Scaffold(
           body: StatefulBuilder(
             builder: (context, setState) => SearchableCheckboxList(
@@ -131,6 +141,9 @@ void main() {
       final selected = <String>{};
 
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
+        locale: const Locale('es'),
         home: Scaffold(
           body: StatefulBuilder(
             builder: (context, setState) => SearchableCheckboxList(
@@ -161,6 +174,9 @@ void main() {
     testWidgets('a search with no hits says so instead of looking empty',
         (tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
+        locale: const Locale('es'),
         home: Scaffold(
           body: SearchableCheckboxList(
             options: manyOptions(),
@@ -177,7 +193,10 @@ void main() {
     });
 
     testWidgets('an empty option list shows the empty message', (tester) async {
-      await tester.pumpWidget(const MaterialApp(
+      await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
+        locale: const Locale('es'),
         home: Scaffold(
           body: SearchableCheckboxList(
             options: [],
@@ -197,6 +216,9 @@ void main() {
       String? picked;
 
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
+        locale: const Locale('es'),
         home: Scaffold(
           body: Builder(
             builder: (context) => ElevatedButton(

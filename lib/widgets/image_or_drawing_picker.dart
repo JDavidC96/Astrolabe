@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+
+import '../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -85,18 +87,18 @@ class ImageOrDrawingPicker extends ConsumerWidget {
             OutlinedButton.icon(
               onPressed: () => _pickFromGallery(context, ref),
               icon: const Icon(Icons.photo_library_outlined),
-              label: const Text('Subir imagen'),
+              label: Text(L.of(context).imageUpload),
             ),
             OutlinedButton.icon(
               onPressed: () => _draw(context, ref),
               icon: const Icon(Icons.brush_outlined),
-              label: const Text('Dibujar'),
+              label: Text(L.of(context).imageDraw),
             ),
             if (imagePath != null)
               TextButton.icon(
                 onPressed: () => _remove(ref),
                 icon: const Icon(Icons.delete_outline),
-                label: const Text('Quitar'),
+                label: Text(L.of(context).commonRemove),
               ),
           ],
         ),

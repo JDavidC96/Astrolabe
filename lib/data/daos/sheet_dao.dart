@@ -15,15 +15,6 @@ const abilityKeys = <String>[
   'charisma',
 ];
 
-const abilityLabels = <String, String>{
-  'strength': 'Fuerza',
-  'dexterity': 'Destreza',
-  'constitution': 'Constitución',
-  'intelligence': 'Inteligencia',
-  'wisdom': 'Sabiduría',
-  'charisma': 'Carisma',
-};
-
 /// 5e modifier: floor((score - 10) / 2), which for negatives must round
 /// *down*, not toward zero the way Dart's ~/ does.
 int abilityModifier(int score) => ((score - 10) / 2).floor();

@@ -13,12 +13,24 @@ class DiceResult {
   });
 }
 
+/// Why an expression could not be rolled. The screen turns this into a
+/// sentence in the reader's language; the enum keeps the roller itself
+/// free of display text.
+enum DiceError { empty, unparsable, tooManyDice, sideRange, unknownTerm }
+
 class DiceFormatException implements Exception {
-  DiceFormatException(this.message);
-  final String message;
+  DiceFormatException(this.error, {this.text, this.limit});
+
+  final DiceError error;
+
+  /// The offending expression or term, when there is one.
+  final String? text;
+
+  /// The bound that was exceeded, for the range errors.
+  final int? limit;
 
   @override
-  String toString() => message;
+  String toString() => 'DiceFormatException(\$error, \$text)';
 }
 
 /// Evaluates tabletop dice expressions such as `d20`, `2d6+3`, `4d8 - 1 + d4`.
@@ -38,14 +50,14 @@ class DiceRoller {
   DiceResult roll(String input, {int advantage = 0}) {
     final expression = input.trim();
     if (expression.isEmpty) {
-      throw DiceFormatException('Escribe una tirada, por ejemplo 2d6+3.');
+      throw DiceFormatException(DiceError.empty);
     }
 
     // Split into signed terms while keeping each term's sign.
     final normalized = expression.replaceAll(' ', '');
     final matches = RegExp(r'[+-]?[^+-]+').allMatches(normalized);
     if (matches.isEmpty) {
-      throw DiceFormatException('No entendí "$expression".');
+      throw DiceFormatException(DiceError.unparsable, text: expression);
     }
 
     var total = 0;
@@ -61,7 +73,7 @@ class DiceRoller {
         term = term.substring(1);
       }
       if (term.isEmpty) {
-        throw DiceFormatException('No entendí "$expression".');
+        throw DiceFormatException(DiceError.unparsable, text: expression);
       }
 
       final dice = _termPattern.firstMatch(term);
@@ -69,10 +81,10 @@ class DiceRoller {
         final count = dice.group(1)!.isEmpty ? 1 : int.parse(dice.group(1)!);
         final sides = int.parse(dice.group(2)!);
         if (count < 1 || count > _maxDice) {
-          throw DiceFormatException('Usa entre 1 y $_maxDice dados.');
+          throw DiceFormatException(DiceError.tooManyDice, limit: _maxDice);
         }
         if (sides < 2 || sides > _maxSides) {
-          throw DiceFormatException('Los dados deben tener entre 2 y $_maxSides caras.');
+          throw DiceFormatException(DiceError.sideRange, limit: _maxSides);
         }
 
         final rolls = <int>[];
@@ -87,7 +99,7 @@ class DiceRoller {
 
       final flat = int.tryParse(term);
       if (flat == null) {
-        throw DiceFormatException('No entendí "$term" en "$expression".');
+        throw DiceFormatException(DiceError.unknownTerm, text: term);
       }
       total += sign * flat;
       parts.add('${sign < 0 ? '-' : '+'}$flat');

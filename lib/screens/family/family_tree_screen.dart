@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -36,15 +38,16 @@ class _FamilyTreeScreenState extends ConsumerState<FamilyTreeScreen> {
   bool _exporting = false;
 
   Future<void> _export({required bool share}) async {
+    final l = L.of(context);
     setState(() => _exporting = true);
     try {
       final boundary = _captureKey.currentContext?.findRenderObject()
           as RenderRepaintBoundary?;
-      if (boundary == null) throw StateError('El árbol no está listo.');
+      if (boundary == null) throw StateError(l.familyNotReady);
 
       final image = await boundary.toImage(pixelRatio: 3);
       final data = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (data == null) throw StateError('No se pudo generar la imagen.');
+      if (data == null) throw StateError(l.familyNoImage);
 
       // Flatten onto white so the PNG is readable outside the app's theme.
       final flattened = await _onWhite(data.buffer.asUint8List());
@@ -55,17 +58,17 @@ class _FamilyTreeScreenState extends ConsumerState<FamilyTreeScreen> {
 
       if (share) {
         await SharePlus.instance.share(
-          ShareParams(files: [XFile(file.path)], text: 'Árbol genealógico'),
+          ShareParams(files: [XFile(file.path)], text: l.familyShareText),
         );
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Guardado en:\n${file.path}')),
+          SnackBar(content: Text(l.familySavedAt(file.path))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No se pudo exportar: $e')),
+          SnackBar(content: Text(l.familyExportFailed('$e'))),
         );
       }
     } finally {
@@ -99,7 +102,7 @@ class _FamilyTreeScreenState extends ConsumerState<FamilyTreeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Árbol genealógico'),
+        title: Text(L.of(context).familyTitle),
         actions: [
           if (_exporting)
             const Padding(
@@ -115,11 +118,11 @@ class _FamilyTreeScreenState extends ConsumerState<FamilyTreeScreen> {
           else
             PopupMenuButton<String>(
               icon: const Icon(Icons.ios_share),
-              tooltip: 'Exportar',
+              tooltip: L.of(context).familyExport,
               onSelected: (value) => _export(share: value == 'share'),
-              itemBuilder: (context) => const [
-                PopupMenuItem(value: 'share', child: Text('Compartir imagen')),
-                PopupMenuItem(value: 'save', child: Text('Guardar imagen')),
+              itemBuilder: (context) => [
+                PopupMenuItem(value: 'share', child: Text(L.of(context).familyShareImage)),
+                PopupMenuItem(value: 'save', child: Text(L.of(context).familySaveImage)),
               ],
             ),
         ],
@@ -191,14 +194,13 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               unlinked == 0
-                  ? 'Todavía no hay personajes.'
-                  : 'Todavía no hay vínculos familiares.',
+                  ? L.of(context).familyNoCharacters
+                  : L.of(context).familyNoLinks,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Abre un personaje y agrega padres, hijos o pareja en la '
-              'sección "Familia".',
+            Text(
+              L.of(context).familyHint,
               textAlign: TextAlign.center,
             ),
           ],
@@ -410,7 +412,7 @@ class _UnlinkedStrip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Sin familia registrada',
+              L.of(context).familyUnlinked,
               style: Theme.of(context).textTheme.labelLarge,
             ),
             const SizedBox(height: 8),
