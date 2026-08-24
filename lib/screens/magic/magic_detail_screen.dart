@@ -187,7 +187,7 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
             TextFormField(
               controller: _source,
               decoration: const InputDecoration(
-                labelText: 'Fuente del poder',
+                labelText: 'Fuente del poder (opcional)',
                 hintText: 'Los dioses, la sangre, runas, el éter...',
               ),
             ),
@@ -195,7 +195,7 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
             TextFormField(
               controller: _rules,
               decoration: const InputDecoration(
-                labelText: 'Reglas / cómo funciona',
+                labelText: 'Reglas / cómo funciona (opcional)',
                 border: OutlineInputBorder(),
               ),
               maxLines: 5,
@@ -204,7 +204,7 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
             TextFormField(
               controller: _limitations,
               decoration: const InputDecoration(
-                labelText: 'Limitaciones',
+                labelText: 'Limitaciones (opcional)',
                 border: OutlineInputBorder(),
               ),
               maxLines: 4,
@@ -213,7 +213,7 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
             TextFormField(
               controller: _cost,
               decoration: const InputDecoration(
-                labelText: 'Costo / precio a pagar',
+                labelText: 'Costo / precio a pagar (opcional)',
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
@@ -222,7 +222,7 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
             TextFormField(
               controller: _description,
               decoration: const InputDecoration(
-                labelText: 'Descripción general',
+                labelText: 'Descripción general (opcional)',
                 border: OutlineInputBorder(),
               ),
               maxLines: 5,

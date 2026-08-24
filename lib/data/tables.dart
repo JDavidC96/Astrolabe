@@ -16,6 +16,13 @@ class Projects extends Table {
   /// Visual theme id (see `theme/app_themes.dart`); each universe carries
   /// its own look so a medieval saga and a cyberpunk campaign don't share one.
   TextColumn get themeId => text().withDefault(const Constant('classic'))();
+  /// When on, every chapter that has a summary is mirrored into the
+  /// timeline and kept in sync with it.
+  BoolColumn get autoChapterTimeline =>
+      boolean().withDefault(const Constant(false))();
+  /// Order the timeline by in-story year instead of manual drag order.
+  BoolColumn get timelineSortByYear =>
+      boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
@@ -258,6 +265,13 @@ class TimelineEvents extends Table {
   TextColumn get description => text().nullable()();
   TextColumn get locationId =>
       text().nullable().references(Locations, #id, onDelete: KeyAction.setNull)();
+  /// Numeric in-story year, used to sort chronologically. Kept separate
+  /// from [fictionalDate], which stays free text ("12 del invierno largo").
+  IntColumn get year => integer().nullable()();
+  /// Set when this event was mirrored from a chapter. The chapter owns the
+  /// text while the link exists; unlinking turns it into a normal event.
+  TextColumn get sourceChapterId =>
+      text().nullable().references(Chapters, #id, onDelete: KeyAction.cascade)();
   IntColumn get sortIndex => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 
@@ -314,6 +328,9 @@ class Chapters extends Table {
   DateTimeColumn get sessionDate => dateTime().nullable()();
   /// Target word count for this chapter, if the writer set one.
   IntColumn get wordGoal => integer().nullable()();
+  /// In-story year this chapter happens in, used to place it on the
+  /// timeline chronologically.
+  IntColumn get storyYear => integer().nullable()();
   IntColumn get sortIndex => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();

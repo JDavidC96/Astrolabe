@@ -55,6 +55,22 @@ class ChapterDao extends DatabaseAccessor<AppDatabase> with _$ChapterDaoMixin {
         );
   }
 
+  /// The reverse of [watchChapterCharacters]: every chapter a character
+  /// shows up in, so an arc can be followed from the character's own page.
+  Stream<List<Chapter>> watchChaptersWithCharacter(String characterId) {
+    final query = select(chapters).join([
+      innerJoin(
+        chapterCharacters,
+        chapterCharacters.chapterId.equalsExp(chapters.id),
+      ),
+    ])
+      ..where(chapterCharacters.characterId.equals(characterId))
+      ..orderBy([OrderingTerm(expression: chapters.sortIndex)]);
+    return query.watch().map(
+          (rows) => rows.map((r) => r.readTable(chapters)).toList(),
+        );
+  }
+
   Future<String> createChapter({
     required String projectId,
     required String title,

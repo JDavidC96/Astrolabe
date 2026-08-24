@@ -223,32 +223,32 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                 ),
                 TextFormField(
                   controller: _lastName,
-                  decoration: const InputDecoration(labelText: 'Apellido'),
+                  decoration: const InputDecoration(labelText: 'Apellido (opcional)'),
                 ),
                 TextFormField(
                   controller: _alias,
-                  decoration: const InputDecoration(labelText: 'Alias / apodo'),
+                  decoration: const InputDecoration(labelText: 'Alias / apodo (opcional)'),
                 ),
                 TextFormField(
                   controller: _race,
-                  decoration: const InputDecoration(labelText: 'Raza / especie'),
+                  decoration: const InputDecoration(labelText: 'Raza / especie (opcional)'),
                 ),
                 TextFormField(
                   controller: _gender,
-                  decoration: const InputDecoration(labelText: 'Género'),
+                  decoration: const InputDecoration(labelText: 'Género (opcional)'),
                 ),
                 TextFormField(
                   controller: _age,
-                  decoration: const InputDecoration(labelText: 'Edad'),
+                  decoration: const InputDecoration(labelText: 'Edad (opcional)'),
                 ),
                 TextFormField(
                   controller: _occupation,
-                  decoration: const InputDecoration(labelText: 'Ocupación'),
+                  decoration: const InputDecoration(labelText: 'Ocupación (opcional)'),
                 ),
                 factionsAsync.when(
                   data: (factions) => DropdownButtonFormField<String?>(
                     initialValue: _factionId,
-                    decoration: const InputDecoration(labelText: 'Facción / casa'),
+                    decoration: const InputDecoration(labelText: 'Facción / casa (opcional)'),
                     items: [
                       const DropdownMenuItem(value: null, child: Text('Ninguna')),
                       for (final f in factions) DropdownMenuItem(value: f.id, child: Text(f.name)),
@@ -268,7 +268,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                 if (isCampaign)
                   DropdownButtonFormField<String?>(
                     initialValue: _role,
-                    decoration: const InputDecoration(labelText: 'Rol en la mesa'),
+                    decoration: const InputDecoration(labelText: 'Rol en la mesa (opcional)'),
                     items: const [
                       DropdownMenuItem(value: null, child: Text('Sin definir')),
                       DropdownMenuItem(
@@ -285,7 +285,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
             if (isCampaign && _characterId != null)
               DndSheetSection(characterId: _characterId!),
             _SectionCard(
-              title: 'Apariencia física',
+              title: 'Apariencia física (opcional)',
               children: [
                 TextFormField(
                   controller: _physicalDescription,
@@ -295,7 +295,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               ],
             ),
             _SectionCard(
-              title: 'Personalidad',
+              title: 'Personalidad (opcional)',
               children: [
                 TextFormField(
                   controller: _personality,
@@ -305,7 +305,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               ],
             ),
             _SectionCard(
-              title: 'Historia / trasfondo',
+              title: 'Historia / trasfondo (opcional)',
               children: [
                 TextFormField(
                   controller: _backstory,
@@ -315,7 +315,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               ],
             ),
             _SectionCard(
-              title: 'Habilidades',
+              title: 'Habilidades (opcional)',
               children: [
                 TextFormField(
                   controller: _abilities,
@@ -325,7 +325,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               ],
             ),
             _SectionCard(
-              title: 'Notas',
+              title: 'Notas (opcional)',
               children: [
                 TextFormField(
                   controller: _notes,
@@ -336,6 +336,12 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
             ),
             if (_characterId != null) ...[
               const SizedBox(height: 8),
+              _AppearancesSection(
+                projectId: widget.projectId,
+                characterId: _characterId!,
+                isCampaign: isCampaign,
+              ),
+              const SizedBox(height: 16),
               RelationshipsSection(projectId: widget.projectId, characterId: _characterId!),
               const SizedBox(height: 16),
               FamilySection(
@@ -392,6 +398,68 @@ class _SectionCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Where this character shows up in the story.
+///
+/// The link is recorded on the chapter side; reading it back here is what
+/// makes it possible to follow one character's arc without opening every
+/// chapter to check.
+class _AppearancesSection extends ConsumerWidget {
+  const _AppearancesSection({
+    required this.projectId,
+    required this.characterId,
+    required this.isCampaign,
+  });
+
+  final String projectId;
+  final String characterId;
+  final bool isCampaign;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chaptersAsync =
+        ref.watch(chaptersWithCharacterStreamProvider(characterId));
+    final noun = isCampaign ? 'sesiones' : 'capítulos';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          isCampaign ? 'Sesiones en las que estuvo' : 'Aparece en',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 4),
+        chaptersAsync.when(
+          data: (chapters) {
+            if (chapters.isEmpty) {
+              return Text(
+                'Todavía no está marcado en ningún $noun. Se marca desde '
+                'el $noun, no desde aquí.',
+                style: Theme.of(context).textTheme.bodySmall,
+              );
+            }
+            return Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                for (final chapter in chapters)
+                  ActionChip(
+                    avatar: const Icon(Icons.menu_book_outlined, size: 16),
+                    label: Text(chapter.title),
+                    onPressed: () => context.push(
+                      '/project/$projectId/chapters/${chapter.id}',
+                    ),
+                  ),
+              ],
+            );
+          },
+          loading: () => const LinearProgressIndicator(),
+          error: (e, st) => Text('Error: $e'),
+        ),
+      ],
     );
   }
 }

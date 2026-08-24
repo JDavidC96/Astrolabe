@@ -89,6 +89,16 @@ class ProjectDao extends DatabaseAccessor<AppDatabase> with _$ProjectDaoMixin {
     );
   }
 
+  Future<void> setAutoChapterTimeline(String id, bool enabled) {
+    return (update(projects)..where((t) => t.id.equals(id)))
+        .write(ProjectsCompanion(autoChapterTimeline: Value(enabled)));
+  }
+
+  Future<void> setTimelineSortByYear(String id, bool enabled) {
+    return (update(projects)..where((t) => t.id.equals(id)))
+        .write(ProjectsCompanion(timelineSortByYear: Value(enabled)));
+  }
+
   Future<void> touchProject(String id) {
     return (update(projects)..where((t) => t.id.equals(id)))
         .write(ProjectsCompanion(updatedAt: Value(DateTime.now())));

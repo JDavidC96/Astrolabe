@@ -6,6 +6,7 @@ part of 'timeline_dao.dart';
 mixin _$TimelineDaoMixin on DatabaseAccessor<AppDatabase> {
   $ProjectsTable get projects => attachedDatabase.projects;
   $LocationsTable get locations => attachedDatabase.locations;
+  $ChaptersTable get chapters => attachedDatabase.chapters;
   $TimelineEventsTable get timelineEvents => attachedDatabase.timelineEvents;
   $FactionsTable get factions => attachedDatabase.factions;
   $CharactersTable get characters => attachedDatabase.characters;
@@ -20,6 +21,8 @@ class TimelineDaoManager {
       $$ProjectsTableTableManager(_db.attachedDatabase, _db.projects);
   $$LocationsTableTableManager get locations =>
       $$LocationsTableTableManager(_db.attachedDatabase, _db.locations);
+  $$ChaptersTableTableManager get chapters =>
+      $$ChaptersTableTableManager(_db.attachedDatabase, _db.chapters);
   $$TimelineEventsTableTableManager get timelineEvents =>
       $$TimelineEventsTableTableManager(
         _db.attachedDatabase,

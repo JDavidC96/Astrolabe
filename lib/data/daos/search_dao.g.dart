@@ -8,10 +8,10 @@ mixin _$SearchDaoMixin on DatabaseAccessor<AppDatabase> {
   $FactionsTable get factions => attachedDatabase.factions;
   $CharactersTable get characters => attachedDatabase.characters;
   $LocationsTable get locations => attachedDatabase.locations;
+  $ChaptersTable get chapters => attachedDatabase.chapters;
   $TimelineEventsTable get timelineEvents => attachedDatabase.timelineEvents;
   $ItemsTable get items => attachedDatabase.items;
   $MagicSystemsTable get magicSystems => attachedDatabase.magicSystems;
-  $ChaptersTable get chapters => attachedDatabase.chapters;
   $NotesTable get notes => attachedDatabase.notes;
   SearchDaoManager get managers => SearchDaoManager(this);
 }
@@ -27,6 +27,8 @@ class SearchDaoManager {
       $$CharactersTableTableManager(_db.attachedDatabase, _db.characters);
   $$LocationsTableTableManager get locations =>
       $$LocationsTableTableManager(_db.attachedDatabase, _db.locations);
+  $$ChaptersTableTableManager get chapters =>
+      $$ChaptersTableTableManager(_db.attachedDatabase, _db.chapters);
   $$TimelineEventsTableTableManager get timelineEvents =>
       $$TimelineEventsTableTableManager(
         _db.attachedDatabase,
@@ -36,8 +38,6 @@ class SearchDaoManager {
       $$ItemsTableTableManager(_db.attachedDatabase, _db.items);
   $$MagicSystemsTableTableManager get magicSystems =>
       $$MagicSystemsTableTableManager(_db.attachedDatabase, _db.magicSystems);
-  $$ChaptersTableTableManager get chapters =>
-      $$ChaptersTableTableManager(_db.attachedDatabase, _db.chapters);
   $$NotesTableTableManager get notes =>
       $$NotesTableTableManager(_db.attachedDatabase, _db.notes);
 }

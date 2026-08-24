@@ -70,6 +70,34 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
     requiredDuringInsert: false,
     defaultValue: const Constant('classic'),
   );
+  static const VerificationMeta _autoChapterTimelineMeta =
+      const VerificationMeta('autoChapterTimeline');
+  @override
+  late final GeneratedColumn<bool> autoChapterTimeline = GeneratedColumn<bool>(
+    'auto_chapter_timeline',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("auto_chapter_timeline" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _timelineSortByYearMeta =
+      const VerificationMeta('timelineSortByYear');
+  @override
+  late final GeneratedColumn<bool> timelineSortByYear = GeneratedColumn<bool>(
+    'timeline_sort_by_year',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("timeline_sort_by_year" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -102,6 +130,8 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
     coverImagePath,
     kind,
     themeId,
+    autoChapterTimeline,
+    timelineSortByYear,
     createdAt,
     updatedAt,
   ];
@@ -160,6 +190,24 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
         themeId.isAcceptableOrUnknown(data['theme_id']!, _themeIdMeta),
       );
     }
+    if (data.containsKey('auto_chapter_timeline')) {
+      context.handle(
+        _autoChapterTimelineMeta,
+        autoChapterTimeline.isAcceptableOrUnknown(
+          data['auto_chapter_timeline']!,
+          _autoChapterTimelineMeta,
+        ),
+      );
+    }
+    if (data.containsKey('timeline_sort_by_year')) {
+      context.handle(
+        _timelineSortByYearMeta,
+        timelineSortByYear.isAcceptableOrUnknown(
+          data['timeline_sort_by_year']!,
+          _timelineSortByYearMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -205,6 +253,14 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
         DriftSqlType.string,
         data['${effectivePrefix}theme_id'],
       )!,
+      autoChapterTimeline: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}auto_chapter_timeline'],
+      )!,
+      timelineSortByYear: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}timeline_sort_by_year'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -232,6 +288,13 @@ class Project extends DataClass implements Insertable<Project> {
   /// Visual theme id (see `theme/app_themes.dart`); each universe carries
   /// its own look so a medieval saga and a cyberpunk campaign don't share one.
   final String themeId;
+
+  /// When on, every chapter that has a summary is mirrored into the
+  /// timeline and kept in sync with it.
+  final bool autoChapterTimeline;
+
+  /// Order the timeline by in-story year instead of manual drag order.
+  final bool timelineSortByYear;
   final DateTime createdAt;
   final DateTime updatedAt;
   const Project({
@@ -241,6 +304,8 @@ class Project extends DataClass implements Insertable<Project> {
     this.coverImagePath,
     required this.kind,
     required this.themeId,
+    required this.autoChapterTimeline,
+    required this.timelineSortByYear,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -257,6 +322,8 @@ class Project extends DataClass implements Insertable<Project> {
     }
     map['kind'] = Variable<String>(kind);
     map['theme_id'] = Variable<String>(themeId);
+    map['auto_chapter_timeline'] = Variable<bool>(autoChapterTimeline);
+    map['timeline_sort_by_year'] = Variable<bool>(timelineSortByYear);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -274,6 +341,8 @@ class Project extends DataClass implements Insertable<Project> {
           : Value(coverImagePath),
       kind: Value(kind),
       themeId: Value(themeId),
+      autoChapterTimeline: Value(autoChapterTimeline),
+      timelineSortByYear: Value(timelineSortByYear),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -291,6 +360,10 @@ class Project extends DataClass implements Insertable<Project> {
       coverImagePath: serializer.fromJson<String?>(json['coverImagePath']),
       kind: serializer.fromJson<String>(json['kind']),
       themeId: serializer.fromJson<String>(json['themeId']),
+      autoChapterTimeline: serializer.fromJson<bool>(
+        json['autoChapterTimeline'],
+      ),
+      timelineSortByYear: serializer.fromJson<bool>(json['timelineSortByYear']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -305,6 +378,8 @@ class Project extends DataClass implements Insertable<Project> {
       'coverImagePath': serializer.toJson<String?>(coverImagePath),
       'kind': serializer.toJson<String>(kind),
       'themeId': serializer.toJson<String>(themeId),
+      'autoChapterTimeline': serializer.toJson<bool>(autoChapterTimeline),
+      'timelineSortByYear': serializer.toJson<bool>(timelineSortByYear),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -317,6 +392,8 @@ class Project extends DataClass implements Insertable<Project> {
     Value<String?> coverImagePath = const Value.absent(),
     String? kind,
     String? themeId,
+    bool? autoChapterTimeline,
+    bool? timelineSortByYear,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => Project(
@@ -328,6 +405,8 @@ class Project extends DataClass implements Insertable<Project> {
         : this.coverImagePath,
     kind: kind ?? this.kind,
     themeId: themeId ?? this.themeId,
+    autoChapterTimeline: autoChapterTimeline ?? this.autoChapterTimeline,
+    timelineSortByYear: timelineSortByYear ?? this.timelineSortByYear,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -343,6 +422,12 @@ class Project extends DataClass implements Insertable<Project> {
           : this.coverImagePath,
       kind: data.kind.present ? data.kind.value : this.kind,
       themeId: data.themeId.present ? data.themeId.value : this.themeId,
+      autoChapterTimeline: data.autoChapterTimeline.present
+          ? data.autoChapterTimeline.value
+          : this.autoChapterTimeline,
+      timelineSortByYear: data.timelineSortByYear.present
+          ? data.timelineSortByYear.value
+          : this.timelineSortByYear,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -357,6 +442,8 @@ class Project extends DataClass implements Insertable<Project> {
           ..write('coverImagePath: $coverImagePath, ')
           ..write('kind: $kind, ')
           ..write('themeId: $themeId, ')
+          ..write('autoChapterTimeline: $autoChapterTimeline, ')
+          ..write('timelineSortByYear: $timelineSortByYear, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -371,6 +458,8 @@ class Project extends DataClass implements Insertable<Project> {
     coverImagePath,
     kind,
     themeId,
+    autoChapterTimeline,
+    timelineSortByYear,
     createdAt,
     updatedAt,
   );
@@ -384,6 +473,8 @@ class Project extends DataClass implements Insertable<Project> {
           other.coverImagePath == this.coverImagePath &&
           other.kind == this.kind &&
           other.themeId == this.themeId &&
+          other.autoChapterTimeline == this.autoChapterTimeline &&
+          other.timelineSortByYear == this.timelineSortByYear &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -395,6 +486,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<String?> coverImagePath;
   final Value<String> kind;
   final Value<String> themeId;
+  final Value<bool> autoChapterTimeline;
+  final Value<bool> timelineSortByYear;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -405,6 +498,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     this.coverImagePath = const Value.absent(),
     this.kind = const Value.absent(),
     this.themeId = const Value.absent(),
+    this.autoChapterTimeline = const Value.absent(),
+    this.timelineSortByYear = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -416,6 +511,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     this.coverImagePath = const Value.absent(),
     this.kind = const Value.absent(),
     this.themeId = const Value.absent(),
+    this.autoChapterTimeline = const Value.absent(),
+    this.timelineSortByYear = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -428,6 +525,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     Expression<String>? coverImagePath,
     Expression<String>? kind,
     Expression<String>? themeId,
+    Expression<bool>? autoChapterTimeline,
+    Expression<bool>? timelineSortByYear,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -439,6 +538,10 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       if (coverImagePath != null) 'cover_image_path': coverImagePath,
       if (kind != null) 'kind': kind,
       if (themeId != null) 'theme_id': themeId,
+      if (autoChapterTimeline != null)
+        'auto_chapter_timeline': autoChapterTimeline,
+      if (timelineSortByYear != null)
+        'timeline_sort_by_year': timelineSortByYear,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -452,6 +555,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     Value<String?>? coverImagePath,
     Value<String>? kind,
     Value<String>? themeId,
+    Value<bool>? autoChapterTimeline,
+    Value<bool>? timelineSortByYear,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -463,6 +568,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
       coverImagePath: coverImagePath ?? this.coverImagePath,
       kind: kind ?? this.kind,
       themeId: themeId ?? this.themeId,
+      autoChapterTimeline: autoChapterTimeline ?? this.autoChapterTimeline,
+      timelineSortByYear: timelineSortByYear ?? this.timelineSortByYear,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -490,6 +597,12 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     if (themeId.present) {
       map['theme_id'] = Variable<String>(themeId.value);
     }
+    if (autoChapterTimeline.present) {
+      map['auto_chapter_timeline'] = Variable<bool>(autoChapterTimeline.value);
+    }
+    if (timelineSortByYear.present) {
+      map['timeline_sort_by_year'] = Variable<bool>(timelineSortByYear.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -511,6 +624,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
           ..write('coverImagePath: $coverImagePath, ')
           ..write('kind: $kind, ')
           ..write('themeId: $themeId, ')
+          ..write('autoChapterTimeline: $autoChapterTimeline, ')
+          ..write('timelineSortByYear: $timelineSortByYear, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -3145,6 +3260,720 @@ class CharactersCompanion extends UpdateCompanion<Character> {
   }
 }
 
+class $ChaptersTable extends Chapters with TableInfo<$ChaptersTable, Chapter> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ChaptersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES projects (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sessionDateMeta = const VerificationMeta(
+    'sessionDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> sessionDate = GeneratedColumn<DateTime>(
+    'session_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _wordGoalMeta = const VerificationMeta(
+    'wordGoal',
+  );
+  @override
+  late final GeneratedColumn<int> wordGoal = GeneratedColumn<int>(
+    'word_goal',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _storyYearMeta = const VerificationMeta(
+    'storyYear',
+  );
+  @override
+  late final GeneratedColumn<int> storyYear = GeneratedColumn<int>(
+    'story_year',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortIndexMeta = const VerificationMeta(
+    'sortIndex',
+  );
+  @override
+  late final GeneratedColumn<int> sortIndex = GeneratedColumn<int>(
+    'sort_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    title,
+    summary,
+    content,
+    status,
+    sessionDate,
+    wordGoal,
+    storyYear,
+    sortIndex,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'chapters';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Chapter> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('session_date')) {
+      context.handle(
+        _sessionDateMeta,
+        sessionDate.isAcceptableOrUnknown(
+          data['session_date']!,
+          _sessionDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('word_goal')) {
+      context.handle(
+        _wordGoalMeta,
+        wordGoal.isAcceptableOrUnknown(data['word_goal']!, _wordGoalMeta),
+      );
+    }
+    if (data.containsKey('story_year')) {
+      context.handle(
+        _storyYearMeta,
+        storyYear.isAcceptableOrUnknown(data['story_year']!, _storyYearMeta),
+      );
+    }
+    if (data.containsKey('sort_index')) {
+      context.handle(
+        _sortIndexMeta,
+        sortIndex.isAcceptableOrUnknown(data['sort_index']!, _sortIndexMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Chapter map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Chapter(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      ),
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      ),
+      sessionDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}session_date'],
+      ),
+      wordGoal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}word_goal'],
+      ),
+      storyYear: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}story_year'],
+      ),
+      sortIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_index'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ChaptersTable createAlias(String alias) {
+    return $ChaptersTable(attachedDatabase, alias);
+  }
+}
+
+class Chapter extends DataClass implements Insertable<Chapter> {
+  final String id;
+  final String projectId;
+  final String title;
+  final String? summary;
+  final String? content;
+  final String? status;
+
+  /// Real-world date the session was played (campaigns only).
+  final DateTime? sessionDate;
+
+  /// Target word count for this chapter, if the writer set one.
+  final int? wordGoal;
+
+  /// In-story year this chapter happens in, used to place it on the
+  /// timeline chronologically.
+  final int? storyYear;
+  final int sortIndex;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const Chapter({
+    required this.id,
+    required this.projectId,
+    required this.title,
+    this.summary,
+    this.content,
+    this.status,
+    this.sessionDate,
+    this.wordGoal,
+    this.storyYear,
+    required this.sortIndex,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || summary != null) {
+      map['summary'] = Variable<String>(summary);
+    }
+    if (!nullToAbsent || content != null) {
+      map['content'] = Variable<String>(content);
+    }
+    if (!nullToAbsent || status != null) {
+      map['status'] = Variable<String>(status);
+    }
+    if (!nullToAbsent || sessionDate != null) {
+      map['session_date'] = Variable<DateTime>(sessionDate);
+    }
+    if (!nullToAbsent || wordGoal != null) {
+      map['word_goal'] = Variable<int>(wordGoal);
+    }
+    if (!nullToAbsent || storyYear != null) {
+      map['story_year'] = Variable<int>(storyYear);
+    }
+    map['sort_index'] = Variable<int>(sortIndex);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ChaptersCompanion toCompanion(bool nullToAbsent) {
+    return ChaptersCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      title: Value(title),
+      summary: summary == null && nullToAbsent
+          ? const Value.absent()
+          : Value(summary),
+      content: content == null && nullToAbsent
+          ? const Value.absent()
+          : Value(content),
+      status: status == null && nullToAbsent
+          ? const Value.absent()
+          : Value(status),
+      sessionDate: sessionDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sessionDate),
+      wordGoal: wordGoal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(wordGoal),
+      storyYear: storyYear == null && nullToAbsent
+          ? const Value.absent()
+          : Value(storyYear),
+      sortIndex: Value(sortIndex),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory Chapter.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Chapter(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      title: serializer.fromJson<String>(json['title']),
+      summary: serializer.fromJson<String?>(json['summary']),
+      content: serializer.fromJson<String?>(json['content']),
+      status: serializer.fromJson<String?>(json['status']),
+      sessionDate: serializer.fromJson<DateTime?>(json['sessionDate']),
+      wordGoal: serializer.fromJson<int?>(json['wordGoal']),
+      storyYear: serializer.fromJson<int?>(json['storyYear']),
+      sortIndex: serializer.fromJson<int>(json['sortIndex']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'title': serializer.toJson<String>(title),
+      'summary': serializer.toJson<String?>(summary),
+      'content': serializer.toJson<String?>(content),
+      'status': serializer.toJson<String?>(status),
+      'sessionDate': serializer.toJson<DateTime?>(sessionDate),
+      'wordGoal': serializer.toJson<int?>(wordGoal),
+      'storyYear': serializer.toJson<int?>(storyYear),
+      'sortIndex': serializer.toJson<int>(sortIndex),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  Chapter copyWith({
+    String? id,
+    String? projectId,
+    String? title,
+    Value<String?> summary = const Value.absent(),
+    Value<String?> content = const Value.absent(),
+    Value<String?> status = const Value.absent(),
+    Value<DateTime?> sessionDate = const Value.absent(),
+    Value<int?> wordGoal = const Value.absent(),
+    Value<int?> storyYear = const Value.absent(),
+    int? sortIndex,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => Chapter(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    title: title ?? this.title,
+    summary: summary.present ? summary.value : this.summary,
+    content: content.present ? content.value : this.content,
+    status: status.present ? status.value : this.status,
+    sessionDate: sessionDate.present ? sessionDate.value : this.sessionDate,
+    wordGoal: wordGoal.present ? wordGoal.value : this.wordGoal,
+    storyYear: storyYear.present ? storyYear.value : this.storyYear,
+    sortIndex: sortIndex ?? this.sortIndex,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  Chapter copyWithCompanion(ChaptersCompanion data) {
+    return Chapter(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      title: data.title.present ? data.title.value : this.title,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      content: data.content.present ? data.content.value : this.content,
+      status: data.status.present ? data.status.value : this.status,
+      sessionDate: data.sessionDate.present
+          ? data.sessionDate.value
+          : this.sessionDate,
+      wordGoal: data.wordGoal.present ? data.wordGoal.value : this.wordGoal,
+      storyYear: data.storyYear.present ? data.storyYear.value : this.storyYear,
+      sortIndex: data.sortIndex.present ? data.sortIndex.value : this.sortIndex,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Chapter(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('content: $content, ')
+          ..write('status: $status, ')
+          ..write('sessionDate: $sessionDate, ')
+          ..write('wordGoal: $wordGoal, ')
+          ..write('storyYear: $storyYear, ')
+          ..write('sortIndex: $sortIndex, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    title,
+    summary,
+    content,
+    status,
+    sessionDate,
+    wordGoal,
+    storyYear,
+    sortIndex,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Chapter &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.title == this.title &&
+          other.summary == this.summary &&
+          other.content == this.content &&
+          other.status == this.status &&
+          other.sessionDate == this.sessionDate &&
+          other.wordGoal == this.wordGoal &&
+          other.storyYear == this.storyYear &&
+          other.sortIndex == this.sortIndex &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ChaptersCompanion extends UpdateCompanion<Chapter> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> title;
+  final Value<String?> summary;
+  final Value<String?> content;
+  final Value<String?> status;
+  final Value<DateTime?> sessionDate;
+  final Value<int?> wordGoal;
+  final Value<int?> storyYear;
+  final Value<int> sortIndex;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ChaptersCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.content = const Value.absent(),
+    this.status = const Value.absent(),
+    this.sessionDate = const Value.absent(),
+    this.wordGoal = const Value.absent(),
+    this.storyYear = const Value.absent(),
+    this.sortIndex = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ChaptersCompanion.insert({
+    required String id,
+    required String projectId,
+    required String title,
+    this.summary = const Value.absent(),
+    this.content = const Value.absent(),
+    this.status = const Value.absent(),
+    this.sessionDate = const Value.absent(),
+    this.wordGoal = const Value.absent(),
+    this.storyYear = const Value.absent(),
+    this.sortIndex = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       title = Value(title);
+  static Insertable<Chapter> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? title,
+    Expression<String>? summary,
+    Expression<String>? content,
+    Expression<String>? status,
+    Expression<DateTime>? sessionDate,
+    Expression<int>? wordGoal,
+    Expression<int>? storyYear,
+    Expression<int>? sortIndex,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (title != null) 'title': title,
+      if (summary != null) 'summary': summary,
+      if (content != null) 'content': content,
+      if (status != null) 'status': status,
+      if (sessionDate != null) 'session_date': sessionDate,
+      if (wordGoal != null) 'word_goal': wordGoal,
+      if (storyYear != null) 'story_year': storyYear,
+      if (sortIndex != null) 'sort_index': sortIndex,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ChaptersCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? title,
+    Value<String?>? summary,
+    Value<String?>? content,
+    Value<String?>? status,
+    Value<DateTime?>? sessionDate,
+    Value<int?>? wordGoal,
+    Value<int?>? storyYear,
+    Value<int>? sortIndex,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ChaptersCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      title: title ?? this.title,
+      summary: summary ?? this.summary,
+      content: content ?? this.content,
+      status: status ?? this.status,
+      sessionDate: sessionDate ?? this.sessionDate,
+      wordGoal: wordGoal ?? this.wordGoal,
+      storyYear: storyYear ?? this.storyYear,
+      sortIndex: sortIndex ?? this.sortIndex,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (sessionDate.present) {
+      map['session_date'] = Variable<DateTime>(sessionDate.value);
+    }
+    if (wordGoal.present) {
+      map['word_goal'] = Variable<int>(wordGoal.value);
+    }
+    if (storyYear.present) {
+      map['story_year'] = Variable<int>(storyYear.value);
+    }
+    if (sortIndex.present) {
+      map['sort_index'] = Variable<int>(sortIndex.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChaptersCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('content: $content, ')
+          ..write('status: $status, ')
+          ..write('sessionDate: $sessionDate, ')
+          ..write('wordGoal: $wordGoal, ')
+          ..write('storyYear: $storyYear, ')
+          ..write('sortIndex: $sortIndex, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TimelineEventsTable extends TimelineEvents
     with TableInfo<$TimelineEventsTable, TimelineEvent> {
   @override
@@ -3219,6 +4048,29 @@ class $TimelineEventsTable extends TimelineEvents
       'REFERENCES locations (id) ON DELETE SET NULL',
     ),
   );
+  static const VerificationMeta _yearMeta = const VerificationMeta('year');
+  @override
+  late final GeneratedColumn<int> year = GeneratedColumn<int>(
+    'year',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceChapterIdMeta = const VerificationMeta(
+    'sourceChapterId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceChapterId = GeneratedColumn<String>(
+    'source_chapter_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES chapters (id) ON DELETE CASCADE',
+    ),
+  );
   static const VerificationMeta _sortIndexMeta = const VerificationMeta(
     'sortIndex',
   );
@@ -3251,6 +4103,8 @@ class $TimelineEventsTable extends TimelineEvents
     fictionalDate,
     description,
     locationId,
+    year,
+    sourceChapterId,
     sortIndex,
     createdAt,
   ];
@@ -3311,6 +4165,21 @@ class $TimelineEventsTable extends TimelineEvents
         locationId.isAcceptableOrUnknown(data['location_id']!, _locationIdMeta),
       );
     }
+    if (data.containsKey('year')) {
+      context.handle(
+        _yearMeta,
+        year.isAcceptableOrUnknown(data['year']!, _yearMeta),
+      );
+    }
+    if (data.containsKey('source_chapter_id')) {
+      context.handle(
+        _sourceChapterIdMeta,
+        sourceChapterId.isAcceptableOrUnknown(
+          data['source_chapter_id']!,
+          _sourceChapterIdMeta,
+        ),
+      );
+    }
     if (data.containsKey('sort_index')) {
       context.handle(
         _sortIndexMeta,
@@ -3356,6 +4225,14 @@ class $TimelineEventsTable extends TimelineEvents
         DriftSqlType.string,
         data['${effectivePrefix}location_id'],
       ),
+      year: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}year'],
+      ),
+      sourceChapterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_chapter_id'],
+      ),
       sortIndex: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}sort_index'],
@@ -3380,6 +4257,14 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
   final String? fictionalDate;
   final String? description;
   final String? locationId;
+
+  /// Numeric in-story year, used to sort chronologically. Kept separate
+  /// from [fictionalDate], which stays free text ("12 del invierno largo").
+  final int? year;
+
+  /// Set when this event was mirrored from a chapter. The chapter owns the
+  /// text while the link exists; unlinking turns it into a normal event.
+  final String? sourceChapterId;
   final int sortIndex;
   final DateTime createdAt;
   const TimelineEvent({
@@ -3389,6 +4274,8 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
     this.fictionalDate,
     this.description,
     this.locationId,
+    this.year,
+    this.sourceChapterId,
     required this.sortIndex,
     required this.createdAt,
   });
@@ -3406,6 +4293,12 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
     }
     if (!nullToAbsent || locationId != null) {
       map['location_id'] = Variable<String>(locationId);
+    }
+    if (!nullToAbsent || year != null) {
+      map['year'] = Variable<int>(year);
+    }
+    if (!nullToAbsent || sourceChapterId != null) {
+      map['source_chapter_id'] = Variable<String>(sourceChapterId);
     }
     map['sort_index'] = Variable<int>(sortIndex);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -3426,6 +4319,10 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
       locationId: locationId == null && nullToAbsent
           ? const Value.absent()
           : Value(locationId),
+      year: year == null && nullToAbsent ? const Value.absent() : Value(year),
+      sourceChapterId: sourceChapterId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceChapterId),
       sortIndex: Value(sortIndex),
       createdAt: Value(createdAt),
     );
@@ -3443,6 +4340,8 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
       fictionalDate: serializer.fromJson<String?>(json['fictionalDate']),
       description: serializer.fromJson<String?>(json['description']),
       locationId: serializer.fromJson<String?>(json['locationId']),
+      year: serializer.fromJson<int?>(json['year']),
+      sourceChapterId: serializer.fromJson<String?>(json['sourceChapterId']),
       sortIndex: serializer.fromJson<int>(json['sortIndex']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -3457,6 +4356,8 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
       'fictionalDate': serializer.toJson<String?>(fictionalDate),
       'description': serializer.toJson<String?>(description),
       'locationId': serializer.toJson<String?>(locationId),
+      'year': serializer.toJson<int?>(year),
+      'sourceChapterId': serializer.toJson<String?>(sourceChapterId),
       'sortIndex': serializer.toJson<int>(sortIndex),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -3469,6 +4370,8 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
     Value<String?> fictionalDate = const Value.absent(),
     Value<String?> description = const Value.absent(),
     Value<String?> locationId = const Value.absent(),
+    Value<int?> year = const Value.absent(),
+    Value<String?> sourceChapterId = const Value.absent(),
     int? sortIndex,
     DateTime? createdAt,
   }) => TimelineEvent(
@@ -3480,6 +4383,10 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
         : this.fictionalDate,
     description: description.present ? description.value : this.description,
     locationId: locationId.present ? locationId.value : this.locationId,
+    year: year.present ? year.value : this.year,
+    sourceChapterId: sourceChapterId.present
+        ? sourceChapterId.value
+        : this.sourceChapterId,
     sortIndex: sortIndex ?? this.sortIndex,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -3497,6 +4404,10 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
       locationId: data.locationId.present
           ? data.locationId.value
           : this.locationId,
+      year: data.year.present ? data.year.value : this.year,
+      sourceChapterId: data.sourceChapterId.present
+          ? data.sourceChapterId.value
+          : this.sourceChapterId,
       sortIndex: data.sortIndex.present ? data.sortIndex.value : this.sortIndex,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -3511,6 +4422,8 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
           ..write('fictionalDate: $fictionalDate, ')
           ..write('description: $description, ')
           ..write('locationId: $locationId, ')
+          ..write('year: $year, ')
+          ..write('sourceChapterId: $sourceChapterId, ')
           ..write('sortIndex: $sortIndex, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -3525,6 +4438,8 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
     fictionalDate,
     description,
     locationId,
+    year,
+    sourceChapterId,
     sortIndex,
     createdAt,
   );
@@ -3538,6 +4453,8 @@ class TimelineEvent extends DataClass implements Insertable<TimelineEvent> {
           other.fictionalDate == this.fictionalDate &&
           other.description == this.description &&
           other.locationId == this.locationId &&
+          other.year == this.year &&
+          other.sourceChapterId == this.sourceChapterId &&
           other.sortIndex == this.sortIndex &&
           other.createdAt == this.createdAt);
 }
@@ -3549,6 +4466,8 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
   final Value<String?> fictionalDate;
   final Value<String?> description;
   final Value<String?> locationId;
+  final Value<int?> year;
+  final Value<String?> sourceChapterId;
   final Value<int> sortIndex;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
@@ -3559,6 +4478,8 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
     this.fictionalDate = const Value.absent(),
     this.description = const Value.absent(),
     this.locationId = const Value.absent(),
+    this.year = const Value.absent(),
+    this.sourceChapterId = const Value.absent(),
     this.sortIndex = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -3570,6 +4491,8 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
     this.fictionalDate = const Value.absent(),
     this.description = const Value.absent(),
     this.locationId = const Value.absent(),
+    this.year = const Value.absent(),
+    this.sourceChapterId = const Value.absent(),
     this.sortIndex = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -3583,6 +4506,8 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
     Expression<String>? fictionalDate,
     Expression<String>? description,
     Expression<String>? locationId,
+    Expression<int>? year,
+    Expression<String>? sourceChapterId,
     Expression<int>? sortIndex,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
@@ -3594,6 +4519,8 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
       if (fictionalDate != null) 'fictional_date': fictionalDate,
       if (description != null) 'description': description,
       if (locationId != null) 'location_id': locationId,
+      if (year != null) 'year': year,
+      if (sourceChapterId != null) 'source_chapter_id': sourceChapterId,
       if (sortIndex != null) 'sort_index': sortIndex,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
@@ -3607,6 +4534,8 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
     Value<String?>? fictionalDate,
     Value<String?>? description,
     Value<String?>? locationId,
+    Value<int?>? year,
+    Value<String?>? sourceChapterId,
     Value<int>? sortIndex,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
@@ -3618,6 +4547,8 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
       fictionalDate: fictionalDate ?? this.fictionalDate,
       description: description ?? this.description,
       locationId: locationId ?? this.locationId,
+      year: year ?? this.year,
+      sourceChapterId: sourceChapterId ?? this.sourceChapterId,
       sortIndex: sortIndex ?? this.sortIndex,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -3645,6 +4576,12 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
     if (locationId.present) {
       map['location_id'] = Variable<String>(locationId.value);
     }
+    if (year.present) {
+      map['year'] = Variable<int>(year.value);
+    }
+    if (sourceChapterId.present) {
+      map['source_chapter_id'] = Variable<String>(sourceChapterId.value);
+    }
     if (sortIndex.present) {
       map['sort_index'] = Variable<int>(sortIndex.value);
     }
@@ -3666,6 +4603,8 @@ class TimelineEventsCompanion extends UpdateCompanion<TimelineEvent> {
           ..write('fictionalDate: $fictionalDate, ')
           ..write('description: $description, ')
           ..write('locationId: $locationId, ')
+          ..write('year: $year, ')
+          ..write('sourceChapterId: $sourceChapterId, ')
           ..write('sortIndex: $sortIndex, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
@@ -4561,668 +5500,6 @@ class EventCharactersCompanion extends UpdateCompanion<EventCharacter> {
     return (StringBuffer('EventCharactersCompanion(')
           ..write('eventId: $eventId, ')
           ..write('characterId: $characterId, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $ChaptersTable extends Chapters with TableInfo<$ChaptersTable, Chapter> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $ChaptersTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _projectIdMeta = const VerificationMeta(
-    'projectId',
-  );
-  @override
-  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
-    'project_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES projects (id) ON DELETE CASCADE',
-    ),
-  );
-  static const VerificationMeta _titleMeta = const VerificationMeta('title');
-  @override
-  late final GeneratedColumn<String> title = GeneratedColumn<String>(
-    'title',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _summaryMeta = const VerificationMeta(
-    'summary',
-  );
-  @override
-  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
-    'summary',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _contentMeta = const VerificationMeta(
-    'content',
-  );
-  @override
-  late final GeneratedColumn<String> content = GeneratedColumn<String>(
-    'content',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _statusMeta = const VerificationMeta('status');
-  @override
-  late final GeneratedColumn<String> status = GeneratedColumn<String>(
-    'status',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _sessionDateMeta = const VerificationMeta(
-    'sessionDate',
-  );
-  @override
-  late final GeneratedColumn<DateTime> sessionDate = GeneratedColumn<DateTime>(
-    'session_date',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _wordGoalMeta = const VerificationMeta(
-    'wordGoal',
-  );
-  @override
-  late final GeneratedColumn<int> wordGoal = GeneratedColumn<int>(
-    'word_goal',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _sortIndexMeta = const VerificationMeta(
-    'sortIndex',
-  );
-  @override
-  late final GeneratedColumn<int> sortIndex = GeneratedColumn<int>(
-    'sort_index',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    projectId,
-    title,
-    summary,
-    content,
-    status,
-    sessionDate,
-    wordGoal,
-    sortIndex,
-    createdAt,
-    updatedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'chapters';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<Chapter> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('project_id')) {
-      context.handle(
-        _projectIdMeta,
-        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_projectIdMeta);
-    }
-    if (data.containsKey('title')) {
-      context.handle(
-        _titleMeta,
-        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_titleMeta);
-    }
-    if (data.containsKey('summary')) {
-      context.handle(
-        _summaryMeta,
-        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
-      );
-    }
-    if (data.containsKey('content')) {
-      context.handle(
-        _contentMeta,
-        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
-      );
-    }
-    if (data.containsKey('status')) {
-      context.handle(
-        _statusMeta,
-        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
-      );
-    }
-    if (data.containsKey('session_date')) {
-      context.handle(
-        _sessionDateMeta,
-        sessionDate.isAcceptableOrUnknown(
-          data['session_date']!,
-          _sessionDateMeta,
-        ),
-      );
-    }
-    if (data.containsKey('word_goal')) {
-      context.handle(
-        _wordGoalMeta,
-        wordGoal.isAcceptableOrUnknown(data['word_goal']!, _wordGoalMeta),
-      );
-    }
-    if (data.containsKey('sort_index')) {
-      context.handle(
-        _sortIndexMeta,
-        sortIndex.isAcceptableOrUnknown(data['sort_index']!, _sortIndexMeta),
-      );
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Chapter map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Chapter(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      projectId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}project_id'],
-      )!,
-      title: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}title'],
-      )!,
-      summary: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}summary'],
-      ),
-      content: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}content'],
-      ),
-      status: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}status'],
-      ),
-      sessionDate: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}session_date'],
-      ),
-      wordGoal: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}word_goal'],
-      ),
-      sortIndex: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}sort_index'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      )!,
-    );
-  }
-
-  @override
-  $ChaptersTable createAlias(String alias) {
-    return $ChaptersTable(attachedDatabase, alias);
-  }
-}
-
-class Chapter extends DataClass implements Insertable<Chapter> {
-  final String id;
-  final String projectId;
-  final String title;
-  final String? summary;
-  final String? content;
-  final String? status;
-
-  /// Real-world date the session was played (campaigns only).
-  final DateTime? sessionDate;
-
-  /// Target word count for this chapter, if the writer set one.
-  final int? wordGoal;
-  final int sortIndex;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  const Chapter({
-    required this.id,
-    required this.projectId,
-    required this.title,
-    this.summary,
-    this.content,
-    this.status,
-    this.sessionDate,
-    this.wordGoal,
-    required this.sortIndex,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['project_id'] = Variable<String>(projectId);
-    map['title'] = Variable<String>(title);
-    if (!nullToAbsent || summary != null) {
-      map['summary'] = Variable<String>(summary);
-    }
-    if (!nullToAbsent || content != null) {
-      map['content'] = Variable<String>(content);
-    }
-    if (!nullToAbsent || status != null) {
-      map['status'] = Variable<String>(status);
-    }
-    if (!nullToAbsent || sessionDate != null) {
-      map['session_date'] = Variable<DateTime>(sessionDate);
-    }
-    if (!nullToAbsent || wordGoal != null) {
-      map['word_goal'] = Variable<int>(wordGoal);
-    }
-    map['sort_index'] = Variable<int>(sortIndex);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    return map;
-  }
-
-  ChaptersCompanion toCompanion(bool nullToAbsent) {
-    return ChaptersCompanion(
-      id: Value(id),
-      projectId: Value(projectId),
-      title: Value(title),
-      summary: summary == null && nullToAbsent
-          ? const Value.absent()
-          : Value(summary),
-      content: content == null && nullToAbsent
-          ? const Value.absent()
-          : Value(content),
-      status: status == null && nullToAbsent
-          ? const Value.absent()
-          : Value(status),
-      sessionDate: sessionDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(sessionDate),
-      wordGoal: wordGoal == null && nullToAbsent
-          ? const Value.absent()
-          : Value(wordGoal),
-      sortIndex: Value(sortIndex),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-    );
-  }
-
-  factory Chapter.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Chapter(
-      id: serializer.fromJson<String>(json['id']),
-      projectId: serializer.fromJson<String>(json['projectId']),
-      title: serializer.fromJson<String>(json['title']),
-      summary: serializer.fromJson<String?>(json['summary']),
-      content: serializer.fromJson<String?>(json['content']),
-      status: serializer.fromJson<String?>(json['status']),
-      sessionDate: serializer.fromJson<DateTime?>(json['sessionDate']),
-      wordGoal: serializer.fromJson<int?>(json['wordGoal']),
-      sortIndex: serializer.fromJson<int>(json['sortIndex']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'projectId': serializer.toJson<String>(projectId),
-      'title': serializer.toJson<String>(title),
-      'summary': serializer.toJson<String?>(summary),
-      'content': serializer.toJson<String?>(content),
-      'status': serializer.toJson<String?>(status),
-      'sessionDate': serializer.toJson<DateTime?>(sessionDate),
-      'wordGoal': serializer.toJson<int?>(wordGoal),
-      'sortIndex': serializer.toJson<int>(sortIndex),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
-    };
-  }
-
-  Chapter copyWith({
-    String? id,
-    String? projectId,
-    String? title,
-    Value<String?> summary = const Value.absent(),
-    Value<String?> content = const Value.absent(),
-    Value<String?> status = const Value.absent(),
-    Value<DateTime?> sessionDate = const Value.absent(),
-    Value<int?> wordGoal = const Value.absent(),
-    int? sortIndex,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) => Chapter(
-    id: id ?? this.id,
-    projectId: projectId ?? this.projectId,
-    title: title ?? this.title,
-    summary: summary.present ? summary.value : this.summary,
-    content: content.present ? content.value : this.content,
-    status: status.present ? status.value : this.status,
-    sessionDate: sessionDate.present ? sessionDate.value : this.sessionDate,
-    wordGoal: wordGoal.present ? wordGoal.value : this.wordGoal,
-    sortIndex: sortIndex ?? this.sortIndex,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-  );
-  Chapter copyWithCompanion(ChaptersCompanion data) {
-    return Chapter(
-      id: data.id.present ? data.id.value : this.id,
-      projectId: data.projectId.present ? data.projectId.value : this.projectId,
-      title: data.title.present ? data.title.value : this.title,
-      summary: data.summary.present ? data.summary.value : this.summary,
-      content: data.content.present ? data.content.value : this.content,
-      status: data.status.present ? data.status.value : this.status,
-      sessionDate: data.sessionDate.present
-          ? data.sessionDate.value
-          : this.sessionDate,
-      wordGoal: data.wordGoal.present ? data.wordGoal.value : this.wordGoal,
-      sortIndex: data.sortIndex.present ? data.sortIndex.value : this.sortIndex,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Chapter(')
-          ..write('id: $id, ')
-          ..write('projectId: $projectId, ')
-          ..write('title: $title, ')
-          ..write('summary: $summary, ')
-          ..write('content: $content, ')
-          ..write('status: $status, ')
-          ..write('sessionDate: $sessionDate, ')
-          ..write('wordGoal: $wordGoal, ')
-          ..write('sortIndex: $sortIndex, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    id,
-    projectId,
-    title,
-    summary,
-    content,
-    status,
-    sessionDate,
-    wordGoal,
-    sortIndex,
-    createdAt,
-    updatedAt,
-  );
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Chapter &&
-          other.id == this.id &&
-          other.projectId == this.projectId &&
-          other.title == this.title &&
-          other.summary == this.summary &&
-          other.content == this.content &&
-          other.status == this.status &&
-          other.sessionDate == this.sessionDate &&
-          other.wordGoal == this.wordGoal &&
-          other.sortIndex == this.sortIndex &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
-}
-
-class ChaptersCompanion extends UpdateCompanion<Chapter> {
-  final Value<String> id;
-  final Value<String> projectId;
-  final Value<String> title;
-  final Value<String?> summary;
-  final Value<String?> content;
-  final Value<String?> status;
-  final Value<DateTime?> sessionDate;
-  final Value<int?> wordGoal;
-  final Value<int> sortIndex;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
-  final Value<int> rowid;
-  const ChaptersCompanion({
-    this.id = const Value.absent(),
-    this.projectId = const Value.absent(),
-    this.title = const Value.absent(),
-    this.summary = const Value.absent(),
-    this.content = const Value.absent(),
-    this.status = const Value.absent(),
-    this.sessionDate = const Value.absent(),
-    this.wordGoal = const Value.absent(),
-    this.sortIndex = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  ChaptersCompanion.insert({
-    required String id,
-    required String projectId,
-    required String title,
-    this.summary = const Value.absent(),
-    this.content = const Value.absent(),
-    this.status = const Value.absent(),
-    this.sessionDate = const Value.absent(),
-    this.wordGoal = const Value.absent(),
-    this.sortIndex = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       projectId = Value(projectId),
-       title = Value(title);
-  static Insertable<Chapter> custom({
-    Expression<String>? id,
-    Expression<String>? projectId,
-    Expression<String>? title,
-    Expression<String>? summary,
-    Expression<String>? content,
-    Expression<String>? status,
-    Expression<DateTime>? sessionDate,
-    Expression<int>? wordGoal,
-    Expression<int>? sortIndex,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (projectId != null) 'project_id': projectId,
-      if (title != null) 'title': title,
-      if (summary != null) 'summary': summary,
-      if (content != null) 'content': content,
-      if (status != null) 'status': status,
-      if (sessionDate != null) 'session_date': sessionDate,
-      if (wordGoal != null) 'word_goal': wordGoal,
-      if (sortIndex != null) 'sort_index': sortIndex,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  ChaptersCompanion copyWith({
-    Value<String>? id,
-    Value<String>? projectId,
-    Value<String>? title,
-    Value<String?>? summary,
-    Value<String?>? content,
-    Value<String?>? status,
-    Value<DateTime?>? sessionDate,
-    Value<int?>? wordGoal,
-    Value<int>? sortIndex,
-    Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
-    Value<int>? rowid,
-  }) {
-    return ChaptersCompanion(
-      id: id ?? this.id,
-      projectId: projectId ?? this.projectId,
-      title: title ?? this.title,
-      summary: summary ?? this.summary,
-      content: content ?? this.content,
-      status: status ?? this.status,
-      sessionDate: sessionDate ?? this.sessionDate,
-      wordGoal: wordGoal ?? this.wordGoal,
-      sortIndex: sortIndex ?? this.sortIndex,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (projectId.present) {
-      map['project_id'] = Variable<String>(projectId.value);
-    }
-    if (title.present) {
-      map['title'] = Variable<String>(title.value);
-    }
-    if (summary.present) {
-      map['summary'] = Variable<String>(summary.value);
-    }
-    if (content.present) {
-      map['content'] = Variable<String>(content.value);
-    }
-    if (status.present) {
-      map['status'] = Variable<String>(status.value);
-    }
-    if (sessionDate.present) {
-      map['session_date'] = Variable<DateTime>(sessionDate.value);
-    }
-    if (wordGoal.present) {
-      map['word_goal'] = Variable<int>(wordGoal.value);
-    }
-    if (sortIndex.present) {
-      map['sort_index'] = Variable<int>(sortIndex.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('ChaptersCompanion(')
-          ..write('id: $id, ')
-          ..write('projectId: $projectId, ')
-          ..write('title: $title, ')
-          ..write('summary: $summary, ')
-          ..write('content: $content, ')
-          ..write('status: $status, ')
-          ..write('sessionDate: $sessionDate, ')
-          ..write('wordGoal: $wordGoal, ')
-          ..write('sortIndex: $sortIndex, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -12061,6 +12338,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FactionsTable factions = $FactionsTable(this);
   late final $LocationsTable locations = $LocationsTable(this);
   late final $CharactersTable characters = $CharactersTable(this);
+  late final $ChaptersTable chapters = $ChaptersTable(this);
   late final $TimelineEventsTable timelineEvents = $TimelineEventsTable(this);
   late final $CharacterRelationshipsTable characterRelationships =
       $CharacterRelationshipsTable(this);
@@ -12069,7 +12347,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $EventCharactersTable eventCharacters = $EventCharactersTable(
     this,
   );
-  late final $ChaptersTable chapters = $ChaptersTable(this);
   late final $ChapterCharactersTable chapterCharacters =
       $ChapterCharactersTable(this);
   late final $ChapterLocationsTable chapterLocations = $ChapterLocationsTable(
@@ -12122,11 +12399,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     factions,
     locations,
     characters,
+    chapters,
     timelineEvents,
     characterRelationships,
     relationshipMembers,
     eventCharacters,
-    chapters,
     chapterCharacters,
     chapterLocations,
     notes,
@@ -12185,6 +12462,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         'projects',
         limitUpdateKind: UpdateKind.delete,
       ),
+      result: [TableUpdate('chapters', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'projects',
+        limitUpdateKind: UpdateKind.delete,
+      ),
       result: [TableUpdate('timeline_events', kind: UpdateKind.delete)],
     ),
     WritePropagation(
@@ -12193,6 +12477,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('timeline_events', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'chapters',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('timeline_events', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -12228,13 +12519,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('event_characters', kind: UpdateKind.delete)],
-    ),
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'projects',
-        limitUpdateKind: UpdateKind.delete,
-      ),
-      result: [TableUpdate('chapters', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -12415,6 +12699,8 @@ typedef $$ProjectsTableCreateCompanionBuilder =
       Value<String?> coverImagePath,
       Value<String> kind,
       Value<String> themeId,
+      Value<bool> autoChapterTimeline,
+      Value<bool> timelineSortByYear,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -12427,6 +12713,8 @@ typedef $$ProjectsTableUpdateCompanionBuilder =
       Value<String?> coverImagePath,
       Value<String> kind,
       Value<String> themeId,
+      Value<bool> autoChapterTimeline,
+      Value<bool> timelineSortByYear,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -12491,6 +12779,25 @@ final class $$ProjectsTableReferences
     );
   }
 
+  static MultiTypedResultKey<$ChaptersTable, List<Chapter>> _chaptersRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.chapters,
+    aliasName: 'projects__id__chapters__project_id',
+  );
+
+  $$ChaptersTableProcessedTableManager get chaptersRefs {
+    final manager = $$ChaptersTableTableManager(
+      $_db,
+      $_db.chapters,
+    ).filter((f) => f.projectId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_chaptersRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
   static MultiTypedResultKey<$TimelineEventsTable, List<TimelineEvent>>
   _timelineEventsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.timelineEvents,
@@ -12529,25 +12836,6 @@ final class $$ProjectsTableReferences
     final cache = $_typedResult.readTableOrNull(
       _characterRelationshipsRefsTable($_db),
     );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$ChaptersTable, List<Chapter>> _chaptersRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.chapters,
-    aliasName: 'projects__id__chapters__project_id',
-  );
-
-  $$ChaptersTableProcessedTableManager get chaptersRefs {
-    final manager = $$ChaptersTableTableManager(
-      $_db,
-      $_db.chapters,
-    ).filter((f) => f.projectId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_chaptersRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -12742,6 +13030,16 @@ class $$ProjectsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get autoChapterTimeline => $composableBuilder(
+    column: $table.autoChapterTimeline,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get timelineSortByYear => $composableBuilder(
+    column: $table.timelineSortByYear,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
@@ -12827,6 +13125,31 @@ class $$ProjectsTableFilterComposer
     return f(composer);
   }
 
+  Expression<bool> chaptersRefs(
+    Expression<bool> Function($$ChaptersTableFilterComposer f) f,
+  ) {
+    final $$ChaptersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.chapters,
+      getReferencedColumn: (t) => t.projectId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChaptersTableFilterComposer(
+            $db: $db,
+            $table: $db.chapters,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<bool> timelineEventsRefs(
     Expression<bool> Function($$TimelineEventsTableFilterComposer f) f,
   ) {
@@ -12875,31 +13198,6 @@ class $$ProjectsTableFilterComposer
                     $removeJoinBuilderFromRootComposer,
               ),
         );
-    return f(composer);
-  }
-
-  Expression<bool> chaptersRefs(
-    Expression<bool> Function($$ChaptersTableFilterComposer f) f,
-  ) {
-    final $$ChaptersTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.chapters,
-      getReferencedColumn: (t) => t.projectId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ChaptersTableFilterComposer(
-            $db: $db,
-            $table: $db.chapters,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
     return f(composer);
   }
 
@@ -13143,6 +13441,16 @@ class $$ProjectsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get autoChapterTimeline => $composableBuilder(
+    column: $table.autoChapterTimeline,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get timelineSortByYear => $composableBuilder(
+    column: $table.timelineSortByYear,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -13184,6 +13492,16 @@ class $$ProjectsTableAnnotationComposer
 
   GeneratedColumn<String> get themeId =>
       $composableBuilder(column: $table.themeId, builder: (column) => column);
+
+  GeneratedColumn<bool> get autoChapterTimeline => $composableBuilder(
+    column: $table.autoChapterTimeline,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get timelineSortByYear => $composableBuilder(
+    column: $table.timelineSortByYear,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -13266,6 +13584,31 @@ class $$ProjectsTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> chaptersRefs<T extends Object>(
+    Expression<T> Function($$ChaptersTableAnnotationComposer a) f,
+  ) {
+    final $$ChaptersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.chapters,
+      getReferencedColumn: (t) => t.projectId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChaptersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.chapters,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> timelineEventsRefs<T extends Object>(
     Expression<T> Function($$TimelineEventsTableAnnotationComposer a) f,
   ) {
@@ -13314,31 +13657,6 @@ class $$ProjectsTableAnnotationComposer
                     $removeJoinBuilderFromRootComposer,
               ),
         );
-    return f(composer);
-  }
-
-  Expression<T> chaptersRefs<T extends Object>(
-    Expression<T> Function($$ChaptersTableAnnotationComposer a) f,
-  ) {
-    final $$ChaptersTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.chapters,
-      getReferencedColumn: (t) => t.projectId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ChaptersTableAnnotationComposer(
-            $db: $db,
-            $table: $db.chapters,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
     return f(composer);
   }
 
@@ -13560,9 +13878,9 @@ class $$ProjectsTableTableManager
             bool factionsRefs,
             bool locationsRefs,
             bool charactersRefs,
+            bool chaptersRefs,
             bool timelineEventsRefs,
             bool characterRelationshipsRefs,
-            bool chaptersRefs,
             bool notesRefs,
             bool itemsRefs,
             bool magicSystemsRefs,
@@ -13592,6 +13910,8 @@ class $$ProjectsTableTableManager
                 Value<String?> coverImagePath = const Value.absent(),
                 Value<String> kind = const Value.absent(),
                 Value<String> themeId = const Value.absent(),
+                Value<bool> autoChapterTimeline = const Value.absent(),
+                Value<bool> timelineSortByYear = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -13602,6 +13922,8 @@ class $$ProjectsTableTableManager
                 coverImagePath: coverImagePath,
                 kind: kind,
                 themeId: themeId,
+                autoChapterTimeline: autoChapterTimeline,
+                timelineSortByYear: timelineSortByYear,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -13614,6 +13936,8 @@ class $$ProjectsTableTableManager
                 Value<String?> coverImagePath = const Value.absent(),
                 Value<String> kind = const Value.absent(),
                 Value<String> themeId = const Value.absent(),
+                Value<bool> autoChapterTimeline = const Value.absent(),
+                Value<bool> timelineSortByYear = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -13624,6 +13948,8 @@ class $$ProjectsTableTableManager
                 coverImagePath: coverImagePath,
                 kind: kind,
                 themeId: themeId,
+                autoChapterTimeline: autoChapterTimeline,
+                timelineSortByYear: timelineSortByYear,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -13641,9 +13967,9 @@ class $$ProjectsTableTableManager
                 factionsRefs = false,
                 locationsRefs = false,
                 charactersRefs = false,
+                chaptersRefs = false,
                 timelineEventsRefs = false,
                 characterRelationshipsRefs = false,
-                chaptersRefs = false,
                 notesRefs = false,
                 itemsRefs = false,
                 magicSystemsRefs = false,
@@ -13659,9 +13985,9 @@ class $$ProjectsTableTableManager
                     if (factionsRefs) db.factions,
                     if (locationsRefs) db.locations,
                     if (charactersRefs) db.characters,
+                    if (chaptersRefs) db.chapters,
                     if (timelineEventsRefs) db.timelineEvents,
                     if (characterRelationshipsRefs) db.characterRelationships,
-                    if (chaptersRefs) db.chapters,
                     if (notesRefs) db.notes,
                     if (itemsRefs) db.items,
                     if (magicSystemsRefs) db.magicSystems,
@@ -13737,6 +14063,27 @@ class $$ProjectsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (chaptersRefs)
+                        await $_getPrefetchedData<
+                          Project,
+                          $ProjectsTable,
+                          Chapter
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProjectsTableReferences
+                              ._chaptersRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProjectsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).chaptersRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.projectId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (timelineEventsRefs)
                         await $_getPrefetchedData<
                           Project,
@@ -13773,27 +14120,6 @@ class $$ProjectsTableTableManager
                                 table,
                                 p0,
                               ).characterRelationshipsRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.projectId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                      if (chaptersRefs)
-                        await $_getPrefetchedData<
-                          Project,
-                          $ProjectsTable,
-                          Chapter
-                        >(
-                          currentTable: table,
-                          referencedTable: $$ProjectsTableReferences
-                              ._chaptersRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$ProjectsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).chaptersRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.projectId == item.id,
@@ -13984,9 +14310,9 @@ typedef $$ProjectsTableProcessedTableManager =
         bool factionsRefs,
         bool locationsRefs,
         bool charactersRefs,
+        bool chaptersRefs,
         bool timelineEventsRefs,
         bool characterRelationshipsRefs,
-        bool chaptersRefs,
         bool notesRefs,
         bool itemsRefs,
         bool magicSystemsRefs,
@@ -16873,6 +17199,752 @@ typedef $$CharactersTableProcessedTableManager =
         bool secretKnowersRefs,
       })
     >;
+typedef $$ChaptersTableCreateCompanionBuilder =
+    ChaptersCompanion Function({
+      required String id,
+      required String projectId,
+      required String title,
+      Value<String?> summary,
+      Value<String?> content,
+      Value<String?> status,
+      Value<DateTime?> sessionDate,
+      Value<int?> wordGoal,
+      Value<int?> storyYear,
+      Value<int> sortIndex,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ChaptersTableUpdateCompanionBuilder =
+    ChaptersCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> title,
+      Value<String?> summary,
+      Value<String?> content,
+      Value<String?> status,
+      Value<DateTime?> sessionDate,
+      Value<int?> wordGoal,
+      Value<int?> storyYear,
+      Value<int> sortIndex,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$ChaptersTableReferences
+    extends BaseReferences<_$AppDatabase, $ChaptersTable, Chapter> {
+  $$ChaptersTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ProjectsTable _projectIdTable(_$AppDatabase db) =>
+      db.projects.createAlias('chapters__project_id__projects__id');
+
+  $$ProjectsTableProcessedTableManager get projectId {
+    final $_column = $_itemColumn<String>('project_id')!;
+
+    final manager = $$ProjectsTableTableManager(
+      $_db,
+      $_db.projects,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_projectIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$TimelineEventsTable, List<TimelineEvent>>
+  _timelineEventsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.timelineEvents,
+    aliasName: 'chapters__id__timeline_events__source_chapter_id',
+  );
+
+  $$TimelineEventsTableProcessedTableManager get timelineEventsRefs {
+    final manager = $$TimelineEventsTableTableManager($_db, $_db.timelineEvents)
+        .filter(
+          (f) => f.sourceChapterId.id.sqlEquals($_itemColumn<String>('id')!),
+        );
+
+    final cache = $_typedResult.readTableOrNull(_timelineEventsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ChapterCharactersTable, List<ChapterCharacter>>
+  _chapterCharactersRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.chapterCharacters,
+        aliasName: 'chapters__id__chapter_characters__chapter_id',
+      );
+
+  $$ChapterCharactersTableProcessedTableManager get chapterCharactersRefs {
+    final manager = $$ChapterCharactersTableTableManager(
+      $_db,
+      $_db.chapterCharacters,
+    ).filter((f) => f.chapterId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _chapterCharactersRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ChapterLocationsTable, List<ChapterLocation>>
+  _chapterLocationsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.chapterLocations,
+    aliasName: 'chapters__id__chapter_locations__chapter_id',
+  );
+
+  $$ChapterLocationsTableProcessedTableManager get chapterLocationsRefs {
+    final manager = $$ChapterLocationsTableTableManager(
+      $_db,
+      $_db.chapterLocations,
+    ).filter((f) => f.chapterId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _chapterLocationsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ChaptersTableFilterComposer
+    extends Composer<_$AppDatabase, $ChaptersTable> {
+  $$ChaptersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get sessionDate => $composableBuilder(
+    column: $table.sessionDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get wordGoal => $composableBuilder(
+    column: $table.wordGoal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get storyYear => $composableBuilder(
+    column: $table.storyYear,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortIndex => $composableBuilder(
+    column: $table.sortIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProjectsTableFilterComposer get projectId {
+    final $$ProjectsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.projectId,
+      referencedTable: $db.projects,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProjectsTableFilterComposer(
+            $db: $db,
+            $table: $db.projects,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> timelineEventsRefs(
+    Expression<bool> Function($$TimelineEventsTableFilterComposer f) f,
+  ) {
+    final $$TimelineEventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.timelineEvents,
+      getReferencedColumn: (t) => t.sourceChapterId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TimelineEventsTableFilterComposer(
+            $db: $db,
+            $table: $db.timelineEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> chapterCharactersRefs(
+    Expression<bool> Function($$ChapterCharactersTableFilterComposer f) f,
+  ) {
+    final $$ChapterCharactersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.chapterCharacters,
+      getReferencedColumn: (t) => t.chapterId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChapterCharactersTableFilterComposer(
+            $db: $db,
+            $table: $db.chapterCharacters,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> chapterLocationsRefs(
+    Expression<bool> Function($$ChapterLocationsTableFilterComposer f) f,
+  ) {
+    final $$ChapterLocationsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.chapterLocations,
+      getReferencedColumn: (t) => t.chapterId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChapterLocationsTableFilterComposer(
+            $db: $db,
+            $table: $db.chapterLocations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ChaptersTableOrderingComposer
+    extends Composer<_$AppDatabase, $ChaptersTable> {
+  $$ChaptersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get sessionDate => $composableBuilder(
+    column: $table.sessionDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get wordGoal => $composableBuilder(
+    column: $table.wordGoal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get storyYear => $composableBuilder(
+    column: $table.storyYear,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortIndex => $composableBuilder(
+    column: $table.sortIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProjectsTableOrderingComposer get projectId {
+    final $$ProjectsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.projectId,
+      referencedTable: $db.projects,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProjectsTableOrderingComposer(
+            $db: $db,
+            $table: $db.projects,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ChaptersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ChaptersTable> {
+  $$ChaptersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get sessionDate => $composableBuilder(
+    column: $table.sessionDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get wordGoal =>
+      $composableBuilder(column: $table.wordGoal, builder: (column) => column);
+
+  GeneratedColumn<int> get storyYear =>
+      $composableBuilder(column: $table.storyYear, builder: (column) => column);
+
+  GeneratedColumn<int> get sortIndex =>
+      $composableBuilder(column: $table.sortIndex, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$ProjectsTableAnnotationComposer get projectId {
+    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.projectId,
+      referencedTable: $db.projects,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProjectsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.projects,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> timelineEventsRefs<T extends Object>(
+    Expression<T> Function($$TimelineEventsTableAnnotationComposer a) f,
+  ) {
+    final $$TimelineEventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.timelineEvents,
+      getReferencedColumn: (t) => t.sourceChapterId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TimelineEventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.timelineEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> chapterCharactersRefs<T extends Object>(
+    Expression<T> Function($$ChapterCharactersTableAnnotationComposer a) f,
+  ) {
+    final $$ChapterCharactersTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.chapterCharacters,
+          getReferencedColumn: (t) => t.chapterId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ChapterCharactersTableAnnotationComposer(
+                $db: $db,
+                $table: $db.chapterCharacters,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> chapterLocationsRefs<T extends Object>(
+    Expression<T> Function($$ChapterLocationsTableAnnotationComposer a) f,
+  ) {
+    final $$ChapterLocationsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.chapterLocations,
+      getReferencedColumn: (t) => t.chapterId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChapterLocationsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.chapterLocations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ChaptersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ChaptersTable,
+          Chapter,
+          $$ChaptersTableFilterComposer,
+          $$ChaptersTableOrderingComposer,
+          $$ChaptersTableAnnotationComposer,
+          $$ChaptersTableCreateCompanionBuilder,
+          $$ChaptersTableUpdateCompanionBuilder,
+          (Chapter, $$ChaptersTableReferences),
+          Chapter,
+          PrefetchHooks Function({
+            bool projectId,
+            bool timelineEventsRefs,
+            bool chapterCharactersRefs,
+            bool chapterLocationsRefs,
+          })
+        > {
+  $$ChaptersTableTableManager(_$AppDatabase db, $ChaptersTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ChaptersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ChaptersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ChaptersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> summary = const Value.absent(),
+                Value<String?> content = const Value.absent(),
+                Value<String?> status = const Value.absent(),
+                Value<DateTime?> sessionDate = const Value.absent(),
+                Value<int?> wordGoal = const Value.absent(),
+                Value<int?> storyYear = const Value.absent(),
+                Value<int> sortIndex = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ChaptersCompanion(
+                id: id,
+                projectId: projectId,
+                title: title,
+                summary: summary,
+                content: content,
+                status: status,
+                sessionDate: sessionDate,
+                wordGoal: wordGoal,
+                storyYear: storyYear,
+                sortIndex: sortIndex,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String title,
+                Value<String?> summary = const Value.absent(),
+                Value<String?> content = const Value.absent(),
+                Value<String?> status = const Value.absent(),
+                Value<DateTime?> sessionDate = const Value.absent(),
+                Value<int?> wordGoal = const Value.absent(),
+                Value<int?> storyYear = const Value.absent(),
+                Value<int> sortIndex = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ChaptersCompanion.insert(
+                id: id,
+                projectId: projectId,
+                title: title,
+                summary: summary,
+                content: content,
+                status: status,
+                sessionDate: sessionDate,
+                wordGoal: wordGoal,
+                storyYear: storyYear,
+                sortIndex: sortIndex,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ChaptersTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                projectId = false,
+                timelineEventsRefs = false,
+                chapterCharactersRefs = false,
+                chapterLocationsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (timelineEventsRefs) db.timelineEvents,
+                    if (chapterCharactersRefs) db.chapterCharacters,
+                    if (chapterLocationsRefs) db.chapterLocations,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (projectId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.projectId,
+                                    referencedTable: $$ChaptersTableReferences
+                                        ._projectIdTable(db),
+                                    referencedColumn: $$ChaptersTableReferences
+                                        ._projectIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (timelineEventsRefs)
+                        await $_getPrefetchedData<
+                          Chapter,
+                          $ChaptersTable,
+                          TimelineEvent
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ChaptersTableReferences
+                              ._timelineEventsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ChaptersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).timelineEventsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sourceChapterId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (chapterCharactersRefs)
+                        await $_getPrefetchedData<
+                          Chapter,
+                          $ChaptersTable,
+                          ChapterCharacter
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ChaptersTableReferences
+                              ._chapterCharactersRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ChaptersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).chapterCharactersRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.chapterId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (chapterLocationsRefs)
+                        await $_getPrefetchedData<
+                          Chapter,
+                          $ChaptersTable,
+                          ChapterLocation
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ChaptersTableReferences
+                              ._chapterLocationsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ChaptersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).chapterLocationsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.chapterId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ChaptersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ChaptersTable,
+      Chapter,
+      $$ChaptersTableFilterComposer,
+      $$ChaptersTableOrderingComposer,
+      $$ChaptersTableAnnotationComposer,
+      $$ChaptersTableCreateCompanionBuilder,
+      $$ChaptersTableUpdateCompanionBuilder,
+      (Chapter, $$ChaptersTableReferences),
+      Chapter,
+      PrefetchHooks Function({
+        bool projectId,
+        bool timelineEventsRefs,
+        bool chapterCharactersRefs,
+        bool chapterLocationsRefs,
+      })
+    >;
 typedef $$TimelineEventsTableCreateCompanionBuilder =
     TimelineEventsCompanion Function({
       required String id,
@@ -16881,6 +17953,8 @@ typedef $$TimelineEventsTableCreateCompanionBuilder =
       Value<String?> fictionalDate,
       Value<String?> description,
       Value<String?> locationId,
+      Value<int?> year,
+      Value<String?> sourceChapterId,
       Value<int> sortIndex,
       Value<DateTime> createdAt,
       Value<int> rowid,
@@ -16893,6 +17967,8 @@ typedef $$TimelineEventsTableUpdateCompanionBuilder =
       Value<String?> fictionalDate,
       Value<String?> description,
       Value<String?> locationId,
+      Value<int?> year,
+      Value<String?> sourceChapterId,
       Value<int> sortIndex,
       Value<DateTime> createdAt,
       Value<int> rowid,
@@ -16934,6 +18010,23 @@ final class $$TimelineEventsTableReferences
       $_db.locations,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_locationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $ChaptersTable _sourceChapterIdTable(_$AppDatabase db) => db.chapters
+      .createAlias('timeline_events__source_chapter_id__chapters__id');
+
+  $$ChaptersTableProcessedTableManager? get sourceChapterId {
+    final $_column = $_itemColumn<String>('source_chapter_id');
+    if ($_column == null) return null;
+    final manager = $$ChaptersTableTableManager(
+      $_db,
+      $_db.chapters,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sourceChapterIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -16990,6 +18083,11 @@ class $$TimelineEventsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get sortIndex => $composableBuilder(
     column: $table.sortIndex,
     builder: (column) => ColumnFilters(column),
@@ -17037,6 +18135,29 @@ class $$TimelineEventsTableFilterComposer
           }) => $$LocationsTableFilterComposer(
             $db: $db,
             $table: $db.locations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$ChaptersTableFilterComposer get sourceChapterId {
+    final $$ChaptersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceChapterId,
+      referencedTable: $db.chapters,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChaptersTableFilterComposer(
+            $db: $db,
+            $table: $db.chapters,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -17101,6 +18222,11 @@ class $$TimelineEventsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get sortIndex => $composableBuilder(
     column: $table.sortIndex,
     builder: (column) => ColumnOrderings(column),
@@ -17156,6 +18282,29 @@ class $$TimelineEventsTableOrderingComposer
     );
     return composer;
   }
+
+  $$ChaptersTableOrderingComposer get sourceChapterId {
+    final $$ChaptersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceChapterId,
+      referencedTable: $db.chapters,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChaptersTableOrderingComposer(
+            $db: $db,
+            $table: $db.chapters,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$TimelineEventsTableAnnotationComposer
@@ -17182,6 +18331,9 @@ class $$TimelineEventsTableAnnotationComposer
     column: $table.description,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get year =>
+      $composableBuilder(column: $table.year, builder: (column) => column);
 
   GeneratedColumn<int> get sortIndex =>
       $composableBuilder(column: $table.sortIndex, builder: (column) => column);
@@ -17235,6 +18387,29 @@ class $$TimelineEventsTableAnnotationComposer
     return composer;
   }
 
+  $$ChaptersTableAnnotationComposer get sourceChapterId {
+    final $$ChaptersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceChapterId,
+      referencedTable: $db.chapters,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ChaptersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.chapters,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   Expression<T> eventCharactersRefs<T extends Object>(
     Expression<T> Function($$EventCharactersTableAnnotationComposer a) f,
   ) {
@@ -17277,6 +18452,7 @@ class $$TimelineEventsTableTableManager
           PrefetchHooks Function({
             bool projectId,
             bool locationId,
+            bool sourceChapterId,
             bool eventCharactersRefs,
           })
         > {
@@ -17301,6 +18477,8 @@ class $$TimelineEventsTableTableManager
                 Value<String?> fictionalDate = const Value.absent(),
                 Value<String?> description = const Value.absent(),
                 Value<String?> locationId = const Value.absent(),
+                Value<int?> year = const Value.absent(),
+                Value<String?> sourceChapterId = const Value.absent(),
                 Value<int> sortIndex = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -17311,6 +18489,8 @@ class $$TimelineEventsTableTableManager
                 fictionalDate: fictionalDate,
                 description: description,
                 locationId: locationId,
+                year: year,
+                sourceChapterId: sourceChapterId,
                 sortIndex: sortIndex,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -17323,6 +18503,8 @@ class $$TimelineEventsTableTableManager
                 Value<String?> fictionalDate = const Value.absent(),
                 Value<String?> description = const Value.absent(),
                 Value<String?> locationId = const Value.absent(),
+                Value<int?> year = const Value.absent(),
+                Value<String?> sourceChapterId = const Value.absent(),
                 Value<int> sortIndex = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -17333,6 +18515,8 @@ class $$TimelineEventsTableTableManager
                 fictionalDate: fictionalDate,
                 description: description,
                 locationId: locationId,
+                year: year,
+                sourceChapterId: sourceChapterId,
                 sortIndex: sortIndex,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -17349,6 +18533,7 @@ class $$TimelineEventsTableTableManager
               ({
                 projectId = false,
                 locationId = false,
+                sourceChapterId = false,
                 eventCharactersRefs = false,
               }) {
                 return PrefetchHooks(
@@ -17402,6 +18587,21 @@ class $$TimelineEventsTableTableManager
                                   )
                                   as T;
                         }
+                        if (sourceChapterId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.sourceChapterId,
+                                    referencedTable:
+                                        $$TimelineEventsTableReferences
+                                            ._sourceChapterIdTable(db),
+                                    referencedColumn:
+                                        $$TimelineEventsTableReferences
+                                            ._sourceChapterIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
 
                         return state;
                       },
@@ -17451,6 +18651,7 @@ typedef $$TimelineEventsTableProcessedTableManager =
       PrefetchHooks Function({
         bool projectId,
         bool locationId,
+        bool sourceChapterId,
         bool eventCharactersRefs,
       })
     >;
@@ -18649,640 +19850,6 @@ typedef $$EventCharactersTableProcessedTableManager =
       (EventCharacter, $$EventCharactersTableReferences),
       EventCharacter,
       PrefetchHooks Function({bool eventId, bool characterId})
-    >;
-typedef $$ChaptersTableCreateCompanionBuilder =
-    ChaptersCompanion Function({
-      required String id,
-      required String projectId,
-      required String title,
-      Value<String?> summary,
-      Value<String?> content,
-      Value<String?> status,
-      Value<DateTime?> sessionDate,
-      Value<int?> wordGoal,
-      Value<int> sortIndex,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-      Value<int> rowid,
-    });
-typedef $$ChaptersTableUpdateCompanionBuilder =
-    ChaptersCompanion Function({
-      Value<String> id,
-      Value<String> projectId,
-      Value<String> title,
-      Value<String?> summary,
-      Value<String?> content,
-      Value<String?> status,
-      Value<DateTime?> sessionDate,
-      Value<int?> wordGoal,
-      Value<int> sortIndex,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-      Value<int> rowid,
-    });
-
-final class $$ChaptersTableReferences
-    extends BaseReferences<_$AppDatabase, $ChaptersTable, Chapter> {
-  $$ChaptersTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $ProjectsTable _projectIdTable(_$AppDatabase db) =>
-      db.projects.createAlias('chapters__project_id__projects__id');
-
-  $$ProjectsTableProcessedTableManager get projectId {
-    final $_column = $_itemColumn<String>('project_id')!;
-
-    final manager = $$ProjectsTableTableManager(
-      $_db,
-      $_db.projects,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_projectIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static MultiTypedResultKey<$ChapterCharactersTable, List<ChapterCharacter>>
-  _chapterCharactersRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.chapterCharacters,
-        aliasName: 'chapters__id__chapter_characters__chapter_id',
-      );
-
-  $$ChapterCharactersTableProcessedTableManager get chapterCharactersRefs {
-    final manager = $$ChapterCharactersTableTableManager(
-      $_db,
-      $_db.chapterCharacters,
-    ).filter((f) => f.chapterId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _chapterCharactersRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$ChapterLocationsTable, List<ChapterLocation>>
-  _chapterLocationsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.chapterLocations,
-    aliasName: 'chapters__id__chapter_locations__chapter_id',
-  );
-
-  $$ChapterLocationsTableProcessedTableManager get chapterLocationsRefs {
-    final manager = $$ChapterLocationsTableTableManager(
-      $_db,
-      $_db.chapterLocations,
-    ).filter((f) => f.chapterId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _chapterLocationsRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$ChaptersTableFilterComposer
-    extends Composer<_$AppDatabase, $ChaptersTable> {
-  $$ChaptersTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get summary => $composableBuilder(
-    column: $table.summary,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get content => $composableBuilder(
-    column: $table.content,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get status => $composableBuilder(
-    column: $table.status,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get sessionDate => $composableBuilder(
-    column: $table.sessionDate,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get wordGoal => $composableBuilder(
-    column: $table.wordGoal,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get sortIndex => $composableBuilder(
-    column: $table.sortIndex,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$ProjectsTableFilterComposer get projectId {
-    final $$ProjectsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.projectId,
-      referencedTable: $db.projects,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ProjectsTableFilterComposer(
-            $db: $db,
-            $table: $db.projects,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<bool> chapterCharactersRefs(
-    Expression<bool> Function($$ChapterCharactersTableFilterComposer f) f,
-  ) {
-    final $$ChapterCharactersTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.chapterCharacters,
-      getReferencedColumn: (t) => t.chapterId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ChapterCharactersTableFilterComposer(
-            $db: $db,
-            $table: $db.chapterCharacters,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> chapterLocationsRefs(
-    Expression<bool> Function($$ChapterLocationsTableFilterComposer f) f,
-  ) {
-    final $$ChapterLocationsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.chapterLocations,
-      getReferencedColumn: (t) => t.chapterId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ChapterLocationsTableFilterComposer(
-            $db: $db,
-            $table: $db.chapterLocations,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$ChaptersTableOrderingComposer
-    extends Composer<_$AppDatabase, $ChaptersTable> {
-  $$ChaptersTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get summary => $composableBuilder(
-    column: $table.summary,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get content => $composableBuilder(
-    column: $table.content,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get status => $composableBuilder(
-    column: $table.status,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get sessionDate => $composableBuilder(
-    column: $table.sessionDate,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get wordGoal => $composableBuilder(
-    column: $table.wordGoal,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get sortIndex => $composableBuilder(
-    column: $table.sortIndex,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$ProjectsTableOrderingComposer get projectId {
-    final $$ProjectsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.projectId,
-      referencedTable: $db.projects,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ProjectsTableOrderingComposer(
-            $db: $db,
-            $table: $db.projects,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$ChaptersTableAnnotationComposer
-    extends Composer<_$AppDatabase, $ChaptersTable> {
-  $$ChaptersTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get title =>
-      $composableBuilder(column: $table.title, builder: (column) => column);
-
-  GeneratedColumn<String> get summary =>
-      $composableBuilder(column: $table.summary, builder: (column) => column);
-
-  GeneratedColumn<String> get content =>
-      $composableBuilder(column: $table.content, builder: (column) => column);
-
-  GeneratedColumn<String> get status =>
-      $composableBuilder(column: $table.status, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get sessionDate => $composableBuilder(
-    column: $table.sessionDate,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get wordGoal =>
-      $composableBuilder(column: $table.wordGoal, builder: (column) => column);
-
-  GeneratedColumn<int> get sortIndex =>
-      $composableBuilder(column: $table.sortIndex, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  $$ProjectsTableAnnotationComposer get projectId {
-    final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.projectId,
-      referencedTable: $db.projects,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ProjectsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.projects,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<T> chapterCharactersRefs<T extends Object>(
-    Expression<T> Function($$ChapterCharactersTableAnnotationComposer a) f,
-  ) {
-    final $$ChapterCharactersTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.id,
-          referencedTable: $db.chapterCharacters,
-          getReferencedColumn: (t) => t.chapterId,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$ChapterCharactersTableAnnotationComposer(
-                $db: $db,
-                $table: $db.chapterCharacters,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return f(composer);
-  }
-
-  Expression<T> chapterLocationsRefs<T extends Object>(
-    Expression<T> Function($$ChapterLocationsTableAnnotationComposer a) f,
-  ) {
-    final $$ChapterLocationsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.chapterLocations,
-      getReferencedColumn: (t) => t.chapterId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$ChapterLocationsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.chapterLocations,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$ChaptersTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $ChaptersTable,
-          Chapter,
-          $$ChaptersTableFilterComposer,
-          $$ChaptersTableOrderingComposer,
-          $$ChaptersTableAnnotationComposer,
-          $$ChaptersTableCreateCompanionBuilder,
-          $$ChaptersTableUpdateCompanionBuilder,
-          (Chapter, $$ChaptersTableReferences),
-          Chapter,
-          PrefetchHooks Function({
-            bool projectId,
-            bool chapterCharactersRefs,
-            bool chapterLocationsRefs,
-          })
-        > {
-  $$ChaptersTableTableManager(_$AppDatabase db, $ChaptersTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$ChaptersTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$ChaptersTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$ChaptersTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<String> projectId = const Value.absent(),
-                Value<String> title = const Value.absent(),
-                Value<String?> summary = const Value.absent(),
-                Value<String?> content = const Value.absent(),
-                Value<String?> status = const Value.absent(),
-                Value<DateTime?> sessionDate = const Value.absent(),
-                Value<int?> wordGoal = const Value.absent(),
-                Value<int> sortIndex = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => ChaptersCompanion(
-                id: id,
-                projectId: projectId,
-                title: title,
-                summary: summary,
-                content: content,
-                status: status,
-                sessionDate: sessionDate,
-                wordGoal: wordGoal,
-                sortIndex: sortIndex,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String id,
-                required String projectId,
-                required String title,
-                Value<String?> summary = const Value.absent(),
-                Value<String?> content = const Value.absent(),
-                Value<String?> status = const Value.absent(),
-                Value<DateTime?> sessionDate = const Value.absent(),
-                Value<int?> wordGoal = const Value.absent(),
-                Value<int> sortIndex = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => ChaptersCompanion.insert(
-                id: id,
-                projectId: projectId,
-                title: title,
-                summary: summary,
-                content: content,
-                status: status,
-                sessionDate: sessionDate,
-                wordGoal: wordGoal,
-                sortIndex: sortIndex,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$ChaptersTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback:
-              ({
-                projectId = false,
-                chapterCharactersRefs = false,
-                chapterLocationsRefs = false,
-              }) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (chapterCharactersRefs) db.chapterCharacters,
-                    if (chapterLocationsRefs) db.chapterLocations,
-                  ],
-                  addJoins:
-                      <
-                        T extends TableManagerState<
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic
-                        >
-                      >(state) {
-                        if (projectId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.projectId,
-                                    referencedTable: $$ChaptersTableReferences
-                                        ._projectIdTable(db),
-                                    referencedColumn: $$ChaptersTableReferences
-                                        ._projectIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
-                        }
-
-                        return state;
-                      },
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (chapterCharactersRefs)
-                        await $_getPrefetchedData<
-                          Chapter,
-                          $ChaptersTable,
-                          ChapterCharacter
-                        >(
-                          currentTable: table,
-                          referencedTable: $$ChaptersTableReferences
-                              ._chapterCharactersRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$ChaptersTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).chapterCharactersRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.chapterId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                      if (chapterLocationsRefs)
-                        await $_getPrefetchedData<
-                          Chapter,
-                          $ChaptersTable,
-                          ChapterLocation
-                        >(
-                          currentTable: table,
-                          referencedTable: $$ChaptersTableReferences
-                              ._chapterLocationsRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$ChaptersTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).chapterLocationsRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.chapterId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
-              },
-        ),
-      );
-}
-
-typedef $$ChaptersTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $ChaptersTable,
-      Chapter,
-      $$ChaptersTableFilterComposer,
-      $$ChaptersTableOrderingComposer,
-      $$ChaptersTableAnnotationComposer,
-      $$ChaptersTableCreateCompanionBuilder,
-      $$ChaptersTableUpdateCompanionBuilder,
-      (Chapter, $$ChaptersTableReferences),
-      Chapter,
-      PrefetchHooks Function({
-        bool projectId,
-        bool chapterCharactersRefs,
-        bool chapterLocationsRefs,
-      })
     >;
 typedef $$ChapterCharactersTableCreateCompanionBuilder =
     ChapterCharactersCompanion Function({
@@ -25568,6 +26135,8 @@ class $AppDatabaseManager {
       $$LocationsTableTableManager(_db, _db.locations);
   $$CharactersTableTableManager get characters =>
       $$CharactersTableTableManager(_db, _db.characters);
+  $$ChaptersTableTableManager get chapters =>
+      $$ChaptersTableTableManager(_db, _db.chapters);
   $$TimelineEventsTableTableManager get timelineEvents =>
       $$TimelineEventsTableTableManager(_db, _db.timelineEvents);
   $$CharacterRelationshipsTableTableManager get characterRelationships =>
@@ -25579,8 +26148,6 @@ class $AppDatabaseManager {
       $$RelationshipMembersTableTableManager(_db, _db.relationshipMembers);
   $$EventCharactersTableTableManager get eventCharacters =>
       $$EventCharactersTableTableManager(_db, _db.eventCharacters);
-  $$ChaptersTableTableManager get chapters =>
-      $$ChaptersTableTableManager(_db, _db.chapters);
   $$ChapterCharactersTableTableManager get chapterCharacters =>
       $$ChapterCharactersTableTableManager(_db, _db.chapterCharacters);
   $$ChapterLocationsTableTableManager get chapterLocations =>

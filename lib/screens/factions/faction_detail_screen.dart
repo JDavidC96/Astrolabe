@@ -154,19 +154,19 @@ class _FactionDetailScreenState extends ConsumerState<FactionDetailScreen> {
             TextFormField(
               controller: _type,
               decoration: const InputDecoration(
-                labelText: 'Tipo',
+                labelText: 'Tipo (opcional)',
                 hintText: 'Casa, gremio, reino, ejército...',
               ),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _status,
-              decoration: const InputDecoration(labelText: 'Estado'),
+              decoration: const InputDecoration(labelText: 'Estado (opcional)'),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _description,
-              decoration: const InputDecoration(labelText: 'Descripción', border: OutlineInputBorder()),
+              decoration: const InputDecoration(labelText: 'Descripción (opcional)', border: OutlineInputBorder()),
               maxLines: 6,
             ),
             if (_factionId != null) ...[

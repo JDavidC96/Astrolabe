@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/database.dart';
 import '../services/backup_service.dart';
+import '../services/chapter_timeline_sync.dart';
 import '../services/dice_roller.dart';
 import '../services/image_storage_service.dart';
 
@@ -40,5 +41,9 @@ final customFieldDaoProvider =
 final diceDaoProvider = Provider((ref) => ref.watch(databaseProvider).diceDao);
 final mapPinDaoProvider = Provider((ref) => ref.watch(databaseProvider).mapPinDao);
 final partnerDaoProvider = Provider((ref) => ref.watch(databaseProvider).partnerDao);
+
+final chapterTimelineSyncProvider = Provider<ChapterTimelineSync>((ref) {
+  return ChapterTimelineSync(ref.watch(databaseProvider));
+});
 
 final diceRollerProvider = Provider<DiceRoller>((ref) => DiceRoller());

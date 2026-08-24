@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,7 @@ import '../../data/tables.dart';
 import '../../providers/core_providers.dart';
 import '../../providers/data_providers.dart';
 import '../../services/text_stats.dart';
+import '../../widgets/searchable_pickers.dart';
 import '../../widgets/tags_field.dart';
 
 class ChapterDetailScreen extends ConsumerStatefulWidget {
@@ -31,6 +33,7 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
   final _title = TextEditingController();
   final _summary = TextEditingController();
   final _status = TextEditingController();
+  final _storyYear = TextEditingController();
 
   Set<String> _characterIds = {};
   Set<String> _locationIds = {};
@@ -54,6 +57,7 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
       _title.text = chapter.title;
       _summary.text = chapter.summary ?? '';
       _status.text = chapter.status ?? '';
+      _storyYear.text = chapter.storyYear?.toString() ?? '';
       _sessionDate = chapter.sessionDate;
       _wordGoal = chapter.wordGoal;
       _contentStats = TextStats.of(chapter.content);
@@ -82,7 +86,7 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
 
   @override
   void dispose() {
-    for (final c in [_title, _summary, _status]) {
+    for (final c in [_title, _summary, _status, _storyYear]) {
       c.dispose();
     }
     super.dispose();
@@ -110,12 +114,16 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
         // `content` is deliberately absent: the editor owns it, and writing
         // a stale copy from here would silently discard the user's prose.
         status: Value(_nullIfEmpty(_status.text)),
+        storyYear: Value(int.tryParse(_storyYear.text.trim())),
         sessionDate: Value(_sessionDate),
         updatedAt: Value(DateTime.now()),
       ),
     );
     await dao.setChapterCharacters(_chapterId!, _characterIds.toList());
     await dao.setChapterLocations(_chapterId!, _locationIds.toList());
+    // Keeps the mirrored timeline event in step; a no-op when the project
+    // has auto-sync switched off.
+    await ref.read(chapterTimelineSyncProvider).syncChapter(_chapterId!);
 
     if (mounted) {
       ScaffoldMessenger.of(context)
@@ -191,7 +199,7 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
             TextFormField(
               controller: _status,
               decoration: InputDecoration(
-                labelText: 'Estado',
+                labelText: 'Estado (opcional)',
                 hintText: isCampaign
                     ? 'Jugada, pendiente, cancelada...'
                     : 'Borrador, revisado, terminado...',
@@ -228,9 +236,21 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
             ],
             const SizedBox(height: 12),
             TextFormField(
+              controller: _storyYear,
+              decoration: const InputDecoration(
+                labelText: 'Año en la historia (opcional)',
+                helperText: 'Para ubicarlo en la línea de tiempo.',
+                hintText: '298',
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
               controller: _summary,
               decoration: const InputDecoration(
-                labelText: 'Resumen',
+                labelText: 'Resumen (opcional)',
+                helperText: 'Si activas la opción, aparece en la línea de tiempo.',
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
@@ -263,33 +283,54 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
                       },
               ),
             ),
+            if (_chapterId != null) ...[
+              const SizedBox(height: 8),
+              // Manual, one-off copy. Independent of the auto-sync switch,
+              // for people who want to place only some chapters by hand.
+              OutlinedButton.icon(
+                onPressed: () async {
+                  await ref
+                      .read(chapterTimelineSyncProvider)
+                      .addChapterOnce(_chapterId!);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Agregado a la línea de tiempo. Puedes editarlo '
+                          'ahí libremente.',
+                        ),
+                      ),
+                    );
+                  }
+                },
+                icon: const Icon(Icons.timeline_outlined, size: 18),
+                label: const Text('Agregar a la línea de tiempo'),
+              ),
+            ],
             const SizedBox(height: 16),
             Text(isCampaign ? 'Quiénes asistieron' : 'Personajes que aparecen',
                 style: Theme.of(context).textTheme.titleMedium),
             charactersAsync.when(
-              data: (characters) => characters.isEmpty
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Text('No hay personajes en este universo todavía.'),
-                    )
-                  : Column(
-                      children: [
-                        for (final c in characters)
-                          CheckboxListTile(
-                            dense: true,
-                            title:
-                                Text('${c.firstName} ${c.lastName ?? ''}'.trim()),
-                            value: _characterIds.contains(c.id),
-                            onChanged: (checked) => setState(() {
-                              if (checked == true) {
-                                _characterIds.add(c.id);
-                              } else {
-                                _characterIds.remove(c.id);
-                              }
-                            }),
-                          ),
-                      ],
+              data: (characters) => SearchableCheckboxList(
+                emptyMessage: 'No hay personajes en este universo todavía.',
+                searchHint: 'Buscar personaje...',
+                options: [
+                  for (final c in characters)
+                    PickOption(
+                      id: c.id,
+                      label: '${c.firstName} ${c.lastName ?? ''}'.trim(),
+                      sublabel: c.race,
                     ),
+                ],
+                selected: _characterIds,
+                onChanged: (id, isSelected) => setState(() {
+                  if (isSelected) {
+                    _characterIds.add(id);
+                  } else {
+                    _characterIds.remove(id);
+                  }
+                }),
+              ),
               loading: () => const LinearProgressIndicator(),
               error: (e, st) => Text('Error: $e'),
             ),
@@ -297,28 +338,22 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
             Text('Lugares donde ocurre',
                 style: Theme.of(context).textTheme.titleMedium),
             locationsAsync.when(
-              data: (locations) => locations.isEmpty
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Text('No hay lugares en este universo todavía.'),
-                    )
-                  : Column(
-                      children: [
-                        for (final l in locations)
-                          CheckboxListTile(
-                            dense: true,
-                            title: Text(l.name),
-                            value: _locationIds.contains(l.id),
-                            onChanged: (checked) => setState(() {
-                              if (checked == true) {
-                                _locationIds.add(l.id);
-                              } else {
-                                _locationIds.remove(l.id);
-                              }
-                            }),
-                          ),
-                      ],
-                    ),
+              data: (locations) => SearchableCheckboxList(
+                emptyMessage: 'No hay lugares en este universo todavía.',
+                searchHint: 'Buscar lugar...',
+                options: [
+                  for (final l in locations)
+                    PickOption(id: l.id, label: l.name, sublabel: l.type),
+                ],
+                selected: _locationIds,
+                onChanged: (id, isSelected) => setState(() {
+                  if (isSelected) {
+                    _locationIds.add(id);
+                  } else {
+                    _locationIds.remove(id);
+                  }
+                }),
+              ),
               loading: () => const LinearProgressIndicator(),
               error: (e, st) => Text('Error: $e'),
             ),

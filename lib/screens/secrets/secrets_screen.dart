@@ -6,6 +6,7 @@ import '../../data/database.dart';
 import '../../data/daos/secret_dao.dart';
 import '../../providers/core_providers.dart';
 import '../../providers/data_providers.dart';
+import '../../widgets/searchable_pickers.dart';
 
 /// Tracks hidden information and exactly who is in on it — the continuity
 /// trap of "wait, did she already know that in chapter 4?".
@@ -239,7 +240,7 @@ class _SecretDialogState extends ConsumerState<_SecretDialog> {
               TextField(
                 controller: _description,
                 decoration: const InputDecoration(
-                  labelText: 'Detalles',
+                  labelText: 'Detalles (opcional)',
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 3,
@@ -269,35 +270,39 @@ class _SecretDialogState extends ConsumerState<_SecretDialog> {
                         padding: EdgeInsets.symmetric(vertical: 8),
                         child: Text('No hay personajes todavía.'),
                       ),
-                    for (final c in characters) ...[
-                      CheckboxListTile(
-                        dense: true,
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(_name(c)),
-                        value: _knowerIds.contains(c.id),
-                        onChanged: (checked) => setState(() {
-                          if (checked == true) {
-                            _knowerIds.add(c.id);
-                            _howControllers.putIfAbsent(
-                                c.id, () => TextEditingController());
-                          } else {
-                            _knowerIds.remove(c.id);
-                          }
-                        }),
-                      ),
+                    SearchableCheckboxList(
+                      searchHint: 'Buscar personaje...',
+                      emptyMessage: 'No hay personajes todavía.',
+                      options: [
+                        for (final c in characters)
+                          PickOption(id: c.id, label: _name(c), sublabel: c.race),
+                      ],
+                      selected: _knowerIds,
+                      onChanged: (id, isSelected) => setState(() {
+                        if (isSelected) {
+                          _knowerIds.add(id);
+                          _howControllers.putIfAbsent(
+                              id, () => TextEditingController());
+                        } else {
+                          _knowerIds.remove(id);
+                        }
+                      }),
+                    ),
+                    // The "how did they find out" boxes follow the list so
+                    // they stay visible regardless of the search filter.
+                    for (final c in characters)
                       if (_knowerIds.contains(c.id))
                         Padding(
-                          padding: const EdgeInsets.only(left: 16, bottom: 8),
+                          padding: const EdgeInsets.only(bottom: 8),
                           child: TextField(
                             controller: _howControllers.putIfAbsent(
                                 c.id, () => TextEditingController()),
-                            decoration: const InputDecoration(
-                              labelText: '¿Cómo se enteró?',
+                            decoration: InputDecoration(
+                              labelText: '¿Cómo se enteró ${_name(c)}? (opcional)',
                               isDense: true,
                             ),
                           ),
                         ),
-                    ],
                   ],
                 ),
                 loading: () => const LinearProgressIndicator(),

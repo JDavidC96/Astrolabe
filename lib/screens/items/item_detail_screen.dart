@@ -183,7 +183,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             TextFormField(
               controller: _type,
               decoration: const InputDecoration(
-                labelText: 'Tipo',
+                labelText: 'Tipo (opcional)',
                 hintText: 'Arma, reliquia, libro, amuleto...',
               ),
             ),
@@ -191,7 +191,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             charactersAsync.when(
               data: (characters) => DropdownButtonFormField<String?>(
                 initialValue: _ownerCharacterId,
-                decoration: const InputDecoration(labelText: 'Portador actual'),
+                decoration: const InputDecoration(labelText: 'Portador actual (opcional)'),
                 items: [
                   const DropdownMenuItem(value: null, child: Text('Nadie')),
                   for (final c in characters)
@@ -209,7 +209,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             locationsAsync.when(
               data: (locations) => DropdownButtonFormField<String?>(
                 initialValue: _locationId,
-                decoration: const InputDecoration(labelText: 'Ubicación'),
+                decoration: const InputDecoration(labelText: 'Ubicación (opcional)'),
                 items: [
                   const DropdownMenuItem(value: null, child: Text('Desconocida')),
                   for (final l in locations)
@@ -224,7 +224,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             TextFormField(
               controller: _origin,
               decoration: const InputDecoration(
-                labelText: 'Origen',
+                labelText: 'Origen (opcional)',
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
@@ -233,7 +233,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             TextFormField(
               controller: _powers,
               decoration: const InputDecoration(
-                labelText: 'Poderes / propiedades',
+                labelText: 'Poderes / propiedades (opcional)',
                 border: OutlineInputBorder(),
               ),
               maxLines: 4,
@@ -242,7 +242,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             TextFormField(
               controller: _description,
               decoration: const InputDecoration(
-                labelText: 'Descripción',
+                labelText: 'Descripción (opcional)',
                 border: OutlineInputBorder(),
               ),
               maxLines: 5,

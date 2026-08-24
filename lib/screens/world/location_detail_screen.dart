@@ -233,7 +233,7 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
             TextFormField(
               controller: _type,
               decoration: const InputDecoration(
-                labelText: 'Tipo',
+                labelText: 'Tipo (opcional)',
                 hintText: 'Continente, reino, ciudad, bosque...',
               ),
             ),
@@ -244,7 +244,7 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
                 final options = all.where((l) => !invalid.contains(l.id)).toList();
                 return DropdownButtonFormField<String?>(
                   initialValue: _parentLocationId,
-                  decoration: const InputDecoration(labelText: 'Lugar padre'),
+                  decoration: const InputDecoration(labelText: 'Lugar padre (opcional)'),
                   items: [
                     const DropdownMenuItem(value: null, child: Text('Ninguno (raíz)')),
                     for (final l in options) DropdownMenuItem(value: l.id, child: Text(l.name)),
@@ -258,27 +258,27 @@ class _LocationDetailScreenState extends ConsumerState<LocationDetailScreen> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _climate,
-              decoration: const InputDecoration(labelText: 'Clima'),
+              decoration: const InputDecoration(labelText: 'Clima (opcional)'),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _population,
-              decoration: const InputDecoration(labelText: 'Población'),
+              decoration: const InputDecoration(labelText: 'Población (opcional)'),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _government,
-              decoration: const InputDecoration(labelText: 'Gobierno'),
+              decoration: const InputDecoration(labelText: 'Gobierno (opcional)'),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _status,
-              decoration: const InputDecoration(labelText: 'Estado'),
+              decoration: const InputDecoration(labelText: 'Estado (opcional)'),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _description,
-              decoration: const InputDecoration(labelText: 'Descripción', border: OutlineInputBorder()),
+              decoration: const InputDecoration(labelText: 'Descripción (opcional)', border: OutlineInputBorder()),
               maxLines: 6,
             ),
             if (_locationId != null) ...[

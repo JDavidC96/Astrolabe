@@ -78,7 +78,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.connection);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -135,6 +135,19 @@ class AppDatabase extends _$AppDatabase {
           if (from < 6) {
             // v6 added partnerships alongside the parent-child links.
             await m.createTable(partnerLinks);
+          }
+          if (from < 7) {
+            // v7 lets chapters feed the timeline, with a numeric year so
+            // events can be ordered chronologically.
+            await m.addColumn(projects, projects.autoChapterTimeline);
+            await m.addColumn(projects, projects.timelineSortByYear);
+            await m.addColumn(timelineEvents, timelineEvents.year);
+            await m.addColumn(timelineEvents, timelineEvents.sourceChapterId);
+            // `chapters` is created from the current schema during the v2
+            // step, so a pre-v2 database already has this column.
+            if (from >= 2) {
+              await m.addColumn(chapters, chapters.storyYear);
+            }
           }
         },
         beforeOpen: (details) async {

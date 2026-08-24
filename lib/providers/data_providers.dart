@@ -55,9 +55,19 @@ final locationStreamProvider =
 });
 
 // Timeline
+/// Timeline events, ordered per the project's own sort preference so the
+/// list and the drag-to-reorder behaviour always agree.
 final timelineEventsStreamProvider =
     StreamProvider.family<List<TimelineEvent>, String>((ref, projectId) {
-  return ref.watch(timelineDaoProvider).watchEvents(projectId);
+  final sortByYear = ref
+          .watch(projectStreamProvider(projectId))
+          .valueOrNull
+          ?.timelineSortByYear ??
+      false;
+  return ref.watch(timelineDaoProvider).watchEvents(
+        projectId,
+        sortByYear: sortByYear,
+      );
 });
 
 final timelineEventStreamProvider =
@@ -90,6 +100,12 @@ final chaptersStreamProvider =
 final chapterCharactersStreamProvider =
     StreamProvider.family<List<Character>, String>((ref, chapterId) {
   return ref.watch(chapterDaoProvider).watchChapterCharacters(chapterId);
+});
+
+/// Chapters a given character appears in.
+final chaptersWithCharacterStreamProvider =
+    StreamProvider.family<List<Chapter>, String>((ref, characterId) {
+  return ref.watch(chapterDaoProvider).watchChaptersWithCharacter(characterId);
 });
 
 final chapterLocationsStreamProvider =

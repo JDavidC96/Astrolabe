@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../data/database.dart';
 import '../providers/core_providers.dart';
 import '../providers/data_providers.dart';
+import 'searchable_pickers.dart';
 
 const _partnerTypes = <String>[
   'Matrimonio',
@@ -103,22 +104,23 @@ class FamilySection extends ConsumerWidget {
       return;
     }
 
-    final chosen = await showDialog<Character>(
+    final chosenId = await showDialog<String>(
       context: context,
-      builder: (context) => SimpleDialog(
-        title: Text(relation.dialogTitle),
-        children: [
+      builder: (context) => SearchablePickDialog(
+        title: relation.dialogTitle,
+        searchHint: 'Buscar personaje...',
+        options: [
           for (final option in options)
-            SimpleDialogOption(
-              onPressed: () => Navigator.of(context).pop(option),
-              child: Text(
-                '${option.firstName} ${option.lastName ?? ''}'.trim(),
-              ),
+            PickOption(
+              id: option.id,
+              label: '${option.firstName} ${option.lastName ?? ''}'.trim(),
+              sublabel: option.race,
             ),
         ],
       ),
     );
-    if (chosen == null || !context.mounted) return;
+    if (chosenId == null || !context.mounted) return;
+    final chosen = options.firstWhere((c) => c.id == chosenId);
 
     if (relation == _Relation.partner) {
       final type = await showDialog<String>(

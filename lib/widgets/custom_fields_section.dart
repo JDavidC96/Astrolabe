@@ -87,7 +87,7 @@ class CustomFieldsSection extends ConsumerWidget {
             const SizedBox(height: 12),
             TextField(
               controller: valueController,
-              decoration: const InputDecoration(labelText: 'Valor'),
+              decoration: const InputDecoration(labelText: 'Valor (opcional)'),
             ),
           ],
         ),
