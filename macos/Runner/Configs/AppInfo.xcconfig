@@ -5,10 +5,13 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = worldbuilder
+PRODUCT_NAME = Astrolabe
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.worldbuilder.worldbuilder
+PRODUCT_BUNDLE_IDENTIFIER = com.covaret.astrolabe
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.worldbuilder. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 Covaret. All rights reserved.
+
+// Apple Developer team used to sign the app.
+DEVELOPMENT_TEAM = Z6CSN2AKUD

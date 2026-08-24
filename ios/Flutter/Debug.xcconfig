@@ -1,1 +1,5 @@
 #include "Generated.xcconfig"
+
+// Apple Developer team used to sign the app. Set here rather than in
+// project.pbxproj so it survives Xcode rewriting the project file.
+DEVELOPMENT_TEAM = Z6CSN2AKUD

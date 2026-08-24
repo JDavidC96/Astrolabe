@@ -33,8 +33,23 @@ class AppLockService {
     return base64Url.encode(bytes);
   }
 
+  /// Reads a key, treating an unreachable keychain as "nothing stored".
+  ///
+  /// Secure storage throws rather than returning null when the platform
+  /// keychain is unavailable — on macOS, for instance, when the app is built
+  /// without the keychain entitlement. Callers here only ever ask whether a
+  /// lock exists, so degrading to "no lock" keeps the app usable instead of
+  /// failing to start.
+  Future<String?> _readOrNull(String key) async {
+    try {
+      return await _storage.read(key: key);
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<bool> isLockEnabled() async {
-    return await _storage.read(key: _hashKey) != null;
+    return await _readOrNull(_hashKey) != null;
   }
 
   Future<void> setPin(String pin) async {
@@ -46,8 +61,8 @@ class AppLockService {
   /// Constant-ish comparison against the stored hash. Returns false when no
   /// PIN is set, so callers can't accidentally unlock an unconfigured app.
   Future<bool> verifyPin(String pin) async {
-    final salt = await _storage.read(key: _saltKey);
-    final hash = await _storage.read(key: _hashKey);
+    final salt = await _readOrNull(_saltKey);
+    final hash = await _readOrNull(_hashKey);
     if (salt == null || hash == null) return false;
     return hashPin(pin, salt) == hash;
   }
@@ -59,7 +74,7 @@ class AppLockService {
   }
 
   Future<bool> isBiometricEnabled() async {
-    return await _storage.read(key: _biometricKey) == 'true';
+    return await _readOrNull(_biometricKey) == 'true';
   }
 
   Future<void> setBiometricEnabled(bool enabled) async {
