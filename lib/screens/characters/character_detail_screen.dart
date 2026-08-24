@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -143,7 +145,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Personaje guardado')),
+        SnackBar(content: Text(L.of(context).charSaved)),
       );
     }
   }
@@ -153,14 +155,14 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar personaje'),
-        content: const Text('¿Seguro que quieres eliminar este personaje?'),
+        title: Text(L.of(context).charDeleteTitle),
+        content: Text(L.of(context).charDeleteBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(L.of(context).commonCancel)),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -177,17 +179,18 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l = L.of(context);
     final factionsAsync = ref.watch(factionsStreamProvider(widget.projectId));
     final projectAsync = ref.watch(projectStreamProvider(widget.projectId));
     final isCampaign = projectAsync.valueOrNull?.kind == ProjectKind.dnd;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_characterId == null ? 'Nuevo personaje' : 'Editar personaje'),
+        title: Text(_characterId == null ? l.charNew : l.charEdit),
         actions: [
           if (_characterId != null)
             IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
-          IconButton(icon: const Icon(Icons.check), tooltip: 'Guardar', onPressed: _save),
+          IconButton(icon: const Icon(Icons.check), tooltip: l.commonSave, onPressed: _save),
         ],
       ),
       body: Form(
@@ -214,41 +217,41 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               const SizedBox(height: 16),
             ],
             _SectionCard(
-              title: 'Datos básicos',
+              title: l.charSectionBasics,
               children: [
                 TextFormField(
                   controller: _firstName,
-                  decoration: const InputDecoration(labelText: 'Nombre *'),
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                  decoration: InputDecoration(labelText: l.charFirstName),
+                  validator: (v) => (v == null || v.trim().isEmpty) ? l.commonRequired : null,
                 ),
                 TextFormField(
                   controller: _lastName,
-                  decoration: const InputDecoration(labelText: 'Apellido (opcional)'),
+                  decoration: InputDecoration(labelText: l.charLastName),
                 ),
                 TextFormField(
                   controller: _alias,
-                  decoration: const InputDecoration(labelText: 'Alias / apodo (opcional)'),
+                  decoration: InputDecoration(labelText: l.charAlias),
                 ),
                 TextFormField(
                   controller: _race,
-                  decoration: const InputDecoration(labelText: 'Raza / especie (opcional)'),
+                  decoration: InputDecoration(labelText: l.charRace),
                 ),
                 TextFormField(
                   controller: _gender,
-                  decoration: const InputDecoration(labelText: 'Género (opcional)'),
+                  decoration: InputDecoration(labelText: l.charGender),
                 ),
                 TextFormField(
                   controller: _age,
-                  decoration: const InputDecoration(labelText: 'Edad (opcional)'),
+                  decoration: InputDecoration(labelText: l.charAge),
                 ),
                 TextFormField(
                   controller: _occupation,
-                  decoration: const InputDecoration(labelText: 'Ocupación (opcional)'),
+                  decoration: InputDecoration(labelText: l.charOccupation),
                 ),
                 factionsAsync.when(
                   data: (factions) => DropdownButtonFormField<String?>(
                     initialValue: _factionId,
-                    decoration: const InputDecoration(labelText: 'Facción / casa (opcional)'),
+                    decoration: InputDecoration(labelText: l.charFaction),
                     items: [
                       const DropdownMenuItem(value: null, child: Text('Ninguna')),
                       for (final f in factions) DropdownMenuItem(value: f.id, child: Text(f.name)),
@@ -260,23 +263,23 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                 ),
                 TextFormField(
                   controller: _status,
-                  decoration: const InputDecoration(
-                    labelText: 'Estado',
-                    hintText: 'Vivo, muerto, desaparecido...',
+                  decoration: InputDecoration(
+                    labelText: l.charStatus,
+                    hintText: l.charStatusHint,
                   ),
                 ),
                 if (isCampaign)
                   DropdownButtonFormField<String?>(
                     initialValue: _role,
-                    decoration: const InputDecoration(labelText: 'Rol en la mesa (opcional)'),
-                    items: const [
-                      DropdownMenuItem(value: null, child: Text('Sin definir')),
+                    decoration: InputDecoration(labelText: l.charRole),
+                    items: [
+                      DropdownMenuItem(value: null, child: Text(l.charRoleUndefined)),
                       DropdownMenuItem(
-                          value: CharacterRole.pc, child: Text('Jugador (PJ)')),
+                          value: CharacterRole.pc, child: Text(l.charRolePc)),
                       DropdownMenuItem(
-                          value: CharacterRole.npc, child: Text('NPC')),
+                          value: CharacterRole.npc, child: Text(l.charRoleNpc)),
                       DropdownMenuItem(
-                          value: CharacterRole.enemy, child: Text('Enemigo')),
+                          value: CharacterRole.enemy, child: Text(l.charRoleEnemy)),
                     ],
                     onChanged: (v) => setState(() => _role = v),
                   ),
@@ -285,7 +288,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
             if (isCampaign && _characterId != null)
               DndSheetSection(characterId: _characterId!),
             _SectionCard(
-              title: 'Apariencia física (opcional)',
+              title: l.charAppearance,
               children: [
                 TextFormField(
                   controller: _physicalDescription,
@@ -295,7 +298,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               ],
             ),
             _SectionCard(
-              title: 'Personalidad (opcional)',
+              title: l.charPersonality,
               children: [
                 TextFormField(
                   controller: _personality,
@@ -305,7 +308,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               ],
             ),
             _SectionCard(
-              title: 'Historia / trasfondo (opcional)',
+              title: l.charBackstory,
               children: [
                 TextFormField(
                   controller: _backstory,
@@ -315,7 +318,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               ],
             ),
             _SectionCard(
-              title: 'Habilidades (opcional)',
+              title: l.charAbilities,
               children: [
                 TextFormField(
                   controller: _abilities,
@@ -325,7 +328,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               ],
             ),
             _SectionCard(
-              title: 'Notas (opcional)',
+              title: l.charNotes,
               children: [
                 TextFormField(
                   controller: _notes,
@@ -361,11 +364,11 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                 entityId: _characterId!,
               ),
             ] else
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
-                  'Guarda el personaje para poder agregar imagen y relaciones.',
-                  style: TextStyle(fontStyle: FontStyle.italic),
+                  l.charSaveFirst,
+                  style: const TextStyle(fontStyle: FontStyle.italic),
                 ),
               ),
             const SizedBox(height: 32),
@@ -420,15 +423,16 @@ class _AppearancesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final chaptersAsync =
         ref.watch(chaptersWithCharacterStreamProvider(characterId));
-    final noun = isCampaign ? 'sesiones' : 'capítulos';
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          isCampaign ? 'Sesiones en las que estuvo' : 'Aparece en',
+          isCampaign ? l.charAttendedSessions : l.charAppearsIn,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 4),
@@ -436,8 +440,9 @@ class _AppearancesSection extends ConsumerWidget {
           data: (chapters) {
             if (chapters.isEmpty) {
               return Text(
-                'Todavía no está marcado en ningún $noun. Se marca desde '
-                'el $noun, no desde aquí.',
+                isCampaign
+                    ? l.charNoAppearancesSessions
+                    : l.charNoAppearancesChapters,
                 style: Theme.of(context).textTheme.bodySmall,
               );
             }

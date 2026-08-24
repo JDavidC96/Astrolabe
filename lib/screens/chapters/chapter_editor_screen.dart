@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -154,31 +156,31 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
     final result = await showDialog<int?>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Meta de palabras'),
+        title: Text(L.of(context).editorGoalTitle),
         content: TextField(
           controller: controller,
           autofocus: true,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: const InputDecoration(
-            labelText: 'Palabras para este capítulo',
+          decoration: InputDecoration(
+            labelText: L.of(context).editorGoalLabel,
             hintText: 'ej. 2000',
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(-1),
-            child: const Text('Quitar meta'),
+            child: Text(L.of(context).editorGoalRemove),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(null),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(
               int.tryParse(controller.text.trim()) ?? -1,
             ),
-            child: const Text('Guardar'),
+            child: Text(L.of(context).commonSave),
           ),
         ],
       ),
@@ -204,6 +206,7 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
 
     final stats = TextStats.of(_controller.text);
     final theme = Theme.of(context);
+    final l = L.of(context);
 
     return Scaffold(
       appBar: _focusMode
@@ -218,7 +221,7 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.center_focus_strong_outlined),
-                  tooltip: 'Modo sin distracciones',
+                  tooltip: l.editorFocusMode,
                   onPressed: () => setState(() => _focusMode = true),
                 ),
               ],
@@ -232,7 +235,7 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
                 alignment: Alignment.centerRight,
                 child: IconButton(
                   icon: const Icon(Icons.close_fullscreen),
-                  tooltip: 'Salir del modo sin distracciones',
+                  tooltip: l.editorExitFocus,
                   onPressed: () => setState(() => _focusMode = false),
                 ),
               ),
@@ -258,10 +261,10 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
                         fontSize: 17,
                         height: 1.6,
                       ),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         filled: false,
-                        hintText: 'Escribe aquí...',
+                        hintText: l.editorHint,
                       ),
                     ),
                   ),
@@ -277,6 +280,7 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
 
   Widget _toolbar(BuildContext context, TextStats stats) {
     final theme = Theme.of(context);
+    final l = L.of(context);
     final goal = _wordGoal;
     final progress = goal == null || goal == 0
         ? null
@@ -295,22 +299,22 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.format_bold),
-                  tooltip: 'Negrita',
+                  tooltip: l.editorBold,
                   onPressed: () => _wrapSelection('**'),
                 ),
                 IconButton(
                   icon: const Icon(Icons.format_italic),
-                  tooltip: 'Cursiva',
+                  tooltip: l.editorItalic,
                   onPressed: () => _wrapSelection('_'),
                 ),
                 IconButton(
                   icon: const Icon(Icons.title),
-                  tooltip: 'Subtítulo',
+                  tooltip: l.editorSubheading,
                   onPressed: () => _insertBlock('## '),
                 ),
                 IconButton(
                   icon: const Icon(Icons.horizontal_rule),
-                  tooltip: 'Separador de escena',
+                  tooltip: l.editorSceneBreak,
                   onPressed: () => _insertBlock('---'),
                 ),
                 const Spacer(),
@@ -322,7 +326,7 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
                         horizontal: 8, vertical: 6),
                     child: Text(
                       goal == null
-                          ? '${stats.words} palabras'
+                          ? l.chapWordCount(stats.words)
                           : '${stats.words} / $goal',
                       style: theme.textTheme.labelLarge,
                     ),
@@ -364,7 +368,7 @@ class _SaveIndicator extends StatelessWidget {
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
             const SizedBox(width: 6),
-            Text('Guardando', style: style),
+            Text(L.of(context).editorSaving, style: style),
           ],
         ),
       );
@@ -374,7 +378,9 @@ class _SaveIndicator extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Center(
         child: Text(
-          dirty ? 'Sin guardar' : (lastSaved == null ? '' : 'Guardado'),
+          dirty
+              ? L.of(context).editorUnsaved
+              : (lastSaved == null ? '' : L.of(context).editorSaved),
           style: style,
         ),
       ),

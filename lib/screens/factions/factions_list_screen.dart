@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,7 +24,7 @@ class FactionsListScreen extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'No hay facciones todavía. Toca + para crear una.',
+                  L.of(context).facEmpty,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),

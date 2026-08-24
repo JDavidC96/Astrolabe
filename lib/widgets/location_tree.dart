@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 import '../data/database.dart';
 
 /// Renders a flat list of [Location]s as an expandable tree, following
@@ -36,7 +38,7 @@ class LocationTree extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
-            'No hay lugares todavía. Crea el primero con el botón +.',
+            L.of(context).worldEmpty,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
@@ -97,17 +99,17 @@ class _LocationNode extends StatelessWidget {
         if (hasMap)
           IconButton(
             icon: const Icon(Icons.map_outlined),
-            tooltip: 'Ver mapa',
+            tooltip: L.of(context).worldViewMap,
             onPressed: () => onOpenMap(location),
           ),
         IconButton(
           icon: const Icon(Icons.add),
-          tooltip: 'Agregar sublugar',
+          tooltip: L.of(context).worldAddSub,
           onPressed: () => onAddChild(location.id),
         ),
         IconButton(
           icon: const Icon(Icons.delete_outline),
-          tooltip: 'Eliminar',
+          tooltip: L.of(context).commonDelete,
           onPressed: () => onDelete(location),
         ),
       ],
@@ -140,7 +142,7 @@ class _LocationNode extends StatelessWidget {
             child: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: const Text('Ver / editar detalles de este lugar'),
+              child: Text(L.of(context).worldViewDetails),
             ),
           ),
           for (final child in children)

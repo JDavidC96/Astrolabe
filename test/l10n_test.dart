@@ -47,6 +47,7 @@ void main() {
       'supportKeyLabel', // "Bre-B" is a Colombian product name
       'commonError', // "Error" is the same word in both
       'appearanceAuto', // so is "Auto"
+      'charRoleNpc', // NPC is the standard abbreviation in both
     };
 
     final suspicious = <String>[];

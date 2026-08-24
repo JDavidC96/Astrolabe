@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 import '../data/database.dart';
 
 /// Vertical timeline of [TimelineEvent]s.
@@ -32,7 +34,7 @@ class TimelineList extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
-            'No hay eventos todavía. Crea el primero con el botón +.',
+            L.of(context).timelineEmpty,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
@@ -105,7 +107,7 @@ class TimelineList extends StatelessWidget {
                       Expanded(child: Text(event.title)),
                       if (event.year != null)
                         Chip(
-                          label: Text('Año ${event.year}'),
+                          label: Text(L.of(context).timelineYearChip(event.year!)),
                           visualDensity: VisualDensity.compact,
                         ),
                     ],
@@ -119,7 +121,7 @@ class TimelineList extends StatelessWidget {
                             const Icon(Icons.menu_book_outlined, size: 14),
                             const SizedBox(width: 4),
                             Text(
-                              'Desde un capítulo',
+                              L.of(context).timelineFromChapter,
                               style: Theme.of(context).textTheme.labelSmall,
                             ),
                           ],

@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -127,7 +129,7 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Capítulo guardado')));
+          .showSnackBar(SnackBar(content: Text(L.of(context).chapSaved)));
     }
   }
 
@@ -136,19 +138,19 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar capítulo'),
-        content: const Text('¿Eliminar este capítulo?'),
+        title: Text(L.of(context).chapDeleteTitle),
+        content: Text(L.of(context).chapDeleteBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -164,23 +166,24 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l = L.of(context);
     final charactersAsync = ref.watch(charactersStreamProvider(widget.projectId));
     final locationsAsync = ref.watch(locationsStreamProvider(widget.projectId));
     final projectAsync = ref.watch(projectStreamProvider(widget.projectId));
     final isCampaign = projectAsync.valueOrNull?.kind == ProjectKind.dnd;
-    final noun = isCampaign ? 'sesión' : 'capítulo';
+
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          _chapterId == null ? 'Nueva $noun' : 'Editar $noun',
-        ),
+        title: Text(_chapterId == null
+            ? (isCampaign ? l.chapNewSession : l.chapNewChapter)
+            : (isCampaign ? l.chapEditSession : l.chapEditChapter)),
         actions: [
           if (_chapterId != null)
             IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
           IconButton(
             icon: const Icon(Icons.check),
-            tooltip: 'Guardar',
+            tooltip: l.commonSave,
             onPressed: _save,
           ),
         ],
@@ -192,17 +195,17 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
           children: [
             TextFormField(
               controller: _title,
-              decoration: const InputDecoration(labelText: 'Título *'),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+              decoration: InputDecoration(labelText: l.chapTitle),
+              validator: (v) => (v == null || v.trim().isEmpty) ? l.commonRequired : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _status,
               decoration: InputDecoration(
-                labelText: 'Estado (opcional)',
+                labelText: l.chapStatus,
                 hintText: isCampaign
-                    ? 'Jugada, pendiente, cancelada...'
-                    : 'Borrador, revisado, terminado...',
+                    ? l.chapStatusHintSession
+                    : l.chapStatusHintChapter,
               ),
             ),
             if (isCampaign) ...[
@@ -211,10 +214,10 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.event_outlined),
-                title: const Text('Fecha en que se jugó'),
+                title: Text(l.chapPlayedOn),
                 subtitle: Text(
                   _sessionDate == null
-                      ? 'Sin fecha'
+                      ? l.chapNoDate
                       : '${_sessionDate!.day}/${_sessionDate!.month}/${_sessionDate!.year}',
                 ),
                 trailing: _sessionDate == null
@@ -237,9 +240,9 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _storyYear,
-              decoration: const InputDecoration(
-                labelText: 'Año en la historia (opcional)',
-                helperText: 'Para ubicarlo en la línea de tiempo.',
+              decoration: InputDecoration(
+                labelText: l.chapStoryYear,
+                helperText: l.chapStoryYearHelp,
                 hintText: '298',
               ),
               keyboardType: TextInputType.number,
@@ -248,10 +251,10 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _summary,
-              decoration: const InputDecoration(
-                labelText: 'Resumen (opcional)',
-                helperText: 'Si activas la opción, aparece en la línea de tiempo.',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l.chapSummary,
+                helperText: l.chapSummaryHelp,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
@@ -262,14 +265,16 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.edit_note),
-                title: const Text('Contenido'),
+                title: Text(l.chapContent),
                 subtitle: Text(
                   _chapterId == null
-                      ? 'Guarda primero (✓ arriba) para empezar a escribir.'
+                      ? l.chapContentSaveFirst
                       : _contentStats.words == 0
-                          ? 'Vacío. Toca para escribir.'
-                          : '${_contentStats.words} palabras'
-                              '${_wordGoal != null ? ' de $_wordGoal' : ''}',
+                          ? l.chapContentEmpty
+                          : _wordGoal == null
+                              ? l.chapWordCount(_contentStats.words)
+                              : l.chapWordCountGoal(
+                                  _contentStats.words, _wordGoal!),
                 ),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: _chapterId == null
@@ -294,26 +299,21 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
                       .addChapterOnce(_chapterId!);
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Agregado a la línea de tiempo. Puedes editarlo '
-                          'ahí libremente.',
-                        ),
-                      ),
+                      SnackBar(content: Text(l.chapAddedToTimeline)),
                     );
                   }
                 },
                 icon: const Icon(Icons.timeline_outlined, size: 18),
-                label: const Text('Agregar a la línea de tiempo'),
+                label: Text(l.chapAddToTimeline),
               ),
             ],
             const SizedBox(height: 16),
-            Text(isCampaign ? 'Quiénes asistieron' : 'Personajes que aparecen',
+            Text(isCampaign ? l.chapWhoAttended : l.chapWhoAppears,
                 style: Theme.of(context).textTheme.titleMedium),
             charactersAsync.when(
               data: (characters) => SearchableCheckboxList(
-                emptyMessage: 'No hay personajes en este universo todavía.',
-                searchHint: 'Buscar personaje...',
+                emptyMessage: l.chapNoCharacters,
+                searchHint: l.charSearchHint,
                 options: [
                   for (final c in characters)
                     PickOption(
@@ -335,12 +335,12 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
               error: (e, st) => Text('Error: $e'),
             ),
             const SizedBox(height: 16),
-            Text('Lugares donde ocurre',
+            Text(l.chapPlaces,
                 style: Theme.of(context).textTheme.titleMedium),
             locationsAsync.when(
               data: (locations) => SearchableCheckboxList(
-                emptyMessage: 'No hay lugares en este universo todavía.',
-                searchHint: 'Buscar lugar...',
+                emptyMessage: l.chapNoPlaces,
+                searchHint: l.searchPlaceHint,
                 options: [
                   for (final l in locations)
                     PickOption(id: l.id, label: l.name, sublabel: l.type),

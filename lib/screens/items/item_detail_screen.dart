@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -96,7 +98,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Objeto guardado')));
+          .showSnackBar(SnackBar(content: Text(L.of(context).itemSaved)));
     }
   }
 
@@ -105,19 +107,19 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar objeto'),
-        content: const Text('¿Eliminar este objeto?'),
+        title: Text(L.of(context).itemDeleteTitle),
+        content: Text(L.of(context).itemDeleteBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -134,18 +136,19 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l = L.of(context);
     final charactersAsync = ref.watch(charactersStreamProvider(widget.projectId));
     final locationsAsync = ref.watch(locationsStreamProvider(widget.projectId));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_itemId == null ? 'Nuevo objeto' : 'Editar objeto'),
+        title: Text(_itemId == null ? l.itemNew : l.itemEdit),
         actions: [
           if (_itemId != null)
             IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
           IconButton(
             icon: const Icon(Icons.check),
-            tooltip: 'Guardar',
+            tooltip: l.commonSave,
             onPressed: _save,
           ),
         ],
@@ -160,7 +163,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
                 child: ImageOrDrawingPicker(
                   projectId: widget.projectId,
                   imagePath: _imagePath,
-                  label: 'Imagen del objeto',
+                  label: l.itemImage,
                   onChanged: (path) {
                     setState(() => _imagePath = path);
                     ref.read(itemDaoProvider).updateItem(
@@ -176,24 +179,24 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             ],
             TextFormField(
               controller: _name,
-              decoration: const InputDecoration(labelText: 'Nombre *'),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+              decoration: InputDecoration(labelText: l.itemName),
+              validator: (v) => (v == null || v.trim().isEmpty) ? l.commonRequired : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _type,
-              decoration: const InputDecoration(
-                labelText: 'Tipo (opcional)',
-                hintText: 'Arma, reliquia, libro, amuleto...',
+              decoration: InputDecoration(
+                labelText: l.itemType,
+                hintText: l.itemTypeHint,
               ),
             ),
             const SizedBox(height: 12),
             charactersAsync.when(
               data: (characters) => DropdownButtonFormField<String?>(
                 initialValue: _ownerCharacterId,
-                decoration: const InputDecoration(labelText: 'Portador actual (opcional)'),
+                decoration: InputDecoration(labelText: l.itemOwner),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Nadie')),
+                  DropdownMenuItem(value: null, child: Text(l.itemOwnerNone)),
                   for (final c in characters)
                     DropdownMenuItem(
                       value: c.id,
@@ -209,9 +212,9 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             locationsAsync.when(
               data: (locations) => DropdownButtonFormField<String?>(
                 initialValue: _locationId,
-                decoration: const InputDecoration(labelText: 'Ubicación (opcional)'),
+                decoration: InputDecoration(labelText: l.itemLocation),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Desconocida')),
+                  DropdownMenuItem(value: null, child: Text(l.itemLocationUnknown)),
                   for (final l in locations)
                     DropdownMenuItem(value: l.id, child: Text(l.name)),
                 ],
@@ -223,27 +226,27 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _origin,
-              decoration: const InputDecoration(
-                labelText: 'Origen (opcional)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l.itemOrigin,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _powers,
-              decoration: const InputDecoration(
-                labelText: 'Poderes / propiedades (opcional)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l.itemPowers,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 4,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _description,
-              decoration: const InputDecoration(
-                labelText: 'Descripción (opcional)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l.itemDescription,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 5,
             ),

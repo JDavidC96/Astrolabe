@@ -1,9 +1,9 @@
 {
   "@@locale": "es",
-
   "appTitle": "Astrolabe",
-  "@appTitle": {"description": "Name of the app, not translated"},
-
+  "@appTitle": {
+    "description": "Name of the app, not translated"
+  },
   "commonSave": "Guardar",
   "commonCancel": "Cancelar",
   "commonDelete": "Eliminar",
@@ -13,18 +13,40 @@
   "commonRemove": "Quitar",
   "commonRequired": "Requerido",
   "commonOptional": "opcional",
-  "@commonOptional": {"description": "Word appended in parentheses to optional field labels"},
+  "@commonOptional": {
+    "description": "Word appended in parentheses to optional field labels"
+  },
   "commonNone": "Ninguno",
   "commonError": "Error: {message}",
-  "@commonError": {"placeholders": {"message": {"type": "String"}}},
+  "@commonError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
   "commonSearch": "Buscar",
   "commonSearchHint": "Buscar...",
   "commonNoMatches": "Nada coincide con la búsqueda.",
   "commonSelectedCount": "{count} seleccionado(s)",
-  "@commonSelectedCount": {"placeholders": {"count": {"type": "int"}}},
+  "@commonSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "commonSelectedCountFiltered": "{count} seleccionado(s) · {hidden} fuera del filtro",
-  "@commonSelectedCountFiltered": {"placeholders": {"count": {"type": "int"}, "hidden": {"type": "int"}}},
-
+  "@commonSelectedCountFiltered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "hidden": {
+        "type": "int"
+      }
+    }
+  },
   "projectsTitle": "Mis universos",
   "projectsEmpty": "Todavía no has creado ningún libro/universo.\nToca + para empezar.",
   "projectsKindNovel": "Libro / novela",
@@ -43,8 +65,13 @@
   "projectSaveFirstForCover": "Guarda el universo para poder elegir o dibujar su portada.",
   "projectDeleteTitle": "Eliminar universo",
   "projectDeleteBody": "¿Seguro que quieres eliminar \"{name}\"? Se borrarán todos sus personajes, lugares, facciones y eventos. Esta acción no se puede deshacer.",
-  "@projectDeleteBody": {"placeholders": {"name": {"type": "String"}}},
-
+  "@projectDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "sectionCharacters": "Personajes",
   "sectionWorld": "Mundo",
   "sectionFactions": "Facciones",
@@ -62,7 +89,6 @@
   "drawerUniverse": "Universo",
   "drawerMyUniverses": "Mis universos",
   "searchWholeUniverse": "Buscar en todo el universo",
-
   "supportTitle": "Invítame un café",
   "supportSubtitle": "Si la app te sirve y quieres apoyarla",
   "supportBody": "Astrolabe es gratis y sin anuncios. Si te sirve y quieres apoyarla, puedes hacerlo desde cualquier banco colombiano con esta llave Bre-B.",
@@ -70,7 +96,6 @@
   "supportCopyKey": "Copiar llave",
   "supportCopied": "Llave copiada. Pégala en tu app del banco, en \"Enviar con Bre-B\".",
   "supportHow": "Cómo: abre tu app del banco (Nequi, Daviplata, Bancolombia, la que uses), busca \"Enviar con Bre-B\" y pega la llave.",
-
   "settingsSecurity": "Seguridad",
   "appearanceTitle": "Apariencia",
   "appearanceBrightness": "Brillo",
@@ -83,10 +108,246 @@
   "appearanceButtonSample": "Botón",
   "appearanceButtonOther": "Otro",
   "appearanceSystemFont": "Sistema",
-
   "languageTitle": "Idioma",
   "languageSystem": "Automático (idioma del dispositivo)",
   "languageSpanish": "Español",
   "languageEnglish": "English",
-  "languageNote": "Cambia el idioma de la app. Tus universos y lo que escribas no se traducen."
+  "languageNote": "Cambia el idioma de la app. Tus universos y lo que escribas no se traducen.",
+  "charSearchHint": "Buscar personaje...",
+  "charEmpty": "No hay personajes todavía. Toca + para crear uno.",
+  "charNoMatch": "Ningún personaje coincide con la búsqueda.",
+  "charFilterAll": "Todos",
+  "charNew": "Nuevo personaje",
+  "charEdit": "Editar personaje",
+  "charSaved": "Personaje guardado",
+  "charDeleteTitle": "Eliminar personaje",
+  "charDeleteBody": "¿Seguro que quieres eliminar este personaje?",
+  "charSectionBasics": "Datos básicos",
+  "charFirstName": "Nombre *",
+  "charLastName": "Apellido (opcional)",
+  "charAlias": "Alias / apodo (opcional)",
+  "charRace": "Raza / especie (opcional)",
+  "charGender": "Género (opcional)",
+  "charAge": "Edad (opcional)",
+  "charOccupation": "Ocupación (opcional)",
+  "charFaction": "Facción / casa (opcional)",
+  "charStatus": "Estado",
+  "charStatusHint": "Vivo, muerto, desaparecido...",
+  "charRole": "Rol en la mesa (opcional)",
+  "charRoleUndefined": "Sin definir",
+  "charRolePc": "Jugador (PJ)",
+  "charRoleNpc": "NPC",
+  "charRoleEnemy": "Enemigo",
+  "charAppearance": "Apariencia física (opcional)",
+  "charPersonality": "Personalidad (opcional)",
+  "charBackstory": "Historia / trasfondo (opcional)",
+  "charAbilities": "Habilidades (opcional)",
+  "charNotes": "Notas (opcional)",
+  "charSaveFirst": "Guarda el personaje para poder agregar imagen y relaciones.",
+  "charAppearsIn": "Aparece en",
+  "charAttendedSessions": "Sesiones en las que estuvo",
+  "charNoAppearancesChapters": "Todavía no está marcado en ningún capítulo. Se marca desde el capítulo, no desde aquí.",
+  "charNoAppearancesSessions": "Todavía no está marcado en ninguna sesión. Se marca desde la sesión, no desde aquí.",
+  "worldEmpty": "No hay lugares todavía. Crea el primero con el botón +.",
+  "worldAddSub": "Agregar sublugar",
+  "worldViewMap": "Ver mapa",
+  "worldViewDetails": "Ver / editar detalles de este lugar",
+  "locNew": "Nuevo lugar",
+  "locEdit": "Editar lugar",
+  "locSaved": "Lugar guardado",
+  "locDeleteTitle": "Eliminar lugar",
+  "locDeleteBody": "¿Eliminar \"{name}\"? También se eliminarán sus sublugares.",
+  "locDeleteBodyPlain": "¿Eliminar este lugar? También se eliminarán sus sublugares.",
+  "locName": "Nombre *",
+  "locType": "Tipo (opcional)",
+  "locTypeHint": "Continente, reino, ciudad, bosque...",
+  "locParent": "Lugar padre (opcional)",
+  "locParentRoot": "Ninguno (raíz)",
+  "locClimate": "Clima (opcional)",
+  "locPopulation": "Población (opcional)",
+  "locGovernment": "Gobierno (opcional)",
+  "locStatus": "Estado (opcional)",
+  "locDescription": "Descripción (opcional)",
+  "locMapLabel": "Mapa / imagen",
+  "locMapPending": "Mapa de este lugar",
+  "locMapPendingHint": "Guarda el lugar (✓ arriba) y aquí podrás subir un mapa o dibujarlo.",
+  "locOpenInteractiveMap": "Abrir mapa interactivo",
+  "locCycleWarning": "Ese vínculo crearía un bucle en el árbol.",
+  "@locDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "facEmpty": "No hay facciones todavía. Toca + para crear una.",
+  "facNew": "Nueva facción",
+  "facEdit": "Editar facción",
+  "facSaved": "Facción guardada",
+  "facDeleteTitle": "Eliminar facción",
+  "facDeleteBody": "¿Eliminar esta facción? Los personajes miembros dejarán de tenerla asignada.",
+  "facName": "Nombre *",
+  "facType": "Tipo (opcional)",
+  "facTypeHint": "Casa, gremio, reino, ejército...",
+  "facStatus": "Estado (opcional)",
+  "facDescription": "Descripción (opcional)",
+  "facSymbol": "Símbolo / estandarte",
+  "facMembers": "Miembros",
+  "facNoMembers": "Ningún personaje pertenece a esta facción todavía.",
+  "itemEmpty": "No hay objetos todavía. Toca + para agregar una reliquia, arma o artefacto.",
+  "itemNew": "Nuevo objeto",
+  "itemEdit": "Editar objeto",
+  "itemSaved": "Objeto guardado",
+  "itemDeleteTitle": "Eliminar objeto",
+  "itemDeleteBody": "¿Eliminar este objeto?",
+  "itemName": "Nombre *",
+  "itemType": "Tipo (opcional)",
+  "itemTypeHint": "Arma, reliquia, libro, amuleto...",
+  "itemOwner": "Portador actual (opcional)",
+  "itemOwnerNone": "Nadie",
+  "itemLocation": "Ubicación (opcional)",
+  "itemLocationUnknown": "Desconocida",
+  "itemOrigin": "Origen (opcional)",
+  "itemPowers": "Poderes / propiedades (opcional)",
+  "itemDescription": "Descripción (opcional)",
+  "itemImage": "Imagen del objeto",
+  "magicEmpty": "No hay sistemas de magia todavía. Toca + para definir cómo funciona la magia (o la tecnología) de tu mundo.",
+  "magicNew": "Nuevo sistema",
+  "magicEdit": "Editar sistema",
+  "magicSaved": "Sistema de magia guardado",
+  "magicDeleteTitle": "Eliminar sistema",
+  "magicDeleteBody": "¿Eliminar este sistema de magia?",
+  "magicName": "Nombre *",
+  "magicSource": "Fuente del poder (opcional)",
+  "magicSourceHint": "Los dioses, la sangre, runas, el éter...",
+  "magicRules": "Reglas / cómo funciona (opcional)",
+  "magicLimits": "Limitaciones (opcional)",
+  "magicCost": "Costo / precio a pagar (opcional)",
+  "magicDescription": "Descripción general (opcional)",
+  "magicSymbol": "Símbolo / esquema",
+  "timelineEmpty": "No hay eventos todavía. Crea el primero con el botón +.",
+  "timelineSortByYear": "Ordenar por año",
+  "timelineSortByYearOn": "Cronológico. Los eventos sin año van al final.",
+  "timelineSortByYearOff": "Orden manual: arrastra para reordenar.",
+  "timelineAutoChapters": "Incluir capítulos automáticamente",
+  "timelineAutoChaptersOn": "Los capítulos con resumen aparecen aquí y se actualizan solos.",
+  "timelineAutoChaptersOff": "Actívalo para que cada resumen de capítulo aparezca en la línea de tiempo.",
+  "timelineAutoOffNotice": "Se quitaron los eventos que venían de capítulos. Los que creaste a mano siguen intactos.",
+  "timelineFromChapter": "Desde un capítulo",
+  "timelineYearChip": "Año {year}",
+  "eventNew": "Nuevo evento",
+  "eventEdit": "Editar evento",
+  "eventSaved": "Evento guardado",
+  "eventDeleteTitle": "Eliminar evento",
+  "eventDeleteBody": "¿Eliminar este evento de la línea de tiempo?",
+  "eventDeleteNamed": "¿Eliminar \"{title}\"?",
+  "eventLinkedTitle": "Este evento viene de un capítulo",
+  "eventLinkedBody": "Su título, resumen y año se actualizan solos cuando edites el capítulo. Si quieres redactarlo distinto aquí, desvincúlalo.",
+  "eventUnlink": "Desvincular del capítulo",
+  "eventTitle": "Título *",
+  "eventYear": "Año (opcional)",
+  "eventYearHelp": "Solo números. Sirve para ordenar cronológicamente.",
+  "eventFictionalDate": "Fecha ficticia (opcional)",
+  "eventFictionalDateHint": "Año 3 de la Tercera Era, 12 de invierno...",
+  "eventPlace": "Lugar (opcional)",
+  "eventDescription": "Descripción (opcional)",
+  "eventPeople": "Personajes involucrados",
+  "eventNoCharacters": "No hay personajes en este proyecto todavía.",
+  "chapEmptyChapters": "No hay capítulos todavía. Toca + para crear el primero.",
+  "chapNewChapter": "Nuevo capítulo",
+  "chapEditChapter": "Editar capítulo",
+  "chapNewSession": "Nueva sesión",
+  "chapEditSession": "Editar sesión",
+  "chapSaved": "Capítulo guardado",
+  "chapDeleteTitle": "Eliminar capítulo",
+  "chapDeleteBody": "¿Eliminar este capítulo?",
+  "chapDeleteNamed": "¿Eliminar \"{title}\"?",
+  "chapTitle": "Título *",
+  "chapStatus": "Estado (opcional)",
+  "chapStatusHintChapter": "Borrador, revisado, terminado...",
+  "chapStatusHintSession": "Jugada, pendiente, cancelada...",
+  "chapPlayedOn": "Fecha en que se jugó",
+  "chapNoDate": "Sin fecha",
+  "chapStoryYear": "Año en la historia (opcional)",
+  "chapStoryYearHelp": "Para ubicarlo en la línea de tiempo.",
+  "chapSummary": "Resumen (opcional)",
+  "chapSummaryHelp": "Si activas la opción, aparece en la línea de tiempo.",
+  "chapContent": "Contenido",
+  "chapContentSaveFirst": "Guarda primero (✓ arriba) para empezar a escribir.",
+  "chapContentEmpty": "Vacío. Toca para escribir.",
+  "chapWordCount": "{count} palabras",
+  "chapWordCountGoal": "{count} palabras de {goal}",
+  "chapAddToTimeline": "Agregar a la línea de tiempo",
+  "chapAddedToTimeline": "Agregado a la línea de tiempo. Puedes editarlo ahí libremente.",
+  "chapWhoAttended": "Quiénes asistieron",
+  "chapWhoAppears": "Personajes que aparecen",
+  "chapNoCharacters": "No hay personajes en este universo todavía.",
+  "chapPlaces": "Lugares donde ocurre",
+  "chapNoPlaces": "No hay lugares en este universo todavía.",
+  "searchPlaceHint": "Buscar lugar...",
+  "editorHint": "Escribe aquí...",
+  "editorFocusMode": "Modo sin distracciones",
+  "editorExitFocus": "Salir del modo sin distracciones",
+  "editorSaving": "Guardando",
+  "editorSaved": "Guardado",
+  "editorUnsaved": "Sin guardar",
+  "editorBold": "Negrita",
+  "editorItalic": "Cursiva",
+  "editorSubheading": "Subtítulo",
+  "editorSceneBreak": "Separador de escena",
+  "editorGoalTitle": "Meta de palabras",
+  "editorGoalLabel": "Palabras para este capítulo",
+  "editorGoalRemove": "Quitar meta",
+  "noteEmpty": "No hay notas todavía. Toca + para escribir una.",
+  "noteNew": "Nueva nota",
+  "noteEdit": "Editar nota",
+  "noteDeleteTitle": "Eliminar nota",
+  "noteDeleteNamed": "¿Eliminar \"{title}\"?",
+  "noteTitle": "Título",
+  "noteContent": "Contenido",
+  "@timelineYearChip": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "@eventDeleteNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "@chapDeleteNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "@noteDeleteNamed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "@chapWordCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@chapWordCountGoal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
+    }
+  }
 }

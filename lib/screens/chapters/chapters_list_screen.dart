@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,19 +17,19 @@ class ChaptersListScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar capítulo'),
-        content: Text('¿Eliminar "${chapter.title}"?'),
+        title: Text(L.of(context).chapDeleteTitle),
+        content: Text(L.of(context).chapDeleteNamed(chapter.title)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -48,7 +50,7 @@ class ChaptersListScreen extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'No hay capítulos todavía. Toca + para crear el primero.',
+                  L.of(context).chapEmptyChapters,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),

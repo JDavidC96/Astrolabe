@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,14 +18,14 @@ class TimelineScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar evento'),
-        content: Text('¿Eliminar "${event.title}"?'),
+        title: Text(L.of(context).eventDeleteTitle),
+        content: Text(L.of(context).eventDeleteNamed(event.title)),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(L.of(context).commonCancel)),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -101,6 +103,7 @@ class _TimelineOptions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     return Card(
       margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
       child: Column(
@@ -108,12 +111,10 @@ class _TimelineOptions extends ConsumerWidget {
           SwitchListTile(
             dense: true,
             secondary: const Icon(Icons.sort),
-            title: const Text('Ordenar por año'),
-            subtitle: Text(
-              sortByYear
-                  ? 'Cronológico. Los eventos sin año van al final.'
-                  : 'Orden manual: arrastra para reordenar.',
-            ),
+            title: Text(l.timelineSortByYear),
+            subtitle: Text(sortByYear
+                ? l.timelineSortByYearOn
+                : l.timelineSortByYearOff),
             value: sortByYear,
             onChanged: (value) =>
                 ref.read(projectDaoProvider).setTimelineSortByYear(projectId, value),
@@ -121,14 +122,10 @@ class _TimelineOptions extends ConsumerWidget {
           SwitchListTile(
             dense: true,
             secondary: const Icon(Icons.menu_book_outlined),
-            title: const Text('Incluir capítulos automáticamente'),
-            subtitle: Text(
-              autoChapters
-                  ? 'Los capítulos con resumen aparecen aquí y se '
-                      'actualizan solos.'
-                  : 'Actívalo para que cada resumen de capítulo aparezca '
-                      'en la línea de tiempo.',
-            ),
+            title: Text(l.timelineAutoChapters),
+            subtitle: Text(autoChapters
+                ? l.timelineAutoChaptersOn
+                : l.timelineAutoChaptersOff),
             value: autoChapters,
             onChanged: (value) async {
               await ref
@@ -136,12 +133,7 @@ class _TimelineOptions extends ConsumerWidget {
                   .setAutoSync(projectId, value);
               if (context.mounted && !value) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Se quitaron los eventos que venían de capítulos. '
-                      'Los que creaste a mano siguen intactos.',
-                    ),
-                  ),
+                  SnackBar(content: Text(l.timelineAutoOffNotice)),
                 );
               }
             },

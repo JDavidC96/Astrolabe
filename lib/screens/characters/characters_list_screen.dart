@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -28,6 +30,7 @@ class _CharactersListScreenState extends ConsumerState<CharactersListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final charactersAsync = ref.watch(charactersStreamProvider(widget.projectId));
     final factionsAsync = ref.watch(factionsStreamProvider(widget.projectId));
     final factionNames = {
@@ -41,10 +44,10 @@ class _CharactersListScreenState extends ConsumerState<CharactersListScreen> {
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
             child: TextField(
               controller: _searchController,
-              decoration: const InputDecoration(
-                hintText: 'Buscar personaje...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: l.charSearchHint,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
                 isDense: true,
               ),
               onChanged: (v) => setState(() => _query = v.toLowerCase()),
@@ -61,7 +64,7 @@ class _CharactersListScreenState extends ConsumerState<CharactersListScreen> {
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: ChoiceChip(
-                        label: const Text('Todos'),
+                        label: Text(l.charFilterAll),
                         selected: _factionFilter == null,
                         onSelected: (_) => setState(() => _factionFilter = null),
                       ),
@@ -99,9 +102,7 @@ class _CharactersListScreenState extends ConsumerState<CharactersListScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(24),
                       child: Text(
-                        characters.isEmpty
-                            ? 'No hay personajes todavía. Toca + para crear uno.'
-                            : 'Ningún personaje coincide con la búsqueda.',
+                        characters.isEmpty ? l.charEmpty : l.charNoMatch,
                         textAlign: TextAlign.center,
                       ),
                     ),

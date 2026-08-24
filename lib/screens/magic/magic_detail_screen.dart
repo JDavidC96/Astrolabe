@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -103,7 +105,7 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Sistema de magia guardado')));
+          .showSnackBar(SnackBar(content: Text(L.of(context).magicSaved)));
     }
   }
 
@@ -112,19 +114,19 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar sistema'),
-        content: const Text('¿Eliminar este sistema de magia?'),
+        title: Text(L.of(context).magicDeleteTitle),
+        content: Text(L.of(context).magicDeleteBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -141,15 +143,16 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l = L.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(_magicId == null ? 'Nuevo sistema' : 'Editar sistema'),
+        title: Text(_magicId == null ? l.magicNew : l.magicEdit),
         actions: [
           if (_magicId != null)
             IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
           IconButton(
             icon: const Icon(Icons.check),
-            tooltip: 'Guardar',
+            tooltip: l.commonSave,
             onPressed: _save,
           ),
         ],
@@ -164,7 +167,7 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
                 child: ImageOrDrawingPicker(
                   projectId: widget.projectId,
                   imagePath: _imagePath,
-                  label: 'Símbolo / esquema',
+                  label: l.magicSymbol,
                   onChanged: (path) {
                     setState(() => _imagePath = path);
                     ref.read(magicDaoProvider).updateMagicSystem(
@@ -180,50 +183,50 @@ class _MagicDetailScreenState extends ConsumerState<MagicDetailScreen> {
             ],
             TextFormField(
               controller: _name,
-              decoration: const InputDecoration(labelText: 'Nombre *'),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+              decoration: InputDecoration(labelText: l.magicName),
+              validator: (v) => (v == null || v.trim().isEmpty) ? l.commonRequired : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _source,
-              decoration: const InputDecoration(
-                labelText: 'Fuente del poder (opcional)',
-                hintText: 'Los dioses, la sangre, runas, el éter...',
+              decoration: InputDecoration(
+                labelText: l.magicSource,
+                hintText: l.magicSourceHint,
               ),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _rules,
-              decoration: const InputDecoration(
-                labelText: 'Reglas / cómo funciona (opcional)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l.magicRules,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 5,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _limitations,
-              decoration: const InputDecoration(
-                labelText: 'Limitaciones (opcional)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l.magicLimits,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 4,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _cost,
-              decoration: const InputDecoration(
-                labelText: 'Costo / precio a pagar (opcional)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l.magicCost,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _description,
-              decoration: const InputDecoration(
-                labelText: 'Descripción general (opcional)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l.magicDescription,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 5,
             ),

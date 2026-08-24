@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/database.dart';
@@ -15,19 +17,19 @@ class NotesListScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar nota'),
-        content: Text('¿Eliminar "${note.title}"?'),
+        title: Text(L.of(context).noteDeleteTitle),
+        content: Text(L.of(context).noteDeleteNamed(note.title)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(L.of(context).commonCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -48,7 +50,7 @@ class NotesListScreen extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'No hay notas todavía. Toca + para escribir una.',
+                  L.of(context).noteEmpty,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
@@ -144,7 +146,7 @@ class _NoteDialogState extends ConsumerState<_NoteDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.note == null ? 'Nueva nota' : 'Editar nota'),
+      title: Text(widget.note == null ? L.of(context).noteNew : L.of(context).noteEdit),
       content: SizedBox(
         width: 480,
         child: Column(
@@ -153,14 +155,14 @@ class _NoteDialogState extends ConsumerState<_NoteDialog> {
             TextField(
               controller: _title,
               autofocus: true,
-              decoration: const InputDecoration(labelText: 'Título'),
+              decoration: InputDecoration(labelText: L.of(context).noteTitle),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: _content,
-              decoration: const InputDecoration(
-                labelText: 'Contenido',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: L.of(context).noteContent,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 10,
             ),
@@ -170,9 +172,9 @@ class _NoteDialogState extends ConsumerState<_NoteDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(L.of(context).commonCancel),
         ),
-        FilledButton(onPressed: _save, child: const Text('Guardar')),
+        FilledButton(onPressed: _save, child: Text(L.of(context).commonSave)),
       ],
     );
   }

@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -88,7 +90,7 @@ class _TimelineEventDetailScreenState extends ConsumerState<TimelineEventDetailS
     await dao.setEventCharacters(_eventId!, _selectedCharacterIds.toList());
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Evento guardado')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L.of(context).eventSaved)));
     }
   }
 
@@ -97,14 +99,14 @@ class _TimelineEventDetailScreenState extends ConsumerState<TimelineEventDetailS
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar evento'),
-        content: const Text('¿Eliminar este evento de la línea de tiempo?'),
+        title: Text(L.of(context).eventDeleteTitle),
+        content: Text(L.of(context).eventDeleteBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(L.of(context).commonCancel)),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -120,16 +122,17 @@ class _TimelineEventDetailScreenState extends ConsumerState<TimelineEventDetailS
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l = L.of(context);
     final locationsAsync = ref.watch(locationsStreamProvider(widget.projectId));
     final charactersAsync = ref.watch(charactersStreamProvider(widget.projectId));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_eventId == null ? 'Nuevo evento' : 'Editar evento'),
+        title: Text(_eventId == null ? l.eventNew : l.eventEdit),
         actions: [
           if (_eventId != null)
             IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
-          IconButton(icon: const Icon(Icons.check), tooltip: 'Guardar', onPressed: _save),
+          IconButton(icon: const Icon(Icons.check), tooltip: l.commonSave, onPressed: _save),
         ],
       ),
       body: Form(
@@ -146,24 +149,20 @@ class _TimelineEventDetailScreenState extends ConsumerState<TimelineEventDetailS
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         children: [
-                          Icon(Icons.link, size: 18),
-                          SizedBox(width: 8),
+                          const Icon(Icons.link, size: 18),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Este evento viene de un capítulo',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              l.eventLinkedTitle,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 6),
-                      const Text(
-                        'Su título, resumen y año se actualizan solos cuando '
-                        'edites el capítulo. Si quieres redactarlo distinto '
-                        'aquí, desvincúlalo.',
-                      ),
+                      Text(l.eventLinkedBody),
                       const SizedBox(height: 8),
                       OutlinedButton.icon(
                         onPressed: () async {
@@ -175,7 +174,7 @@ class _TimelineEventDetailScreenState extends ConsumerState<TimelineEventDetailS
                           }
                         },
                         icon: const Icon(Icons.link_off, size: 18),
-                        label: const Text('Desvincular del capítulo'),
+                        label: Text(l.eventUnlink),
                       ),
                     ],
                   ),
@@ -183,15 +182,15 @@ class _TimelineEventDetailScreenState extends ConsumerState<TimelineEventDetailS
               ),
             TextFormField(
               controller: _title,
-              decoration: const InputDecoration(labelText: 'Título *'),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+              decoration: InputDecoration(labelText: l.eventTitle),
+              validator: (v) => (v == null || v.trim().isEmpty) ? l.commonRequired : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _year,
-              decoration: const InputDecoration(
-                labelText: 'Año (opcional)',
-                helperText: 'Solo números. Sirve para ordenar cronológicamente.',
+              decoration: InputDecoration(
+                labelText: l.eventYear,
+                helperText: l.eventYearHelp,
                 hintText: '298',
               ),
               keyboardType: TextInputType.number,
@@ -200,18 +199,18 @@ class _TimelineEventDetailScreenState extends ConsumerState<TimelineEventDetailS
             const SizedBox(height: 12),
             TextFormField(
               controller: _fictionalDate,
-              decoration: const InputDecoration(
-                labelText: 'Fecha ficticia (opcional)',
-                hintText: 'Año 3 de la Tercera Era, 12 de invierno...',
+              decoration: InputDecoration(
+                labelText: l.eventFictionalDate,
+                hintText: l.eventFictionalDateHint,
               ),
             ),
             const SizedBox(height: 12),
             locationsAsync.when(
               data: (locations) => DropdownButtonFormField<String?>(
                 initialValue: _locationId,
-                decoration: const InputDecoration(labelText: 'Lugar (opcional)'),
+                decoration: InputDecoration(labelText: l.eventPlace),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Ninguno')),
+                  DropdownMenuItem(value: null, child: Text(l.commonNone)),
                   for (final l in locations) DropdownMenuItem(value: l.id, child: Text(l.name)),
                 ],
                 onChanged: (v) => setState(() => _locationId = v),
@@ -222,15 +221,15 @@ class _TimelineEventDetailScreenState extends ConsumerState<TimelineEventDetailS
             const SizedBox(height: 12),
             TextFormField(
               controller: _description,
-              decoration: const InputDecoration(labelText: 'Descripción (opcional)', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: l.eventDescription, border: const OutlineInputBorder()),
               maxLines: 5,
             ),
             const SizedBox(height: 16),
-            Text('Personajes involucrados', style: Theme.of(context).textTheme.titleMedium),
+            Text(l.eventPeople, style: Theme.of(context).textTheme.titleMedium),
             charactersAsync.when(
               data: (characters) => SearchableCheckboxList(
-                emptyMessage: 'No hay personajes en este proyecto todavía.',
-                searchHint: 'Buscar personaje...',
+                emptyMessage: l.eventNoCharacters,
+                searchHint: l.charSearchHint,
                 options: [
                   for (final c in characters)
                     PickOption(

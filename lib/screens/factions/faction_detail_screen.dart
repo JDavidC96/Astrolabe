@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -82,7 +84,7 @@ class _FactionDetailScreenState extends ConsumerState<FactionDetailScreen> {
     );
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Facción guardada')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(L.of(context).facSaved)));
     }
   }
 
@@ -91,14 +93,14 @@ class _FactionDetailScreenState extends ConsumerState<FactionDetailScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar facción'),
-        content: const Text('¿Eliminar esta facción? Los personajes miembros dejarán de tenerla asignada.'),
+        title: Text(L.of(context).facDeleteTitle),
+        content: Text(L.of(context).facDeleteBody),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(L.of(context).commonCancel)),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(L.of(context).commonDelete),
           ),
         ],
       ),
@@ -115,13 +117,14 @@ class _FactionDetailScreenState extends ConsumerState<FactionDetailScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l = L.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(_factionId == null ? 'Nueva facción' : 'Editar facción'),
+        title: Text(_factionId == null ? l.facNew : l.facEdit),
         actions: [
           if (_factionId != null)
             IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
-          IconButton(icon: const Icon(Icons.check), tooltip: 'Guardar', onPressed: _save),
+          IconButton(icon: const Icon(Icons.check), tooltip: l.commonSave, onPressed: _save),
         ],
       ),
       body: Form(
@@ -134,7 +137,7 @@ class _FactionDetailScreenState extends ConsumerState<FactionDetailScreen> {
                 child: ImageOrDrawingPicker(
                   projectId: widget.projectId,
                   imagePath: _symbolPath,
-                  label: 'Símbolo / estandarte',
+                  label: l.facSymbol,
                   onChanged: (path) {
                     setState(() => _symbolPath = path);
                     ref.read(factionDaoProvider).updateFaction(
@@ -147,31 +150,31 @@ class _FactionDetailScreenState extends ConsumerState<FactionDetailScreen> {
             ],
             TextFormField(
               controller: _name,
-              decoration: const InputDecoration(labelText: 'Nombre *'),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+              decoration: InputDecoration(labelText: l.facName),
+              validator: (v) => (v == null || v.trim().isEmpty) ? l.commonRequired : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _type,
-              decoration: const InputDecoration(
-                labelText: 'Tipo (opcional)',
-                hintText: 'Casa, gremio, reino, ejército...',
+              decoration: InputDecoration(
+                labelText: l.facType,
+                hintText: l.facTypeHint,
               ),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _status,
-              decoration: const InputDecoration(labelText: 'Estado (opcional)'),
+              decoration: InputDecoration(labelText: l.facStatus),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _description,
-              decoration: const InputDecoration(labelText: 'Descripción (opcional)', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: l.facDescription, border: const OutlineInputBorder()),
               maxLines: 6,
             ),
             if (_factionId != null) ...[
               const SizedBox(height: 16),
-              Text('Miembros', style: Theme.of(context).textTheme.titleMedium),
+              Text(l.facMembers, style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               Consumer(
                 builder: (context, ref, _) {
@@ -179,7 +182,7 @@ class _FactionDetailScreenState extends ConsumerState<FactionDetailScreen> {
                   return membersAsync.when(
                     data: (members) {
                       if (members.isEmpty) {
-                        return const Text('Ningún personaje pertenece a esta facción todavía.');
+                        return Text(L.of(context).facNoMembers);
                       }
                       return Column(
                         children: [
