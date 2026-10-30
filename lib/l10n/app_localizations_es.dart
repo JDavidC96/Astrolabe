@@ -137,6 +137,9 @@ class LEs extends L {
   String get sectionTimeline => 'Línea de tiempo';
 
   @override
+  String get sectionWrite => 'Escribir';
+
+  @override
   String get sectionChapters => 'Capítulos';
 
   @override
@@ -677,16 +680,10 @@ class LEs extends L {
 
   @override
   String get chapEmptyChapters =>
-      'No hay capítulos todavía. Toca + para crear el primero.';
-
-  @override
-  String get chapNewChapter => 'Nuevo capítulo';
+      'Todavía no hay capítulos. Toca + y empieza a escribir el primero.';
 
   @override
   String get chapEditChapter => 'Editar capítulo';
-
-  @override
-  String get chapNewSession => 'Nueva sesión';
 
   @override
   String get chapEditSession => 'Editar sesión';
@@ -740,10 +737,6 @@ class LEs extends L {
   String get chapContent => 'Contenido';
 
   @override
-  String get chapContentSaveFirst =>
-      'Guarda primero (✓ arriba) para empezar a escribir.';
-
-  @override
   String get chapContentEmpty => 'Vacío. Toca para escribir.';
 
   @override
@@ -754,6 +747,22 @@ class LEs extends L {
   @override
   String chapWordCountGoal(int count, int goal) {
     return '$count palabras de $goal';
+  }
+
+  @override
+  String get chapResume => 'Continuar escribiendo';
+
+  @override
+  String get chapDetails => 'Detalles';
+
+  @override
+  String chapDefaultChapterTitle(int number) {
+    return 'Capítulo $number';
+  }
+
+  @override
+  String chapDefaultSessionTitle(int number) {
+    return 'Sesión $number';
   }
 
   @override
@@ -798,12 +807,6 @@ class LEs extends L {
 
   @override
   String get editorUnsaved => 'Sin guardar';
-
-  @override
-  String get editorBold => 'Negrita';
-
-  @override
-  String get editorItalic => 'Cursiva';
 
   @override
   String get editorSubheading => 'Subtítulo';
@@ -1558,4 +1561,332 @@ class LEs extends L {
   @override
   String get themeGothicDesc =>
       'Carmesí y ceniza. Vampiros, ruinas y secretos.';
+
+  @override
+  String get markupBold => 'Negrita';
+
+  @override
+  String get markupItalic => 'Cursiva';
+
+  @override
+  String get helpEditorTitle => 'El editor de texto';
+
+  @override
+  String get helpEditorButton => 'Cómo dar formato';
+
+  @override
+  String get helpIntro =>
+      'Cómo dar formato a lo que escribes, dónde funciona cada botón y qué queda guardado por debajo.';
+
+  @override
+  String get helpStylesTitle => 'Negrita y cursiva';
+
+  @override
+  String get helpStylesIntro =>
+      'Funciona igual que en cualquier procesador de texto. Hay dos formas, y las dos sirven.';
+
+  @override
+  String get helpWayMarkTitle => 'Marcar lo que ya escribiste';
+
+  @override
+  String get helpWayMarkBody =>
+      'Selecciona las palabras y presiona B o I. Presionarlo otra vez se lo quita.';
+
+  @override
+  String get helpWayAheadTitle => 'Prenderlo antes de escribir';
+
+  @override
+  String get helpWayAheadBody =>
+      'Sin nada seleccionado, presiona B y lo que escribas a continuación sale en negrita, hasta que lo apagues.';
+
+  @override
+  String get helpOnTitle => 'Cómo saber si está prendido';
+
+  @override
+  String get helpOnBody =>
+      'El botón se enciende cuando el cursor está sobre texto que ya tiene ese estilo, o cuando lo acabas de prender. Si mueves el cursor a otro lado, se apaga.';
+
+  @override
+  String get helpCombineBody =>
+      'Los dos estilos se combinan: puedes tener una frase en negrita y cursiva a la vez. Y si escribes pegado a una palabra en negrita, lo nuevo sigue en negrita.';
+
+  @override
+  String get helpReachTitle => 'Tres formas de llegar a los botones';
+
+  @override
+  String get helpReachBarTitle => 'La barra';
+
+  @override
+  String get helpReachBarBody =>
+      'Los botones B e I, arriba del cuadro de texto.';
+
+  @override
+  String get helpReachKeysTitle => 'El teclado';
+
+  @override
+  String get helpReachKeysBody =>
+      'Ctrl+B y Ctrl+I. En Mac, Cmd en vez de Ctrl.';
+
+  @override
+  String get helpReachPhoneTitle => 'El celular';
+
+  @override
+  String get helpReachPhoneBody =>
+      'Cuando seleccionas una palabra y aparece el menú del sistema con Copiar y Pegar, ahí mismo están Negrita y Cursiva. Ese menú tapa la barra, así que los estilos también viven adentro de él.';
+
+  @override
+  String get helpWhereTitle => 'Dónde funciona';
+
+  @override
+  String get helpWhereBody =>
+      'En el contenido de las notas y en el editor de capítulos. En la lista de notas, la vista previa de cada una ya se ve con su formato aplicado.';
+
+  @override
+  String get helpWhereNote =>
+      'Los títulos, los resúmenes y los campos cortos siguen siendo texto simple.';
+
+  @override
+  String get helpChapterOnlyTitle => 'Subtítulos, citas y cortes de escena';
+
+  @override
+  String get helpChapterOnlyIntro =>
+      'Estos tres se aplican a la línea entera donde está el cursor, no a las palabras que selecciones. Igual que la negrita, se ven mientras escribes y no dejan ningún símbolo a la vista.';
+
+  @override
+  String get helpSubheadingBody =>
+      'Convierte la línea en un subtítulo: se ve más grande y en negrita. Sirve para separar partes dentro de un capítulo.';
+
+  @override
+  String get helpSceneBreakBody =>
+      'Deja una marca en su propia línea para separar dos escenas dentro del mismo capítulo.';
+
+  @override
+  String get helpChapterOnlyWarn =>
+      'La cita no se puede sangrar mientras la escribes: un cuadro de texto no sabe darle márgenes propios a un párrafo suelto. Por eso se distingue con la cursiva y el fondo, en vez de con una sangría.';
+
+  @override
+  String get helpStoredTitle => 'Qué queda guardado';
+
+  @override
+  String get helpStoredBody =>
+      'Nunca ves un asterisco. Por debajo, el texto se guarda en Markdown.';
+
+  @override
+  String get helpStoredSeeLabel => 'Lo que ves';
+
+  @override
+  String get helpStoredSavedLabel => 'Lo que se guarda';
+
+  @override
+  String get helpStoredSample =>
+      'La **Casa Valdris** cayó en el *invierno largo*.';
+
+  @override
+  String get helpStoredWhy =>
+      'Eso importa por tres razones: tus respaldos siguen siendo legibles y se pueden abrir en cualquier editor de texto, la búsqueda sigue encontrando las palabras, y lo que ya tenías escrito con asteriscos se abre ya formateado.';
+
+  @override
+  String get helpStoredAsterisk =>
+      'Si escribes un asterisco a propósito, se guarda protegido y vuelve tal cual.';
+
+  @override
+  String get helpHalfWordTitle => 'El único detalle raro';
+
+  @override
+  String get helpHalfWordBody =>
+      'Markdown no tiene forma de decir \"media palabra en negrita\". Si marcas solo una parte de una palabra, al guardar el estilo se ensancha a la palabra entera.';
+
+  @override
+  String get helpHalfWordNote =>
+      'Es la única concesión, y es a propósito: preferible eso a guardar algo que después se lea distinto. Las palabras nunca se tocan.';
+
+  @override
+  String get helpMoreTitle => 'Lo demás del editor de capítulos';
+
+  @override
+  String get helpAutosaveTitle => 'Se guarda solo';
+
+  @override
+  String get helpAutosaveBody =>
+      'Un segundo después de que dejas de escribir, y también al salir de la pantalla. Arriba te dice Guardando o Guardado.';
+
+  @override
+  String get helpWordCountTitle => 'Contador de palabras';
+
+  @override
+  String get helpWordCountBody =>
+      'Siempre a la vista, y se actualiza mientras escribes.';
+
+  @override
+  String get helpGoalTitle => 'Meta de palabras';
+
+  @override
+  String get helpGoalBody =>
+      'Puedes ponerle una meta al capítulo y aparece una barra de avance arriba de los botones.';
+
+  @override
+  String get helpFocusTitle => 'Modo sin distracciones';
+
+  @override
+  String get helpFocusBody =>
+      'Esconde todo menos el texto. Para salir, el botón de arriba a la derecha.';
+
+  @override
+  String get markupQuote => 'Cita';
+
+  @override
+  String get helpQuoteBody =>
+      'Marca el párrafo como una cita: sale en cursiva y sobre un fondo tenue, para que se distinga del cuerpo del texto. Si presionas Enter, la cita continúa; un subtítulo no.';
+
+  @override
+  String get pdfTitle => 'Exportar a PDF';
+
+  @override
+  String get pdfButton => 'Exportar a PDF';
+
+  @override
+  String get pdfIntro =>
+      'Elige qué capítulos quieres. Salen todos juntos en un solo PDF, en el orden en que están.';
+
+  @override
+  String get pdfSelectAll => 'Seleccionar todos';
+
+  @override
+  String get pdfClear => 'Quitar todos';
+
+  @override
+  String get pdfNoChapters => 'No hay capítulos que exportar todavía.';
+
+  @override
+  String get pdfEmptyChapter => 'Sin texto';
+
+  @override
+  String get pdfExport => 'Exportar';
+
+  @override
+  String get pdfWorking => 'Armando el PDF...';
+
+  @override
+  String get pdfDone => 'PDF listo.';
+
+  @override
+  String pdfFailed(String error) {
+    return 'No se pudo exportar: $error';
+  }
+
+  @override
+  String get pdfShareTitle => 'Tu manuscrito';
+
+  @override
+  String pdfWordsLabel(String n) {
+    return '$n palabras';
+  }
+
+  @override
+  String pdfSelectedCount(int count, int total) {
+    return '$count de $total capítulos';
+  }
+
+  @override
+  String get pdfIntroAll =>
+      'Elige qué quieres llevarte. Todo sale junto en un solo PDF.';
+
+  @override
+  String get pdfWithImages => 'Con imágenes';
+
+  @override
+  String get pdfGroupChapters => 'Capítulos';
+
+  @override
+  String get pdfGroupCharacters => 'Personajes';
+
+  @override
+  String get pdfGroupFactions => 'Facciones';
+
+  @override
+  String get pdfGroupLocations => 'Lugares';
+
+  @override
+  String get pdfGroupItems => 'Objetos';
+
+  @override
+  String get pdfGroupMagic => 'Sistemas de magia';
+
+  @override
+  String get pdfNothingPicked => 'No has elegido nada todavía.';
+
+  @override
+  String get pdfNoneOfThese => 'Todavía no hay ninguno.';
+
+  @override
+  String get sheetRace => 'Raza';
+
+  @override
+  String get sheetGender => 'Género';
+
+  @override
+  String get sheetAge => 'Edad';
+
+  @override
+  String get sheetOccupation => 'Ocupación';
+
+  @override
+  String get sheetFaction => 'Facción';
+
+  @override
+  String get sheetStatus => 'Estado';
+
+  @override
+  String get sheetType => 'Tipo';
+
+  @override
+  String get sheetClimate => 'Clima';
+
+  @override
+  String get sheetPopulation => 'Población';
+
+  @override
+  String get sheetGovernment => 'Gobierno';
+
+  @override
+  String get sheetPartOf => 'Dentro de';
+
+  @override
+  String get sheetOwner => 'En manos de';
+
+  @override
+  String get sheetWhere => 'Dónde está';
+
+  @override
+  String get sheetAppearance => 'Apariencia';
+
+  @override
+  String get sheetPersonality => 'Personalidad';
+
+  @override
+  String get sheetBackstory => 'Historia';
+
+  @override
+  String get sheetNotes => 'Notas';
+
+  @override
+  String get sheetDescription => 'Descripción';
+
+  @override
+  String get sheetPowers => 'Poderes';
+
+  @override
+  String get sheetOrigin => 'Origen';
+
+  @override
+  String get sheetSource => 'De dónde viene';
+
+  @override
+  String get sheetRules => 'Reglas';
+
+  @override
+  String get sheetLimits => 'Límites';
+
+  @override
+  String get sheetCost => 'Cuesta';
 }

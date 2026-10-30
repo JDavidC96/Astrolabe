@@ -6,10 +6,14 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/database.dart';
+import '../../data/daos/chapter_dao.dart';
 import '../../providers/core_providers.dart';
 import '../../services/text_stats.dart';
+import '../../widgets/markup_text_field.dart';
+import '../../widgets/styled_text_controller.dart';
 
 /// Full-screen writing surface for one chapter.
 ///
@@ -32,8 +36,12 @@ class ChapterEditorScreen extends ConsumerStatefulWidget {
 }
 
 class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
-  final _controller = TextEditingController();
+  final _controller = StyledTextController.fromMarkdown('');
   final _focusNode = FocusNode();
+
+  /// Held from the moment the screen opens, because the last write happens
+  /// in [dispose] and `ref` is already gone by then.
+  late final ChapterDao _dao;
 
   Timer? _saveTimer;
   bool _loading = true;
@@ -41,6 +49,11 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
   bool _saving = false;
   bool _focusMode = false;
   DateTime? _lastSaved;
+
+  /// The most recent write, so [_flush] can wait for a save that is already
+  /// in flight instead of returning while the text is still on its way to
+  /// disk.
+  Future<void> _queued = Future<void>.value();
 
   String _title = '';
   int? _wordGoal;
@@ -51,13 +64,13 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
   @override
   void initState() {
     super.initState();
+    _dao = ref.read(chapterDaoProvider);
     _load();
   }
 
   Future<void> _load() async {
-    final chapter =
-        await ref.read(chapterDaoProvider).getChapter(widget.chapterId);
-    _controller.text = chapter.content ?? '';
+    final chapter = await _dao.getChapter(widget.chapterId);
+    _controller.setMarkdown(chapter.content ?? '');
     _title = chapter.title;
     _wordGoal = chapter.wordGoal;
     _controller.addListener(_onChanged);
@@ -73,24 +86,42 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
   }
 
   Future<void> _save() async {
-    if (!_dirty || _saving) return;
-    setState(() => _saving = true);
-    await ref.read(chapterDaoProvider).updateChapter(
-          ChaptersCompanion(
-            id: Value(widget.chapterId),
-            content: Value(
-              _controller.text.trim().isEmpty ? null : _controller.text,
-            ),
-            updatedAt: Value(DateTime.now()),
-          ),
-        );
+    if (!_dirty) return;
+    // Cleared up front, and the text snapshotted with it: a keystroke that
+    // lands while this write is in flight has to re-dirty the screen, or it
+    // would sit unsaved until the next one.
+    _dirty = false;
+    final markdown =
+        _controller.text.trim().isEmpty ? null : _controller.toMarkdown();
+    if (mounted) setState(() => _saving = true);
+
+    final write = _dao.updateChapter(
+      ChaptersCompanion(
+        id: Value(widget.chapterId),
+        content: Value(markdown),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+    _queued = write;
+    await write;
+
     if (mounted) {
       setState(() {
         _saving = false;
-        _dirty = false;
         _lastSaved = DateTime.now();
       });
     }
+  }
+
+  /// Writes anything pending and only returns once it is on disk.
+  ///
+  /// Callers leaving the screen depend on this: the chapter list reads the
+  /// row the moment the editor closes, and a fire-and-forget save would let
+  /// it see an empty chapter that in fact has text in it.
+  Future<void> _flush() async {
+    _saveTimer?.cancel();
+    await _save();
+    await _queued;
   }
 
   @override
@@ -98,11 +129,13 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
     _saveTimer?.cancel();
     // Flush pending edits; the widget is going away so this cannot setState.
     if (_dirty) {
-      ref.read(chapterDaoProvider).updateChapter(
+      _dao.updateChapter(
             ChaptersCompanion(
               id: Value(widget.chapterId),
               content: Value(
-                _controller.text.trim().isEmpty ? null : _controller.text,
+                _controller.text.trim().isEmpty
+                    ? null
+                    : _controller.toMarkdown(),
               ),
               updatedAt: Value(DateTime.now()),
             ),
@@ -114,42 +147,6 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
   }
 
   /// Wraps the selection in [token], or inserts the pair at the caret.
-  void _wrapSelection(String token) {
-    final value = _controller.value;
-    final selection = value.selection;
-    if (!selection.isValid) return;
-
-    final selected = selection.textInside(value.text);
-    final replacement = '$token$selected$token';
-    final newText = value.text.replaceRange(
-      selection.start,
-      selection.end,
-      replacement,
-    );
-    _controller.value = value.copyWith(
-      text: newText,
-      selection: TextSelection.collapsed(
-        // Leave the caret inside the markers when there was no selection,
-        // so the writer can just keep typing.
-        offset: selection.start + token.length + selected.length,
-      ),
-    );
-  }
-
-  void _insertBlock(String block) {
-    final value = _controller.value;
-    final offset = value.selection.isValid
-        ? value.selection.start
-        : value.text.length;
-    final needsLeadingBreak = offset > 0 && !value.text.substring(0, offset).endsWith('\n');
-    final insertion = '${needsLeadingBreak ? '\n' : ''}$block\n';
-    final newText = value.text.replaceRange(offset, offset, insertion);
-    _controller.value = value.copyWith(
-      text: newText,
-      selection: TextSelection.collapsed(offset: offset + insertion.length),
-    );
-  }
-
   Future<void> _editGoal() async {
     final controller =
         TextEditingController(text: _wordGoal?.toString() ?? '');
@@ -208,7 +205,7 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
     final theme = Theme.of(context);
     final l = L.of(context);
 
-    return Scaffold(
+    final scaffold = Scaffold(
       appBar: _focusMode
           ? null
           : AppBar(
@@ -218,6 +215,11 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
                   saving: _saving,
                   dirty: _dirty,
                   lastSaved: _lastSaved,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.tune),
+                  tooltip: l.chapDetails,
+                  onPressed: _openDetails,
                 ),
                 IconButton(
                   icon: const Icon(Icons.center_focus_strong_outlined),
@@ -240,7 +242,9 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
                 ),
               ),
             Expanded(
-              child: Center(
+              child: CallbackShortcuts(
+                bindings: styleShortcuts(_controller),
+                child: Center(
                 child: ConstrainedBox(
                   // A comfortable measure; full-width prose on a wide screen
                   // is tiring to read.
@@ -251,6 +255,8 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
                     child: TextField(
                       controller: _controller,
                       focusNode: _focusNode,
+                      contextMenuBuilder: (context, editableState) =>
+                          styleSelectionMenu(_controller, editableState, l),
                       autofocus: true,
                       maxLines: null,
                       expands: true,
@@ -270,12 +276,55 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
                   ),
                 ),
               ),
+              ),
             ),
             if (!_focusMode) _toolbar(context, stats),
           ],
         ),
       ),
     );
+
+    return PopScope(
+      // Nothing pending means the normal pop is fine; otherwise the text is
+      // written first and the pop happens afterwards, so whoever opened the
+      // editor reads a row that already has the writing in it.
+      canPop: !_dirty && !_saving,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        await _flush();
+        // `context` here is build's own parameter, so it is the one that has
+        // to be checked rather than the State's `mounted`.
+        if (context.mounted) Navigator.of(context).pop();
+      },
+      child: scaffold,
+    );
+  }
+
+  /// Opens the chapter's own metadata (title, summary, status, year).
+  ///
+  /// The relationship used to run the other way, with the text buried inside
+  /// the form; the writing is the destination now and the form is a detour
+  /// off it.
+  Future<void> _openDetails() async {
+    // The detail screen shows a word count read from the stored row.
+    await _flush();
+    if (!mounted) return;
+    await context.push(
+      '/project/${widget.projectId}/chapters/${widget.chapterId}',
+    );
+    if (!mounted) return;
+
+    final chapter = await _dao.getChapterOrNull(widget.chapterId);
+    if (!mounted) return;
+    if (chapter == null) {
+      // Deleted from its own detail screen, so there is nothing to edit.
+      context.pop();
+      return;
+    }
+    setState(() {
+      _title = chapter.title;
+      _wordGoal = chapter.wordGoal;
+    });
   }
 
   Widget _toolbar(BuildContext context, TextStats stats) {
@@ -297,25 +346,11 @@ class _ChapterEditorScreenState extends ConsumerState<ChapterEditorScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
+                StyleButtons(controller: _controller),
                 IconButton(
-                  icon: const Icon(Icons.format_bold),
-                  tooltip: l.editorBold,
-                  onPressed: () => _wrapSelection('**'),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.format_italic),
-                  tooltip: l.editorItalic,
-                  onPressed: () => _wrapSelection('_'),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.title),
-                  tooltip: l.editorSubheading,
-                  onPressed: () => _insertBlock('## '),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.horizontal_rule),
-                  tooltip: l.editorSceneBreak,
-                  onPressed: () => _insertBlock('---'),
+                  icon: const Icon(Icons.help_outline),
+                  tooltip: l.helpEditorButton,
+                  onPressed: () => context.push('/help/editor'),
                 ),
                 const Spacer(),
                 InkWell(

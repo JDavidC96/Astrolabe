@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/database.dart';
 import '../../providers/core_providers.dart';
 import '../../providers/data_providers.dart';
+import '../../widgets/formatted_text.dart';
+import '../../widgets/markup_text_field.dart';
+import '../../widgets/styled_text_controller.dart';
 
 class NotesListScreen extends ConsumerWidget {
   const NotesListScreen({super.key, required this.projectId});
@@ -68,7 +72,7 @@ class NotesListScreen extends ConsumerWidget {
                   leading: const Icon(Icons.sticky_note_2_outlined),
                   title: Text(note.title),
                   subtitle: note.content != null && note.content!.isNotEmpty
-                      ? Text(
+                      ? FormattedText(
                           note.content!,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
@@ -114,7 +118,8 @@ class _NoteDialog extends ConsumerStatefulWidget {
 
 class _NoteDialogState extends ConsumerState<_NoteDialog> {
   late final _title = TextEditingController(text: widget.note?.title ?? '');
-  late final _content = TextEditingController(text: widget.note?.content ?? '');
+  late final _content =
+      StyledTextController.fromMarkdown(widget.note?.content ?? '');
 
   @override
   void dispose() {
@@ -126,7 +131,8 @@ class _NoteDialogState extends ConsumerState<_NoteDialog> {
   Future<void> _save() async {
     final title = _title.text.trim();
     if (title.isEmpty) return;
-    final content = _content.text.trim().isEmpty ? null : _content.text.trim();
+    final content =
+        _content.text.trim().isEmpty ? null : _content.toMarkdown();
     final dao = ref.read(noteDaoProvider);
 
     var id = widget.note?.id;
@@ -146,27 +152,40 @@ class _NoteDialogState extends ConsumerState<_NoteDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.note == null ? L.of(context).noteNew : L.of(context).noteEdit),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(widget.note == null
+                ? L.of(context).noteNew
+                : L.of(context).noteEdit),
+          ),
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            tooltip: L.of(context).helpEditorButton,
+            onPressed: () => context.push('/help/editor'),
+          ),
+        ],
+      ),
       content: SizedBox(
         width: 480,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _title,
-              autofocus: true,
-              decoration: InputDecoration(labelText: L.of(context).noteTitle),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _content,
-              decoration: InputDecoration(
-                labelText: L.of(context).noteContent,
-                border: const OutlineInputBorder(),
+        // Scrolls so a phone with the keyboard up still fits the whole
+        // editor, the way the other dialogs in the app do.
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _title,
+                autofocus: true,
+                decoration: InputDecoration(labelText: L.of(context).noteTitle),
               ),
-              maxLines: 10,
-            ),
-          ],
+              const SizedBox(height: 12),
+              MarkupTextField(
+                controller: _content,
+                label: L.of(context).noteContent,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [

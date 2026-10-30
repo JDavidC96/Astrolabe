@@ -97,6 +97,13 @@ final chaptersStreamProvider =
   return ref.watch(chapterDaoProvider).watchChapters(projectId);
 });
 
+/// Backs the "continue writing" shortcut; see
+/// [ChapterDao.watchLastEditedChapter].
+final lastEditedChapterProvider =
+    StreamProvider.family<Chapter?, String>((ref, projectId) {
+  return ref.watch(chapterDaoProvider).watchLastEditedChapter(projectId);
+});
+
 final chapterCharactersStreamProvider =
     StreamProvider.family<List<Character>, String>((ref, chapterId) {
   return ref.watch(chapterDaoProvider).watchChapterCharacters(chapterId);

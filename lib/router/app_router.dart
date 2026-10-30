@@ -30,8 +30,17 @@ import '../screens/dice/dice_screen.dart';
 import '../screens/settings/language_screen.dart';
 import '../screens/settings/security_settings_screen.dart';
 import '../screens/drawing/drawing_screen.dart';
+import '../screens/chapters/export_pdf_screen.dart';
+import '../screens/help/editor_help_screen.dart';
 
 typedef DrawingSaveCallback = void Function(Uint8List pngBytes);
+
+/// The section a project opens on.
+///
+/// Writing comes first: for a novel it is the reason the app gets opened at
+/// all, and for a campaign it is the session log that grows every week.
+/// Kept in step with the first seat in the bottom bar.
+const projectLandingSection = 'chapters';
 
 /// Detail/edit screens are deliberately declared *outside* the [ShellRoute]:
 /// they carry their own app bar and save/delete actions, so inheriting the
@@ -49,6 +58,16 @@ final appRouter = GoRouter(
       builder: (context, state) => const SecuritySettingsScreen(),
     ),
     GoRoute(
+      path: '/project/:projectId/export/pdf',
+      builder: (context, state) => ExportPdfScreen(
+        projectId: state.pathParameters['projectId']!,
+      ),
+    ),
+    GoRoute(
+      path: '/help/editor',
+      builder: (context, state) => const EditorHelpScreen(),
+    ),
+    GoRoute(
       path: '/settings/language',
       builder: (context, state) => const LanguageScreen(),
     ),
@@ -61,7 +80,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/project/:projectId',
       redirect: (context, state) =>
-          '/project/${state.pathParameters['projectId']}/characters',
+          '/project/${state.pathParameters['projectId']}/$projectLandingSection',
     ),
 
     // --- Full-screen detail routes (declared before the shell) ---
@@ -131,13 +150,6 @@ final appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/project/:projectId/chapters/new',
-      builder: (context, state) => ChapterDetailScreen(
-        projectId: state.pathParameters['projectId']!,
-        chapterId: null,
-      ),
-    ),
-    GoRoute(
       path: '/project/:projectId/write/:chapterId',
       builder: (context, state) => ChapterEditorScreen(
         projectId: state.pathParameters['projectId']!,
@@ -148,7 +160,7 @@ final appRouter = GoRouter(
       path: '/project/:projectId/chapters/:chapterId',
       builder: (context, state) => ChapterDetailScreen(
         projectId: state.pathParameters['projectId']!,
-        chapterId: state.pathParameters['chapterId'],
+        chapterId: state.pathParameters['chapterId']!,
       ),
     ),
     GoRoute(

@@ -136,6 +136,9 @@ class LEn extends L {
   String get sectionTimeline => 'Timeline';
 
   @override
+  String get sectionWrite => 'Write';
+
+  @override
   String get sectionChapters => 'Chapters';
 
   @override
@@ -676,16 +679,10 @@ class LEn extends L {
 
   @override
   String get chapEmptyChapters =>
-      'No chapters yet. Tap + to create the first one.';
-
-  @override
-  String get chapNewChapter => 'New chapter';
+      'No chapters yet. Tap + and start writing the first one.';
 
   @override
   String get chapEditChapter => 'Edit chapter';
-
-  @override
-  String get chapNewSession => 'New session';
 
   @override
   String get chapEditSession => 'Edit session';
@@ -739,9 +736,6 @@ class LEn extends L {
   String get chapContent => 'Content';
 
   @override
-  String get chapContentSaveFirst => 'Save first (✓ above) to start writing.';
-
-  @override
   String get chapContentEmpty => 'Empty. Tap to write.';
 
   @override
@@ -752,6 +746,22 @@ class LEn extends L {
   @override
   String chapWordCountGoal(int count, int goal) {
     return '$count of $goal words';
+  }
+
+  @override
+  String get chapResume => 'Continue writing';
+
+  @override
+  String get chapDetails => 'Details';
+
+  @override
+  String chapDefaultChapterTitle(int number) {
+    return 'Chapter $number';
+  }
+
+  @override
+  String chapDefaultSessionTitle(int number) {
+    return 'Session $number';
   }
 
   @override
@@ -796,12 +806,6 @@ class LEn extends L {
 
   @override
   String get editorUnsaved => 'Unsaved';
-
-  @override
-  String get editorBold => 'Bold';
-
-  @override
-  String get editorItalic => 'Italic';
 
   @override
   String get editorSubheading => 'Subheading';
@@ -1551,4 +1555,331 @@ class LEn extends L {
 
   @override
   String get themeGothicDesc => 'Crimson and ash. Vampires, ruins and secrets.';
+
+  @override
+  String get markupBold => 'Bold';
+
+  @override
+  String get markupItalic => 'Italic';
+
+  @override
+  String get helpEditorTitle => 'The text editor';
+
+  @override
+  String get helpEditorButton => 'How formatting works';
+
+  @override
+  String get helpIntro =>
+      'How to format what you write, where each button works and what gets stored underneath.';
+
+  @override
+  String get helpStylesTitle => 'Bold and italic';
+
+  @override
+  String get helpStylesIntro =>
+      'It works like any word processor. There are two ways, and both work.';
+
+  @override
+  String get helpWayMarkTitle => 'Style what you already wrote';
+
+  @override
+  String get helpWayMarkBody =>
+      'Select the words and press B or I. Press again to take it off.';
+
+  @override
+  String get helpWayAheadTitle => 'Turn it on before you write';
+
+  @override
+  String get helpWayAheadBody =>
+      'With nothing selected, press B and what you type next comes out bold, until you turn it off.';
+
+  @override
+  String get helpOnTitle => 'Telling when it is on';
+
+  @override
+  String get helpOnBody =>
+      'The button lights up when the caret sits on text that already carries that style, or when you have just turned it on. Move the caret elsewhere and it goes out.';
+
+  @override
+  String get helpCombineBody =>
+      'The two combine: a phrase can be bold and italic at once. And if you type right after a bold word, what you add stays bold.';
+
+  @override
+  String get helpReachTitle => 'Three ways to reach the buttons';
+
+  @override
+  String get helpReachBarTitle => 'The toolbar';
+
+  @override
+  String get helpReachBarBody => 'The B and I buttons, above the text box.';
+
+  @override
+  String get helpReachKeysTitle => 'The keyboard';
+
+  @override
+  String get helpReachKeysBody =>
+      'Ctrl+B and Ctrl+I. On a Mac, Cmd instead of Ctrl.';
+
+  @override
+  String get helpReachPhoneTitle => 'On a phone';
+
+  @override
+  String get helpReachPhoneBody =>
+      'When you select a word and the system menu appears with Copy and Paste, Bold and Italic are right there. That menu covers the toolbar, so the styles live inside it too.';
+
+  @override
+  String get helpWhereTitle => 'Where it works';
+
+  @override
+  String get helpWhereBody =>
+      'In the body of a note and in the chapter editor. In the notes list, each preview already shows its formatting.';
+
+  @override
+  String get helpWhereNote =>
+      'Titles, summaries and the short fields stay plain text.';
+
+  @override
+  String get helpChapterOnlyTitle => 'Subheadings, quotes and scene breaks';
+
+  @override
+  String get helpChapterOnlyIntro =>
+      'These three apply to the whole line the caret is on, not to the words you select. Like bold, they show while you write and leave no marker in sight.';
+
+  @override
+  String get helpSubheadingBody =>
+      'Turns the line into a subheading: larger and bold. Good for separating parts within a chapter.';
+
+  @override
+  String get helpSceneBreakBody =>
+      'Drops a mark on its own line to separate two scenes within a chapter.';
+
+  @override
+  String get helpChapterOnlyWarn =>
+      'A quotation cannot be indented while you write it: a text box cannot give one paragraph margins of its own. That is why it is set apart by the italics and the ground instead.';
+
+  @override
+  String get helpStoredTitle => 'What gets stored';
+
+  @override
+  String get helpStoredBody =>
+      'You never see an asterisk. Underneath, the text is stored as Markdown.';
+
+  @override
+  String get helpStoredSeeLabel => 'What you see';
+
+  @override
+  String get helpStoredSavedLabel => 'What gets stored';
+
+  @override
+  String get helpStoredSample =>
+      'The **Valdris House** fell in the *long winter*.';
+
+  @override
+  String get helpStoredWhy =>
+      'That matters for three reasons: your backups stay readable in any text editor, search still finds the words, and anything you had already written with asterisks opens already formatted.';
+
+  @override
+  String get helpStoredAsterisk =>
+      'An asterisk you type on purpose is stored protected and comes back as itself.';
+
+  @override
+  String get helpHalfWordTitle => 'The one odd detail';
+
+  @override
+  String get helpHalfWordBody =>
+      'Markdown has no way to say \"half of this word is bold\". If you style only part of a word, saving widens it to the whole word.';
+
+  @override
+  String get helpHalfWordNote =>
+      'It is the only concession, and a deliberate one: better that than storing something that reads back differently. The words are never touched.';
+
+  @override
+  String get helpMoreTitle => 'The rest of the chapter editor';
+
+  @override
+  String get helpAutosaveTitle => 'It saves itself';
+
+  @override
+  String get helpAutosaveBody =>
+      'A second after you stop typing, and again when you leave the screen. The top says Saving or Saved.';
+
+  @override
+  String get helpWordCountTitle => 'Word count';
+
+  @override
+  String get helpWordCountBody =>
+      'Always in view, and it updates as you write.';
+
+  @override
+  String get helpGoalTitle => 'Word goal';
+
+  @override
+  String get helpGoalBody =>
+      'Give the chapter a goal and a progress bar appears above the buttons.';
+
+  @override
+  String get helpFocusTitle => 'Distraction-free mode';
+
+  @override
+  String get helpFocusBody =>
+      'Hides everything but the text. The button at the top right brings it back.';
+
+  @override
+  String get markupQuote => 'Quote';
+
+  @override
+  String get helpQuoteBody =>
+      'Marks the paragraph as a quotation: italic on a faint ground, so it stands apart from the body. Press Enter and the quote carries on; a subheading does not.';
+
+  @override
+  String get pdfTitle => 'Export to PDF';
+
+  @override
+  String get pdfButton => 'Export to PDF';
+
+  @override
+  String get pdfIntro =>
+      'Pick the chapters you want. They come out together in one PDF, in the order they are in.';
+
+  @override
+  String get pdfSelectAll => 'Select all';
+
+  @override
+  String get pdfClear => 'Clear all';
+
+  @override
+  String get pdfNoChapters => 'No chapters to export yet.';
+
+  @override
+  String get pdfEmptyChapter => 'No text yet';
+
+  @override
+  String get pdfExport => 'Export';
+
+  @override
+  String get pdfWorking => 'Building the PDF...';
+
+  @override
+  String get pdfDone => 'PDF ready.';
+
+  @override
+  String pdfFailed(String error) {
+    return 'Could not export: $error';
+  }
+
+  @override
+  String get pdfShareTitle => 'Your manuscript';
+
+  @override
+  String pdfWordsLabel(String n) {
+    return '$n words';
+  }
+
+  @override
+  String pdfSelectedCount(int count, int total) {
+    return '$count of $total chapters';
+  }
+
+  @override
+  String get pdfIntroAll =>
+      'Pick what you want to take with you. It all comes out in one PDF.';
+
+  @override
+  String get pdfWithImages => 'With pictures';
+
+  @override
+  String get pdfGroupChapters => 'Chapters';
+
+  @override
+  String get pdfGroupCharacters => 'Characters';
+
+  @override
+  String get pdfGroupFactions => 'Factions';
+
+  @override
+  String get pdfGroupLocations => 'Places';
+
+  @override
+  String get pdfGroupItems => 'Items';
+
+  @override
+  String get pdfGroupMagic => 'Magic systems';
+
+  @override
+  String get pdfNothingPicked => 'Nothing picked yet.';
+
+  @override
+  String get pdfNoneOfThese => 'None of these yet.';
+
+  @override
+  String get sheetRace => 'Race';
+
+  @override
+  String get sheetGender => 'Gender';
+
+  @override
+  String get sheetAge => 'Age';
+
+  @override
+  String get sheetOccupation => 'Occupation';
+
+  @override
+  String get sheetFaction => 'Faction';
+
+  @override
+  String get sheetStatus => 'Status';
+
+  @override
+  String get sheetType => 'Kind';
+
+  @override
+  String get sheetClimate => 'Climate';
+
+  @override
+  String get sheetPopulation => 'Population';
+
+  @override
+  String get sheetGovernment => 'Government';
+
+  @override
+  String get sheetPartOf => 'Part of';
+
+  @override
+  String get sheetOwner => 'Held by';
+
+  @override
+  String get sheetWhere => 'Where it is';
+
+  @override
+  String get sheetAppearance => 'Appearance';
+
+  @override
+  String get sheetPersonality => 'Personality';
+
+  @override
+  String get sheetBackstory => 'Backstory';
+
+  @override
+  String get sheetNotes => 'Notes';
+
+  @override
+  String get sheetDescription => 'Description';
+
+  @override
+  String get sheetPowers => 'Powers';
+
+  @override
+  String get sheetOrigin => 'Origin';
+
+  @override
+  String get sheetSource => 'Where it comes from';
+
+  @override
+  String get sheetRules => 'Rules';
+
+  @override
+  String get sheetLimits => 'Limits';
+
+  @override
+  String get sheetCost => 'Cost';
 }

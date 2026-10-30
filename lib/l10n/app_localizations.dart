@@ -331,6 +331,12 @@ abstract class L {
   /// **'Línea de tiempo'**
   String get sectionTimeline;
 
+  /// No description provided for @sectionWrite.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribir'**
+  String get sectionWrite;
+
   /// No description provided for @sectionChapters.
   ///
   /// In es, this message translates to:
@@ -1354,26 +1360,14 @@ abstract class L {
   /// No description provided for @chapEmptyChapters.
   ///
   /// In es, this message translates to:
-  /// **'No hay capítulos todavía. Toca + para crear el primero.'**
+  /// **'Todavía no hay capítulos. Toca + y empieza a escribir el primero.'**
   String get chapEmptyChapters;
-
-  /// No description provided for @chapNewChapter.
-  ///
-  /// In es, this message translates to:
-  /// **'Nuevo capítulo'**
-  String get chapNewChapter;
 
   /// No description provided for @chapEditChapter.
   ///
   /// In es, this message translates to:
   /// **'Editar capítulo'**
   String get chapEditChapter;
-
-  /// No description provided for @chapNewSession.
-  ///
-  /// In es, this message translates to:
-  /// **'Nueva sesión'**
-  String get chapNewSession;
 
   /// No description provided for @chapEditSession.
   ///
@@ -1471,12 +1465,6 @@ abstract class L {
   /// **'Contenido'**
   String get chapContent;
 
-  /// No description provided for @chapContentSaveFirst.
-  ///
-  /// In es, this message translates to:
-  /// **'Guarda primero (✓ arriba) para empezar a escribir.'**
-  String get chapContentSaveFirst;
-
   /// No description provided for @chapContentEmpty.
   ///
   /// In es, this message translates to:
@@ -1494,6 +1482,30 @@ abstract class L {
   /// In es, this message translates to:
   /// **'{count} palabras de {goal}'**
   String chapWordCountGoal(int count, int goal);
+
+  /// No description provided for @chapResume.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar escribiendo'**
+  String get chapResume;
+
+  /// No description provided for @chapDetails.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles'**
+  String get chapDetails;
+
+  /// No description provided for @chapDefaultChapterTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Capítulo {number}'**
+  String chapDefaultChapterTitle(int number);
+
+  /// No description provided for @chapDefaultSessionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión {number}'**
+  String chapDefaultSessionTitle(int number);
 
   /// No description provided for @chapAddToTimeline.
   ///
@@ -1578,18 +1590,6 @@ abstract class L {
   /// In es, this message translates to:
   /// **'Sin guardar'**
   String get editorUnsaved;
-
-  /// No description provided for @editorBold.
-  ///
-  /// In es, this message translates to:
-  /// **'Negrita'**
-  String get editorBold;
-
-  /// No description provided for @editorItalic.
-  ///
-  /// In es, this message translates to:
-  /// **'Cursiva'**
-  String get editorItalic;
 
   /// No description provided for @editorSubheading.
   ///
@@ -2964,6 +2964,594 @@ abstract class L {
   /// In es, this message translates to:
   /// **'Carmesí y ceniza. Vampiros, ruinas y secretos.'**
   String get themeGothicDesc;
+
+  /// No description provided for @markupBold.
+  ///
+  /// In es, this message translates to:
+  /// **'Negrita'**
+  String get markupBold;
+
+  /// No description provided for @markupItalic.
+  ///
+  /// In es, this message translates to:
+  /// **'Cursiva'**
+  String get markupItalic;
+
+  /// No description provided for @helpEditorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'El editor de texto'**
+  String get helpEditorTitle;
+
+  /// No description provided for @helpEditorButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo dar formato'**
+  String get helpEditorButton;
+
+  /// No description provided for @helpIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo dar formato a lo que escribes, dónde funciona cada botón y qué queda guardado por debajo.'**
+  String get helpIntro;
+
+  /// No description provided for @helpStylesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Negrita y cursiva'**
+  String get helpStylesTitle;
+
+  /// No description provided for @helpStylesIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Funciona igual que en cualquier procesador de texto. Hay dos formas, y las dos sirven.'**
+  String get helpStylesIntro;
+
+  /// No description provided for @helpWayMarkTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar lo que ya escribiste'**
+  String get helpWayMarkTitle;
+
+  /// No description provided for @helpWayMarkBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona las palabras y presiona B o I. Presionarlo otra vez se lo quita.'**
+  String get helpWayMarkBody;
+
+  /// No description provided for @helpWayAheadTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Prenderlo antes de escribir'**
+  String get helpWayAheadTitle;
+
+  /// No description provided for @helpWayAheadBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin nada seleccionado, presiona B y lo que escribas a continuación sale en negrita, hasta que lo apagues.'**
+  String get helpWayAheadBody;
+
+  /// No description provided for @helpOnTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo saber si está prendido'**
+  String get helpOnTitle;
+
+  /// No description provided for @helpOnBody.
+  ///
+  /// In es, this message translates to:
+  /// **'El botón se enciende cuando el cursor está sobre texto que ya tiene ese estilo, o cuando lo acabas de prender. Si mueves el cursor a otro lado, se apaga.'**
+  String get helpOnBody;
+
+  /// No description provided for @helpCombineBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los dos estilos se combinan: puedes tener una frase en negrita y cursiva a la vez. Y si escribes pegado a una palabra en negrita, lo nuevo sigue en negrita.'**
+  String get helpCombineBody;
+
+  /// No description provided for @helpReachTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tres formas de llegar a los botones'**
+  String get helpReachTitle;
+
+  /// No description provided for @helpReachBarTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'La barra'**
+  String get helpReachBarTitle;
+
+  /// No description provided for @helpReachBarBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los botones B e I, arriba del cuadro de texto.'**
+  String get helpReachBarBody;
+
+  /// No description provided for @helpReachKeysTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'El teclado'**
+  String get helpReachKeysTitle;
+
+  /// No description provided for @helpReachKeysBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Ctrl+B y Ctrl+I. En Mac, Cmd en vez de Ctrl.'**
+  String get helpReachKeysBody;
+
+  /// No description provided for @helpReachPhoneTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'El celular'**
+  String get helpReachPhoneTitle;
+
+  /// No description provided for @helpReachPhoneBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando seleccionas una palabra y aparece el menú del sistema con Copiar y Pegar, ahí mismo están Negrita y Cursiva. Ese menú tapa la barra, así que los estilos también viven adentro de él.'**
+  String get helpReachPhoneBody;
+
+  /// No description provided for @helpWhereTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Dónde funciona'**
+  String get helpWhereTitle;
+
+  /// No description provided for @helpWhereBody.
+  ///
+  /// In es, this message translates to:
+  /// **'En el contenido de las notas y en el editor de capítulos. En la lista de notas, la vista previa de cada una ya se ve con su formato aplicado.'**
+  String get helpWhereBody;
+
+  /// No description provided for @helpWhereNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Los títulos, los resúmenes y los campos cortos siguen siendo texto simple.'**
+  String get helpWhereNote;
+
+  /// No description provided for @helpChapterOnlyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Subtítulos, citas y cortes de escena'**
+  String get helpChapterOnlyTitle;
+
+  /// No description provided for @helpChapterOnlyIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Estos tres se aplican a la línea entera donde está el cursor, no a las palabras que selecciones. Igual que la negrita, se ven mientras escribes y no dejan ningún símbolo a la vista.'**
+  String get helpChapterOnlyIntro;
+
+  /// No description provided for @helpSubheadingBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Convierte la línea en un subtítulo: se ve más grande y en negrita. Sirve para separar partes dentro de un capítulo.'**
+  String get helpSubheadingBody;
+
+  /// No description provided for @helpSceneBreakBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Deja una marca en su propia línea para separar dos escenas dentro del mismo capítulo.'**
+  String get helpSceneBreakBody;
+
+  /// No description provided for @helpChapterOnlyWarn.
+  ///
+  /// In es, this message translates to:
+  /// **'La cita no se puede sangrar mientras la escribes: un cuadro de texto no sabe darle márgenes propios a un párrafo suelto. Por eso se distingue con la cursiva y el fondo, en vez de con una sangría.'**
+  String get helpChapterOnlyWarn;
+
+  /// No description provided for @helpStoredTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué queda guardado'**
+  String get helpStoredTitle;
+
+  /// No description provided for @helpStoredBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Nunca ves un asterisco. Por debajo, el texto se guarda en Markdown.'**
+  String get helpStoredBody;
+
+  /// No description provided for @helpStoredSeeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que ves'**
+  String get helpStoredSeeLabel;
+
+  /// No description provided for @helpStoredSavedLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que se guarda'**
+  String get helpStoredSavedLabel;
+
+  /// No description provided for @helpStoredSample.
+  ///
+  /// In es, this message translates to:
+  /// **'La **Casa Valdris** cayó en el *invierno largo*.'**
+  String get helpStoredSample;
+
+  /// No description provided for @helpStoredWhy.
+  ///
+  /// In es, this message translates to:
+  /// **'Eso importa por tres razones: tus respaldos siguen siendo legibles y se pueden abrir en cualquier editor de texto, la búsqueda sigue encontrando las palabras, y lo que ya tenías escrito con asteriscos se abre ya formateado.'**
+  String get helpStoredWhy;
+
+  /// No description provided for @helpStoredAsterisk.
+  ///
+  /// In es, this message translates to:
+  /// **'Si escribes un asterisco a propósito, se guarda protegido y vuelve tal cual.'**
+  String get helpStoredAsterisk;
+
+  /// No description provided for @helpHalfWordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'El único detalle raro'**
+  String get helpHalfWordTitle;
+
+  /// No description provided for @helpHalfWordBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Markdown no tiene forma de decir \"media palabra en negrita\". Si marcas solo una parte de una palabra, al guardar el estilo se ensancha a la palabra entera.'**
+  String get helpHalfWordBody;
+
+  /// No description provided for @helpHalfWordNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Es la única concesión, y es a propósito: preferible eso a guardar algo que después se lea distinto. Las palabras nunca se tocan.'**
+  String get helpHalfWordNote;
+
+  /// No description provided for @helpMoreTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo demás del editor de capítulos'**
+  String get helpMoreTitle;
+
+  /// No description provided for @helpAutosaveTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Se guarda solo'**
+  String get helpAutosaveTitle;
+
+  /// No description provided for @helpAutosaveBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Un segundo después de que dejas de escribir, y también al salir de la pantalla. Arriba te dice Guardando o Guardado.'**
+  String get helpAutosaveBody;
+
+  /// No description provided for @helpWordCountTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contador de palabras'**
+  String get helpWordCountTitle;
+
+  /// No description provided for @helpWordCountBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Siempre a la vista, y se actualiza mientras escribes.'**
+  String get helpWordCountBody;
+
+  /// No description provided for @helpGoalTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Meta de palabras'**
+  String get helpGoalTitle;
+
+  /// No description provided for @helpGoalBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes ponerle una meta al capítulo y aparece una barra de avance arriba de los botones.'**
+  String get helpGoalBody;
+
+  /// No description provided for @helpFocusTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo sin distracciones'**
+  String get helpFocusTitle;
+
+  /// No description provided for @helpFocusBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Esconde todo menos el texto. Para salir, el botón de arriba a la derecha.'**
+  String get helpFocusBody;
+
+  /// No description provided for @markupQuote.
+  ///
+  /// In es, this message translates to:
+  /// **'Cita'**
+  String get markupQuote;
+
+  /// No description provided for @helpQuoteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca el párrafo como una cita: sale en cursiva y sobre un fondo tenue, para que se distinga del cuerpo del texto. Si presionas Enter, la cita continúa; un subtítulo no.'**
+  String get helpQuoteBody;
+
+  /// No description provided for @pdfTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar a PDF'**
+  String get pdfTitle;
+
+  /// No description provided for @pdfButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar a PDF'**
+  String get pdfButton;
+
+  /// No description provided for @pdfIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige qué capítulos quieres. Salen todos juntos en un solo PDF, en el orden en que están.'**
+  String get pdfIntro;
+
+  /// No description provided for @pdfSelectAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar todos'**
+  String get pdfSelectAll;
+
+  /// No description provided for @pdfClear.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar todos'**
+  String get pdfClear;
+
+  /// No description provided for @pdfNoChapters.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay capítulos que exportar todavía.'**
+  String get pdfNoChapters;
+
+  /// No description provided for @pdfEmptyChapter.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin texto'**
+  String get pdfEmptyChapter;
+
+  /// No description provided for @pdfExport.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar'**
+  String get pdfExport;
+
+  /// No description provided for @pdfWorking.
+  ///
+  /// In es, this message translates to:
+  /// **'Armando el PDF...'**
+  String get pdfWorking;
+
+  /// No description provided for @pdfDone.
+  ///
+  /// In es, this message translates to:
+  /// **'PDF listo.'**
+  String get pdfDone;
+
+  /// No description provided for @pdfFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo exportar: {error}'**
+  String pdfFailed(String error);
+
+  /// No description provided for @pdfShareTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu manuscrito'**
+  String get pdfShareTitle;
+
+  /// No description provided for @pdfWordsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} palabras'**
+  String pdfWordsLabel(String n);
+
+  /// No description provided for @pdfSelectedCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} de {total} capítulos'**
+  String pdfSelectedCount(int count, int total);
+
+  /// No description provided for @pdfIntroAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige qué quieres llevarte. Todo sale junto en un solo PDF.'**
+  String get pdfIntroAll;
+
+  /// No description provided for @pdfWithImages.
+  ///
+  /// In es, this message translates to:
+  /// **'Con imágenes'**
+  String get pdfWithImages;
+
+  /// No description provided for @pdfGroupChapters.
+  ///
+  /// In es, this message translates to:
+  /// **'Capítulos'**
+  String get pdfGroupChapters;
+
+  /// No description provided for @pdfGroupCharacters.
+  ///
+  /// In es, this message translates to:
+  /// **'Personajes'**
+  String get pdfGroupCharacters;
+
+  /// No description provided for @pdfGroupFactions.
+  ///
+  /// In es, this message translates to:
+  /// **'Facciones'**
+  String get pdfGroupFactions;
+
+  /// No description provided for @pdfGroupLocations.
+  ///
+  /// In es, this message translates to:
+  /// **'Lugares'**
+  String get pdfGroupLocations;
+
+  /// No description provided for @pdfGroupItems.
+  ///
+  /// In es, this message translates to:
+  /// **'Objetos'**
+  String get pdfGroupItems;
+
+  /// No description provided for @pdfGroupMagic.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistemas de magia'**
+  String get pdfGroupMagic;
+
+  /// No description provided for @pdfNothingPicked.
+  ///
+  /// In es, this message translates to:
+  /// **'No has elegido nada todavía.'**
+  String get pdfNothingPicked;
+
+  /// No description provided for @pdfNoneOfThese.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay ninguno.'**
+  String get pdfNoneOfThese;
+
+  /// No description provided for @sheetRace.
+  ///
+  /// In es, this message translates to:
+  /// **'Raza'**
+  String get sheetRace;
+
+  /// No description provided for @sheetGender.
+  ///
+  /// In es, this message translates to:
+  /// **'Género'**
+  String get sheetGender;
+
+  /// No description provided for @sheetAge.
+  ///
+  /// In es, this message translates to:
+  /// **'Edad'**
+  String get sheetAge;
+
+  /// No description provided for @sheetOccupation.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocupación'**
+  String get sheetOccupation;
+
+  /// No description provided for @sheetFaction.
+  ///
+  /// In es, this message translates to:
+  /// **'Facción'**
+  String get sheetFaction;
+
+  /// No description provided for @sheetStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get sheetStatus;
+
+  /// No description provided for @sheetType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo'**
+  String get sheetType;
+
+  /// No description provided for @sheetClimate.
+  ///
+  /// In es, this message translates to:
+  /// **'Clima'**
+  String get sheetClimate;
+
+  /// No description provided for @sheetPopulation.
+  ///
+  /// In es, this message translates to:
+  /// **'Población'**
+  String get sheetPopulation;
+
+  /// No description provided for @sheetGovernment.
+  ///
+  /// In es, this message translates to:
+  /// **'Gobierno'**
+  String get sheetGovernment;
+
+  /// No description provided for @sheetPartOf.
+  ///
+  /// In es, this message translates to:
+  /// **'Dentro de'**
+  String get sheetPartOf;
+
+  /// No description provided for @sheetOwner.
+  ///
+  /// In es, this message translates to:
+  /// **'En manos de'**
+  String get sheetOwner;
+
+  /// No description provided for @sheetWhere.
+  ///
+  /// In es, this message translates to:
+  /// **'Dónde está'**
+  String get sheetWhere;
+
+  /// No description provided for @sheetAppearance.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get sheetAppearance;
+
+  /// No description provided for @sheetPersonality.
+  ///
+  /// In es, this message translates to:
+  /// **'Personalidad'**
+  String get sheetPersonality;
+
+  /// No description provided for @sheetBackstory.
+  ///
+  /// In es, this message translates to:
+  /// **'Historia'**
+  String get sheetBackstory;
+
+  /// No description provided for @sheetNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get sheetNotes;
+
+  /// No description provided for @sheetDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción'**
+  String get sheetDescription;
+
+  /// No description provided for @sheetPowers.
+  ///
+  /// In es, this message translates to:
+  /// **'Poderes'**
+  String get sheetPowers;
+
+  /// No description provided for @sheetOrigin.
+  ///
+  /// In es, this message translates to:
+  /// **'Origen'**
+  String get sheetOrigin;
+
+  /// No description provided for @sheetSource.
+  ///
+  /// In es, this message translates to:
+  /// **'De dónde viene'**
+  String get sheetSource;
+
+  /// No description provided for @sheetRules.
+  ///
+  /// In es, this message translates to:
+  /// **'Reglas'**
+  String get sheetRules;
+
+  /// No description provided for @sheetLimits.
+  ///
+  /// In es, this message translates to:
+  /// **'Límites'**
+  String get sheetLimits;
+
+  /// No description provided for @sheetCost.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuesta'**
+  String get sheetCost;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

@@ -9,11 +9,14 @@ import '../../services/support_links.dart';
 
 /// One entry in the project's section navigation.
 ///
+/// Public so the navigation layout can be asserted in tests; a slug in
+/// [bottomBarSlugs] with no matching entry here would throw on build.
+///
 /// Labels are resolved through [labelFor] at build time rather than stored,
 /// so this list can stay `const` while the wording still follows the
 /// chosen language.
-class _Section {
-  const _Section(this.slug, this.icon);
+class ProjectSection {
+  const ProjectSection(this.slug, this.icon);
   final String slug;
   final IconData icon;
 
@@ -30,7 +33,9 @@ class _Section {
       case 'timeline':
         return l.sectionTimeline;
       case 'chapters':
-        return isCampaign ? l.sectionSessions : l.sectionChapters;
+        // Named for the verb, not the container: this is where the writing
+        // happens, and calling it "Chapters" is what buried it before.
+        return isCampaign ? l.sectionSessions : l.sectionWrite;
       case 'notes':
         return l.sectionNotes;
       case 'items':
@@ -42,15 +47,15 @@ class _Section {
   }
 }
 
-const _sections = <_Section>[
-  _Section('characters', Icons.people_outline),
-  _Section('world', Icons.public_outlined),
-  _Section('factions', Icons.shield_outlined),
-  _Section('timeline', Icons.timeline_outlined),
-  _Section('chapters', Icons.menu_book_outlined),
-  _Section('notes', Icons.sticky_note_2_outlined),
-  _Section('items', Icons.auto_awesome_outlined),
-  _Section('magic', Icons.auto_fix_high_outlined),
+const projectSections = <ProjectSection>[
+  ProjectSection('chapters', Icons.edit_note),
+  ProjectSection('characters', Icons.people_outline),
+  ProjectSection('world', Icons.public_outlined),
+  ProjectSection('factions', Icons.shield_outlined),
+  ProjectSection('timeline', Icons.timeline_outlined),
+  ProjectSection('notes', Icons.sticky_note_2_outlined),
+  ProjectSection('items', Icons.auto_awesome_outlined),
+  ProjectSection('magic', Icons.auto_fix_high_outlined),
 ];
 
 /// Extra destinations that are not section lists.
@@ -88,9 +93,18 @@ const _tools = <_Tool>[
   _Tool('backup', Icons.backup_outlined),
 ];
 
-/// Number of sections shown in the bottom bar; the rest live in the drawer
+/// Sections that get a seat in the bottom bar; the rest live in the drawer
 /// so the bar stays readable on a phone.
-const _bottomBarCount = 4;
+///
+/// Spelled out rather than taken from the front of [projectSections]: which
+/// sections deserve a permanent seat is a product decision, and letting it
+/// follow drawer order silently is how writing ended up drawer-only.
+const bottomBarSlugs = <String>[
+  'chapters',
+  'characters',
+  'world',
+  'factions',
+];
 
 /// Wraps every section list inside a project with a shared app bar, a drawer
 /// listing all sections, and a bottom bar for the most-used ones.
@@ -106,10 +120,10 @@ class ProjectShellScreen extends ConsumerWidget {
 
   String _currentSlug(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
-    for (final section in _sections) {
+    for (final section in projectSections) {
       if (location.endsWith('/${section.slug}')) return section.slug;
     }
-    return _sections.first.slug;
+    return projectSections.first.slug;
   }
 
   @override
@@ -118,7 +132,10 @@ class ProjectShellScreen extends ConsumerWidget {
     final projectAsync = ref.watch(projectStreamProvider(projectId));
     final isCampaign = projectAsync.valueOrNull?.kind == ProjectKind.dnd;
     final currentSlug = _currentSlug(context);
-    final bottomSections = _sections.take(_bottomBarCount).toList();
+    final bottomSections = [
+      for (final slug in bottomBarSlugs)
+        projectSections.firstWhere((s) => s.slug == slug),
+    ];
     final bottomIndex =
         bottomSections.indexWhere((s) => s.slug == currentSlug);
 
@@ -203,7 +220,7 @@ class _SectionDrawer extends StatelessWidget {
               ],
             ),
           ),
-          for (final section in _sections)
+          for (final section in projectSections)
             ListTile(
               leading: Icon(section.icon),
               title: Text(section.labelFor(l, isCampaign)),

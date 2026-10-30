@@ -15,6 +15,12 @@ import '../../services/text_stats.dart';
 import '../../widgets/searchable_pickers.dart';
 import '../../widgets/tags_field.dart';
 
+/// A chapter's metadata: title, status, year, summary, who appears, tags.
+///
+/// Always opened for a chapter that already exists. Creating one is the
+/// editor's job now - the + button in the chapter list makes the row and
+/// drops straight into the writing, so this screen never has to stand in
+/// for a chapter that is not saved yet.
 class ChapterDetailScreen extends ConsumerStatefulWidget {
   const ChapterDetailScreen({
     super.key,
@@ -23,7 +29,7 @@ class ChapterDetailScreen extends ConsumerStatefulWidget {
   });
 
   final String projectId;
-  final String? chapterId;
+  final String chapterId;
 
   @override
   ConsumerState<ChapterDetailScreen> createState() => _ChapterDetailScreenState();
@@ -39,7 +45,6 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
 
   Set<String> _characterIds = {};
   Set<String> _locationIds = {};
-  String? _chapterId;
   DateTime? _sessionDate;
   int? _wordGoal;
   TextStats _contentStats = TextStats.empty;
@@ -48,36 +53,32 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _chapterId = widget.chapterId;
     _load();
   }
 
   Future<void> _load() async {
-    if (widget.chapterId != null) {
-      final dao = ref.read(chapterDaoProvider);
-      final chapter = await dao.getChapter(widget.chapterId!);
-      _title.text = chapter.title;
-      _summary.text = chapter.summary ?? '';
-      _status.text = chapter.status ?? '';
-      _storyYear.text = chapter.storyYear?.toString() ?? '';
-      _sessionDate = chapter.sessionDate;
-      _wordGoal = chapter.wordGoal;
-      _contentStats = TextStats.of(chapter.content);
-      _characterIds =
-          (await dao.watchChapterCharacters(widget.chapterId!).first)
-              .map((c) => c.id)
-              .toSet();
-      _locationIds = (await dao.watchChapterLocations(widget.chapterId!).first)
-          .map((l) => l.id)
-          .toSet();
-    }
+    final dao = ref.read(chapterDaoProvider);
+    final chapter = await dao.getChapter(widget.chapterId);
+    _title.text = chapter.title;
+    _summary.text = chapter.summary ?? '';
+    _status.text = chapter.status ?? '';
+    _storyYear.text = chapter.storyYear?.toString() ?? '';
+    _sessionDate = chapter.sessionDate;
+    _wordGoal = chapter.wordGoal;
+    _contentStats = TextStats.of(chapter.content);
+    _characterIds = (await dao.watchChapterCharacters(widget.chapterId).first)
+        .map((c) => c.id)
+        .toSet();
+    _locationIds = (await dao.watchChapterLocations(widget.chapterId).first)
+        .map((l) => l.id)
+        .toSet();
     if (mounted) setState(() => _loading = false);
   }
 
   /// Re-reads just the word count after returning from the editor.
   Future<void> _reloadContentStats() async {
-    if (_chapterId == null) return;
-    final chapter = await ref.read(chapterDaoProvider).getChapter(_chapterId!);
+    final chapter =
+        await ref.read(chapterDaoProvider).getChapter(widget.chapterId);
     if (mounted) {
       setState(() {
         _contentStats = TextStats.of(chapter.content);
@@ -100,17 +101,9 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
     if (!_formKey.currentState!.validate()) return;
     final dao = ref.read(chapterDaoProvider);
 
-    if (_chapterId == null) {
-      final id = await dao.createChapter(
-        projectId: widget.projectId,
-        title: _title.text.trim(),
-      );
-      setState(() => _chapterId = id);
-    }
-
     await dao.updateChapter(
       ChaptersCompanion(
-        id: Value(_chapterId!),
+        id: Value(widget.chapterId),
         title: Value(_title.text.trim()),
         summary: Value(_nullIfEmpty(_summary.text)),
         // `content` is deliberately absent: the editor owns it, and writing
@@ -121,11 +114,11 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
         updatedAt: Value(DateTime.now()),
       ),
     );
-    await dao.setChapterCharacters(_chapterId!, _characterIds.toList());
-    await dao.setChapterLocations(_chapterId!, _locationIds.toList());
+    await dao.setChapterCharacters(widget.chapterId, _characterIds.toList());
+    await dao.setChapterLocations(widget.chapterId, _locationIds.toList());
     // Keeps the mirrored timeline event in step; a no-op when the project
     // has auto-sync switched off.
-    await ref.read(chapterTimelineSyncProvider).syncChapter(_chapterId!);
+    await ref.read(chapterTimelineSyncProvider).syncChapter(widget.chapterId);
 
     if (mounted) {
       ScaffoldMessenger.of(context)
@@ -134,7 +127,6 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
   }
 
   Future<void> _delete() async {
-    if (_chapterId == null) return;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -156,7 +148,7 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
       ),
     );
     if (confirmed != true) return;
-    await ref.read(chapterDaoProvider).deleteChapter(_chapterId!);
+    await ref.read(chapterDaoProvider).deleteChapter(widget.chapterId);
     if (mounted) context.pop();
   }
 
@@ -175,12 +167,9 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_chapterId == null
-            ? (isCampaign ? l.chapNewSession : l.chapNewChapter)
-            : (isCampaign ? l.chapEditSession : l.chapEditChapter)),
+        title: Text(isCampaign ? l.chapEditSession : l.chapEditChapter),
         actions: [
-          if (_chapterId != null)
-            IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
+          IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
           IconButton(
             icon: const Icon(Icons.check),
             tooltip: l.commonSave,
@@ -267,46 +256,40 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
                 leading: const Icon(Icons.edit_note),
                 title: Text(l.chapContent),
                 subtitle: Text(
-                  _chapterId == null
-                      ? l.chapContentSaveFirst
-                      : _contentStats.words == 0
-                          ? l.chapContentEmpty
-                          : _wordGoal == null
-                              ? l.chapWordCount(_contentStats.words)
-                              : l.chapWordCountGoal(
-                                  _contentStats.words, _wordGoal!),
+                  _contentStats.words == 0
+                      ? l.chapContentEmpty
+                      : _wordGoal == null
+                          ? l.chapWordCount(_contentStats.words)
+                          : l.chapWordCountGoal(
+                              _contentStats.words, _wordGoal!),
                 ),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: _chapterId == null
-                    ? null
-                    : () async {
-                        await context.push(
-                          '/project/${widget.projectId}/write/$_chapterId',
-                        );
-                        // The editor owns the text; refresh the summary line.
-                        await _reloadContentStats();
-                      },
+                onTap: () async {
+                  await context.push(
+                    '/project/${widget.projectId}/write/${widget.chapterId}',
+                  );
+                  // The editor owns the text; refresh the summary line.
+                  await _reloadContentStats();
+                },
               ),
             ),
-            if (_chapterId != null) ...[
-              const SizedBox(height: 8),
-              // Manual, one-off copy. Independent of the auto-sync switch,
-              // for people who want to place only some chapters by hand.
-              OutlinedButton.icon(
-                onPressed: () async {
-                  await ref
-                      .read(chapterTimelineSyncProvider)
-                      .addChapterOnce(_chapterId!);
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l.chapAddedToTimeline)),
-                    );
-                  }
-                },
-                icon: const Icon(Icons.timeline_outlined, size: 18),
-                label: Text(l.chapAddToTimeline),
-              ),
-            ],
+            const SizedBox(height: 8),
+            // Manual, one-off copy. Independent of the auto-sync switch,
+            // for people who want to place only some chapters by hand.
+            OutlinedButton.icon(
+              onPressed: () async {
+                await ref
+                    .read(chapterTimelineSyncProvider)
+                    .addChapterOnce(widget.chapterId);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l.chapAddedToTimeline)),
+                  );
+                }
+              },
+              icon: const Icon(Icons.timeline_outlined, size: 18),
+              label: Text(l.chapAddToTimeline),
+            ),
             const SizedBox(height: 16),
             Text(isCampaign ? l.chapWhoAttended : l.chapWhoAppears,
                 style: Theme.of(context).textTheme.titleMedium),
@@ -357,14 +340,12 @@ class _ChapterDetailScreenState extends ConsumerState<ChapterDetailScreen> {
               loading: () => const LinearProgressIndicator(),
               error: (e, st) => Text('Error: $e'),
             ),
-            if (_chapterId != null) ...[
-              const SizedBox(height: 16),
-              TagsField(
-                projectId: widget.projectId,
-                entityType: TagEntity.chapter,
-                entityId: _chapterId!,
-              ),
-            ],
+            const SizedBox(height: 16),
+            TagsField(
+              projectId: widget.projectId,
+              entityType: TagEntity.chapter,
+              entityId: widget.chapterId,
+            ),
             const SizedBox(height: 32),
           ],
         ),

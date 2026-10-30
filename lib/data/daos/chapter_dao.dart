@@ -29,6 +29,32 @@ class ChapterDao extends DatabaseAccessor<AppDatabase> with _$ChapterDaoMixin {
     return (select(chapters)..where((t) => t.id.equals(id))).getSingle();
   }
 
+  /// Like [getChapter] but tolerates the row being gone, which happens when
+  /// a chapter is deleted from its own detail screen while a caller still
+  /// holds the id.
+  Future<Chapter?> getChapterOrNull(String id) {
+    return (select(chapters)..where((t) => t.id.equals(id))).getSingleOrNull();
+  }
+
+  /// The chapter whose text was touched most recently, backing the
+  /// "continue writing" shortcut. Null while the project has no chapters.
+  ///
+  /// Ordered by [Chapters.updatedAt] rather than [Chapters.sortIndex]: the
+  /// point is to reopen whatever was being worked on, which is rarely the
+  /// first chapter in reading order.
+  Stream<Chapter?> watchLastEditedChapter(String projectId) {
+    return (select(chapters)
+          ..where((t) => t.projectId.equals(projectId))
+          ..orderBy([
+            (t) => OrderingTerm(
+                  expression: t.updatedAt,
+                  mode: OrderingMode.desc,
+                ),
+          ])
+          ..limit(1))
+        .watchSingleOrNull();
+  }
+
   Stream<List<Character>> watchChapterCharacters(String chapterId) {
     final query = select(characters).join([
       innerJoin(

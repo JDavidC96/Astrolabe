@@ -69,7 +69,6 @@ void main() {
       '/project/:projectId/factions/:factionId',
       '/project/:projectId/timeline/new',
       '/project/:projectId/timeline/:eventId',
-      '/project/:projectId/chapters/new',
       '/project/:projectId/chapters/:chapterId',
       '/project/:projectId/items/new',
       '/project/:projectId/items/:itemId',

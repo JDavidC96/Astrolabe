@@ -34,6 +34,11 @@ class ProjectsListScreen extends ConsumerWidget {
             onPressed: () => context.push('/settings/language'),
           ),
           IconButton(
+            icon: const Icon(Icons.help_outline),
+            tooltip: L.of(context).helpEditorButton,
+            onPressed: () => context.push('/help/editor'),
+          ),
+          IconButton(
             icon: const Icon(Icons.lock_outline),
             tooltip: l.settingsSecurity,
             onPressed: () => context.push('/settings/security'),

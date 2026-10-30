@@ -76,6 +76,7 @@
   "sectionWorld": "Mundo",
   "sectionFactions": "Facciones",
   "sectionTimeline": "Línea de tiempo",
+  "sectionWrite": "Escribir",
   "sectionChapters": "Capítulos",
   "sectionSessions": "Sesiones",
   "sectionNotes": "Notas",
@@ -253,10 +254,8 @@
   "eventDescription": "Descripción (opcional)",
   "eventPeople": "Personajes involucrados",
   "eventNoCharacters": "No hay personajes en este proyecto todavía.",
-  "chapEmptyChapters": "No hay capítulos todavía. Toca + para crear el primero.",
-  "chapNewChapter": "Nuevo capítulo",
+  "chapEmptyChapters": "Todavía no hay capítulos. Toca + y empieza a escribir el primero.",
   "chapEditChapter": "Editar capítulo",
-  "chapNewSession": "Nueva sesión",
   "chapEditSession": "Editar sesión",
   "chapSaved": "Capítulo guardado",
   "chapDeleteTitle": "Eliminar capítulo",
@@ -273,10 +272,13 @@
   "chapSummary": "Resumen (opcional)",
   "chapSummaryHelp": "Si activas la opción, aparece en la línea de tiempo.",
   "chapContent": "Contenido",
-  "chapContentSaveFirst": "Guarda primero (✓ arriba) para empezar a escribir.",
   "chapContentEmpty": "Vacío. Toca para escribir.",
   "chapWordCount": "{count} palabras",
   "chapWordCountGoal": "{count} palabras de {goal}",
+  "chapResume": "Continuar escribiendo",
+  "chapDetails": "Detalles",
+  "chapDefaultChapterTitle": "Capítulo {number}",
+  "chapDefaultSessionTitle": "Sesión {number}",
   "chapAddToTimeline": "Agregar a la línea de tiempo",
   "chapAddedToTimeline": "Agregado a la línea de tiempo. Puedes editarlo ahí libremente.",
   "chapWhoAttended": "Quiénes asistieron",
@@ -291,8 +293,6 @@
   "editorSaving": "Guardando",
   "editorSaved": "Guardado",
   "editorUnsaved": "Sin guardar",
-  "editorBold": "Negrita",
-  "editorItalic": "Cursiva",
   "editorSubheading": "Subtítulo",
   "editorSceneBreak": "Separador de escena",
   "editorGoalTitle": "Meta de palabras",
@@ -336,6 +336,20 @@
   "@chapWordCount": {
     "placeholders": {
       "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@chapDefaultChapterTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "@chapDefaultSessionTitle": {
+    "placeholders": {
+      "number": {
         "type": "int"
       }
     }
@@ -685,5 +699,127 @@
   "themeCosmicName": "Cósmico",
   "themeCosmicDesc": "Nebulosas y luz de estrellas. Naves, imperios y vacío.",
   "themeGothicName": "Gótico",
-  "themeGothicDesc": "Carmesí y ceniza. Vampiros, ruinas y secretos."
+  "themeGothicDesc": "Carmesí y ceniza. Vampiros, ruinas y secretos.",
+  "markupBold": "Negrita",
+  "markupItalic": "Cursiva",
+  "helpEditorTitle": "El editor de texto",
+  "helpEditorButton": "Cómo dar formato",
+  "helpIntro": "Cómo dar formato a lo que escribes, dónde funciona cada botón y qué queda guardado por debajo.",
+  "helpStylesTitle": "Negrita y cursiva",
+  "helpStylesIntro": "Funciona igual que en cualquier procesador de texto. Hay dos formas, y las dos sirven.",
+  "helpWayMarkTitle": "Marcar lo que ya escribiste",
+  "helpWayMarkBody": "Selecciona las palabras y presiona B o I. Presionarlo otra vez se lo quita.",
+  "helpWayAheadTitle": "Prenderlo antes de escribir",
+  "helpWayAheadBody": "Sin nada seleccionado, presiona B y lo que escribas a continuación sale en negrita, hasta que lo apagues.",
+  "helpOnTitle": "Cómo saber si está prendido",
+  "helpOnBody": "El botón se enciende cuando el cursor está sobre texto que ya tiene ese estilo, o cuando lo acabas de prender. Si mueves el cursor a otro lado, se apaga.",
+  "helpCombineBody": "Los dos estilos se combinan: puedes tener una frase en negrita y cursiva a la vez. Y si escribes pegado a una palabra en negrita, lo nuevo sigue en negrita.",
+  "helpReachTitle": "Tres formas de llegar a los botones",
+  "helpReachBarTitle": "La barra",
+  "helpReachBarBody": "Los botones B e I, arriba del cuadro de texto.",
+  "helpReachKeysTitle": "El teclado",
+  "helpReachKeysBody": "Ctrl+B y Ctrl+I. En Mac, Cmd en vez de Ctrl.",
+  "helpReachPhoneTitle": "El celular",
+  "helpReachPhoneBody": "Cuando seleccionas una palabra y aparece el menú del sistema con Copiar y Pegar, ahí mismo están Negrita y Cursiva. Ese menú tapa la barra, así que los estilos también viven adentro de él.",
+  "helpWhereTitle": "Dónde funciona",
+  "helpWhereBody": "En el contenido de las notas y en el editor de capítulos. En la lista de notas, la vista previa de cada una ya se ve con su formato aplicado.",
+  "helpWhereNote": "Los títulos, los resúmenes y los campos cortos siguen siendo texto simple.",
+  "helpChapterOnlyTitle": "Subtítulos, citas y cortes de escena",
+  "helpChapterOnlyIntro": "Estos tres se aplican a la línea entera donde está el cursor, no a las palabras que selecciones. Igual que la negrita, se ven mientras escribes y no dejan ningún símbolo a la vista.",
+  "helpSubheadingBody": "Convierte la línea en un subtítulo: se ve más grande y en negrita. Sirve para separar partes dentro de un capítulo.",
+  "helpSceneBreakBody": "Deja una marca en su propia línea para separar dos escenas dentro del mismo capítulo.",
+  "helpChapterOnlyWarn": "La cita no se puede sangrar mientras la escribes: un cuadro de texto no sabe darle márgenes propios a un párrafo suelto. Por eso se distingue con la cursiva y el fondo, en vez de con una sangría.",
+  "helpStoredTitle": "Qué queda guardado",
+  "helpStoredBody": "Nunca ves un asterisco. Por debajo, el texto se guarda en Markdown.",
+  "helpStoredSeeLabel": "Lo que ves",
+  "helpStoredSavedLabel": "Lo que se guarda",
+  "helpStoredSample": "La **Casa Valdris** cayó en el *invierno largo*.",
+  "helpStoredWhy": "Eso importa por tres razones: tus respaldos siguen siendo legibles y se pueden abrir en cualquier editor de texto, la búsqueda sigue encontrando las palabras, y lo que ya tenías escrito con asteriscos se abre ya formateado.",
+  "helpStoredAsterisk": "Si escribes un asterisco a propósito, se guarda protegido y vuelve tal cual.",
+  "helpHalfWordTitle": "El único detalle raro",
+  "helpHalfWordBody": "Markdown no tiene forma de decir \"media palabra en negrita\". Si marcas solo una parte de una palabra, al guardar el estilo se ensancha a la palabra entera.",
+  "helpHalfWordNote": "Es la única concesión, y es a propósito: preferible eso a guardar algo que después se lea distinto. Las palabras nunca se tocan.",
+  "helpMoreTitle": "Lo demás del editor de capítulos",
+  "helpAutosaveTitle": "Se guarda solo",
+  "helpAutosaveBody": "Un segundo después de que dejas de escribir, y también al salir de la pantalla. Arriba te dice Guardando o Guardado.",
+  "helpWordCountTitle": "Contador de palabras",
+  "helpWordCountBody": "Siempre a la vista, y se actualiza mientras escribes.",
+  "helpGoalTitle": "Meta de palabras",
+  "helpGoalBody": "Puedes ponerle una meta al capítulo y aparece una barra de avance arriba de los botones.",
+  "helpFocusTitle": "Modo sin distracciones",
+  "helpFocusBody": "Esconde todo menos el texto. Para salir, el botón de arriba a la derecha.",
+  "markupQuote": "Cita",
+  "helpQuoteBody": "Marca el párrafo como una cita: sale en cursiva y sobre un fondo tenue, para que se distinga del cuerpo del texto. Si presionas Enter, la cita continúa; un subtítulo no.",
+  "pdfTitle": "Exportar a PDF",
+  "pdfButton": "Exportar a PDF",
+  "pdfIntro": "Elige qué capítulos quieres. Salen todos juntos en un solo PDF, en el orden en que están.",
+  "pdfSelectAll": "Seleccionar todos",
+  "pdfClear": "Quitar todos",
+  "pdfNoChapters": "No hay capítulos que exportar todavía.",
+  "pdfEmptyChapter": "Sin texto",
+  "pdfExport": "Exportar",
+  "pdfWorking": "Armando el PDF...",
+  "pdfDone": "PDF listo.",
+  "pdfFailed": "No se pudo exportar: {error}",
+  "pdfShareTitle": "Tu manuscrito",
+  "pdfWordsLabel": "{n} palabras",
+  "pdfSelectedCount": "{count} de {total} capítulos",
+  "@pdfFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@pdfWordsLabel": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@pdfSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "pdfIntroAll": "Elige qué quieres llevarte. Todo sale junto en un solo PDF.",
+  "pdfWithImages": "Con imágenes",
+  "pdfGroupChapters": "Capítulos",
+  "pdfGroupCharacters": "Personajes",
+  "pdfGroupFactions": "Facciones",
+  "pdfGroupLocations": "Lugares",
+  "pdfGroupItems": "Objetos",
+  "pdfGroupMagic": "Sistemas de magia",
+  "pdfNothingPicked": "No has elegido nada todavía.",
+  "pdfNoneOfThese": "Todavía no hay ninguno.",
+  "sheetRace": "Raza",
+  "sheetGender": "Género",
+  "sheetAge": "Edad",
+  "sheetOccupation": "Ocupación",
+  "sheetFaction": "Facción",
+  "sheetStatus": "Estado",
+  "sheetType": "Tipo",
+  "sheetClimate": "Clima",
+  "sheetPopulation": "Población",
+  "sheetGovernment": "Gobierno",
+  "sheetPartOf": "Dentro de",
+  "sheetOwner": "En manos de",
+  "sheetWhere": "Dónde está",
+  "sheetAppearance": "Apariencia",
+  "sheetPersonality": "Personalidad",
+  "sheetBackstory": "Historia",
+  "sheetNotes": "Notas",
+  "sheetDescription": "Descripción",
+  "sheetPowers": "Poderes",
+  "sheetOrigin": "Origen",
+  "sheetSource": "De dónde viene",
+  "sheetRules": "Reglas",
+  "sheetLimits": "Límites",
+  "sheetCost": "Cuesta"
 }
